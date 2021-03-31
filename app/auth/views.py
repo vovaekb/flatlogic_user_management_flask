@@ -73,8 +73,8 @@ def profile():
 def verify_email():
     print('Accept PUT to verify-email')
     options = {}
-    host = f'http://{request.host}'
-    payload = Auth.verify_email(request.json['token'], host, options)
+    # host = f'http://{request.host}'
+    payload = Auth.verify_email(request.json['token'], options)
     #return Response('verify_email', status=200)
     return Response(payload, status=200)
 
