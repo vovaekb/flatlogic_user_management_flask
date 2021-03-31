@@ -4,6 +4,7 @@ from hashlib import pbkdf2_hmac
 import jwt
 from flask import render_template
 from flask_mail import Message
+from werkzeug.security import generate_password_hash, check_password_hash
 from sqlalchemy.sql import func
 from app.models import Users
 from app import app, mail
@@ -76,7 +77,9 @@ class Auth:
         #print(user_confirm_password)
         password_salt = generate_salt()
         print(password_salt)
-        password_hash = generate_hash(user_password, password_salt)
+        # password_hash = generate_hash(user_password, password_salt)
+        password_hash = generate_password_hash(user_password, method='sha256')
+
         print(password_hash)
         if user:
             print(user.authenticationUid)
@@ -143,7 +146,41 @@ class Auth:
         return token
     
     def signin(email, password, options):
-        pass
+        user = app.session.query(Users).filter_by(email=email).first()
+        print(user)
+
+        if not user:
+            raise CustomError({'message': 'Error when signing in: User not found\n' })
+
+        if user.disabled:
+            raise CustomError({'message': 'Error when signing in: User disabled\n'})
+
+        if not user.password:
+            raise CustomError({'message': 'Error when signing in: Wrong password\n'})
+
+        # not email sender configured
+        # user.emailVerified = True
+
+        if not user.emailVerified:
+            raise CustomError({'message': 'Error when signing in: User not verified\n'})
+
+        # TODO: Implement it!!
+        # check if entered password match the user password saved in BD
+        # password_match =
+        if not check_password_hash(user.password, password):
+            raise CustomError({'message': 'Error when signing in: Wrong password\n'})
+
+        token_expires_at = datetime.datetime.utcnow() + datetime.timedelta(days=0, hours=6)
+        data = {
+            "exp": token_expires_at,
+            "iat": datetime.datetime.utcnow(),
+            "id": str(user.id),
+            "email": str(user.email)
+        }
+        # return JWT sign with data
+        token = generate_token(data)
+        return token
+
 
     def sendEmailAddressVerificationEmail(email, host):
         print('sendEmailAddressVerificationEmail')

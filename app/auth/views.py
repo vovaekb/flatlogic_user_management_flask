@@ -40,7 +40,9 @@ def send_password_reset_email():
 
 @auth_blueprint.route('/auth/signin/local', methods=['POST'])
 def signin_local():
-    return Response('signin local', status=200)
+    options = {}
+    payload = Auth.signin(request.json['email'], request.json['password'], options)
+    return Response(payload, status=200)
 
 @auth_blueprint.route('/auth/signup', methods=['POST'])
 def signup():
