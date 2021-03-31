@@ -76,7 +76,7 @@ def verify_email():
     # host = f'http://{request.host}'
     payload = Auth.verify_email(request.json['token'], options)
     #return Response('verify_email', status=200)
-    return Response(payload, status=200)
+    return Response(str(payload), status=200)
 
 @auth_blueprint.route('/auth/me', methods=['GET'])
 def me():

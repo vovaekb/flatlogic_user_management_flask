@@ -170,8 +170,8 @@ class Auth:
     
     def verify_email(token, options):
         user = app.session.query(Users)\
-            .filter_by(emailVerificationToken=token)\
-            .filter(emailVerificationTokenExpiresAt > datetime.datetime.utcnow())\
+            .filter(Users.emailVerificationToken==token)\
+            .filter(Users.emailVerificationTokenExpiresAt > datetime.datetime.utcnow())\
             .first()
         print(user)
         if not user:
@@ -182,7 +182,8 @@ class Auth:
         user = app.session.query(Users)\
             .filter_by(id=user.id)\
             .first()
-        user.emailVerified = True 
+        print(user)
+        user.emailVerified = True
         #user.updatedById  = current_user.id
         app.session.add(user)
         app.session.commit()
