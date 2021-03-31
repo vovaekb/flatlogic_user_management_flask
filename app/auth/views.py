@@ -71,6 +71,7 @@ def profile():
 
 @auth_blueprint.route('/auth/verify-email', methods=['PUT'])
 def verify_email():
+    print('Accept PUT to verify-email')
     options = {}
     host = f'http://{request.host}'
     payload = Auth.verify_email(request.json['token'], host, options)

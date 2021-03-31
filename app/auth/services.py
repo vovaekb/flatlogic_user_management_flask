@@ -158,23 +158,31 @@ class Auth:
         subject = 'Verify your email for %s' % app.config['APP_TITLE']
         print(subject)
         # TODO: Remove it. Use it for debug
-        #email = 'vladprivalov1990@gmail.com'
+        if os.environ['FLASK_DEV']:
+            email = 'vladprivalov1990@gmail.com'
+        print(email)
         msg = Message(subject,  sender=app.config['MAIL_DEFAULT_SENDER'], recipients = [email])
-        msg.html = render_template('mail/email_verification.html', link=link, app_title=app.config['APP_TITLE'])
+        msg.html = render_template('mail/email_verification.html',
+                                   link=link, app_title=app.config['APP_TITLE'])
         mail.send(msg)
     
     def sendPasswordResetEmail(email, host, type='register'):
         pass
     
     def verifyEmail(token, options):
-        user = app.session.query(Users).filter_by(emailVerificationToken=token).filter(emailVerificationTokenExpiresAt > datetime.datetime.utcnow()).first()
+        user = app.session.query(Users)\
+            .filter_by(emailVerificationToken=token)\
+            .filter(emailVerificationTokenExpiresAt > datetime.datetime.utcnow())\
+            .first()
         print(user)
         if not user:
             raise CustomError({'message': 'Error when verifying email: Invalid token\n' })
 
         # mark email verified
         # current_user = options.user
-        user = app.session.query(Users).filter_by(id=user.id).first()
+        user = app.session.query(Users)\
+            .filter_by(id=user.id)\
+            .first()
         user.emailVerified = True 
         #user.updatedById  = current_user.id
         app.session.add(user)
