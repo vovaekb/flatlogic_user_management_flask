@@ -124,7 +124,6 @@ class Auth:
         user.authenticationUid = user.id
         app.session.add(user)
         app.session.commit()
-
         
         # if email sender is configured
         # send email address verification email
@@ -151,7 +150,7 @@ class Auth:
         # GENERATE EMAIL VERIFICATIOB TOKEN
         options = {}
         token = UserDBApi.generate_email_verification_token(email, options)
-        link = f'{host}#/verify-email?token={token}'
+        link = f'{host}/auth/verify-email?token={token}'
         print(link)
 
         # send email
@@ -169,7 +168,7 @@ class Auth:
     def sendPasswordResetEmail(email, host, type='register'):
         pass
     
-    def verifyEmail(token, options):
+    def verify_email(token, options):
         user = app.session.query(Users)\
             .filter_by(emailVerificationToken=token)\
             .filter(emailVerificationTokenExpiresAt > datetime.datetime.utcnow())\
