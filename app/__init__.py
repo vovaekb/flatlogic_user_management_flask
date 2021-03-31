@@ -4,7 +4,7 @@ from flask_mail import Mail
 from sqlalchemy.orm import scoped_session
 from app.database import SessionLocal, engine, Base
 from app import models
-from config import Config
+from config import Config, DevConfig
 
 # Create database structure
 #Base.metadata.create_all(bind=engine)
@@ -16,7 +16,12 @@ print(APP_ROOT)
 
 app = Flask(__name__)
 app.session = scoped_session(SessionLocal, scopefunc=_app_ctx_stack.__ident_func__)
-app.config.from_object(Config)
+
+if os.environ['FLASK_DEV']:
+    app.config.from_object(DevConfig)
+else:
+    app.config.from_object(Config)
+
 print(app.config['UPLOAD_FOLDER'])
 print(app.config['MAIL_SERVER'])
 #app.config['UPLOAD_FOLDER'] = FILE_FOLDER
