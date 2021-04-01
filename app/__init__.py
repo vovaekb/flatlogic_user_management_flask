@@ -2,6 +2,7 @@ import os
 from flask import Flask, _app_ctx_stack, render_template, request, jsonify, Response
 from flask_mail import Mail
 import jwt
+from functools import wraps
 from sqlalchemy.orm import scoped_session
 from app.database import SessionLocal, engine, Base
 from app.models import Users
@@ -39,22 +40,25 @@ class CustomError(Exception):
 def token_required(f):
     @wraps(f)
     def decorator(*args, **kwargs):
+        print('token_required')
         token = None
 
         if 'Authorization' in request.headers:
-            token = request.headers['Authorization']
+            token = request.headers['Authorization'].split(' ')[1]
+            print('token: ', token)
 
         if not token:
             raise CustomError({'message': 'Error when verifying token: a valid token is missing\n'})
 
         try:
-            data = jwt.decode(token. app.config['SECRET_KEY'])
+            data = jwt.decode(token, app.config['SECRET_KEY'], algorithms='HS256')
             print(data)
             current_user = app.session.query(Users) \
                 .filter(Users.id == data['id']) \
                 .filter(Users.email==data['email']).first()
             print(current_user)
-        except:
+        except Exception as e:
+            print('Error when decoding token: ', str(e))
             raise CustomError({'message': 'Error when verifying token: token is invalid\n'})
 
         return f(current_user, *args, **kwargs)

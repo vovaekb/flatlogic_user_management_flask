@@ -1,4 +1,4 @@
-from flask import render_template, Blueprint, request, Response
+from flask import render_template, Blueprint, request, Response, jsonify
 import jwt
 # from app import database
 from app import app
@@ -28,7 +28,8 @@ def password_update(current_user):
     options = {}
     print(current_user)
     payload = Auth.password_update(request.json['current_password'], request.json['new_password'], current_user)
-    return Response(payload, status=200)
+    #return Response(payload, status=200)
+    return jsonify(payload)
 
 @auth_blueprint.route('/auth/send-email-address-verification-email', methods=['POST'])
 def send_email_address_verification_email():

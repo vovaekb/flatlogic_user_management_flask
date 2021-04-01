@@ -9,7 +9,7 @@ from sqlalchemy.sql import func
 from app.models import Users
 from app import app, mail
 #from app.auth.views import CustomError
-from app.auth import CustomError
+from app import CustomError
 
 # Global dicts
 EMAIL_CONFIG = {
@@ -94,11 +94,16 @@ class UserDBApi:
         app.session.commit()
         return token
 
-    def update_password(id, password, options):
-        current_user = options.currentUser
-
+    def update_password(id, password, current_user):
+        print('UserDBApi.update_password')
+        user = app.session.query(Users).filter_by(id=id).first()
+        print(user)
+        user.password = password
+        user.authenticationUid = user.id
+        user.updatedById = current_user.id
         app.session.add(user)
         app.session.commit()
+        return user
 
 
 # Auth service class
@@ -263,19 +268,17 @@ class Auth:
             raise CustomError({'message': 'Error when updating password: Forbidden\n'})
 
         if not check_password_hash(current_user.password, current_password):
-            raise CustomError({'message': 'Error when signing in: Wrong password\n'})
+            raise CustomError({'message': 'Error when updating password: Wrong password\n'})
 
         if check_password_hash(current_user.password, new_password):
-            raise CustomError({'message': 'Error when signing in: The same password\n'})
+            raise CustomError({'message': 'Error when updating password: The same password\n'})
 
         password_hash = generate_password_hash(new_password, method='sha256')
         print(password_hash)
 
-        UserDBApi.update_password()
+        user = UserDBApi.update_password(current_user.id, password_hash, current_user)
+        return user
 
-        current_user.password = password_hash
-        app.session.add(current_user)
-        app.session.commit()
 
     
 
