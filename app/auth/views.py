@@ -10,6 +10,8 @@ from app import CustomError, token_required
 # CONFIG
 auth_blueprint = Blueprint('auth', __name__, template_folder='templates')
 
+user_schema = UsersSchema()
+
 
 @auth_blueprint.errorhandler(CustomError)
 def handle_error(e):
@@ -25,11 +27,11 @@ def password_reset():
 @auth_blueprint.route('/auth/password-update', methods=['PUT'])
 @token_required
 def password_update(current_user):
-    options = {}
     print(current_user)
-    payload = Auth.password_update(request.json['current_password'], request.json['new_password'], current_user)
+    user = Auth.password_update(request.json['current_password'], request.json['new_password'], current_user)
+    data = user_schema.dump(user)
     #return Response(payload, status=200)
-    return jsonify(payload)
+    return jsonify(data)
 
 @auth_blueprint.route('/auth/send-email-address-verification-email', methods=['POST'])
 def send_email_address_verification_email():
