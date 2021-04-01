@@ -1,19 +1,15 @@
 from flask import render_template, Blueprint, request, Response
+import jwt
 # from app import database
 from app import app
 from app.auth.services import generate_salt, generate_hash, Auth
 from app.models import Users
 from app.serializers import UsersSchema, FilesSchema
-from app.auth import CustomError
+from app import CustomError, token_required
 
 # CONFIG
 auth_blueprint = Blueprint('auth', __name__, template_folder='templates')
 
-'''
-# Error handlers
-class CustomError(Exception):
-    pass
-'''
 
 @auth_blueprint.errorhandler(CustomError)
 def handle_error(e):
@@ -27,9 +23,11 @@ def password_reset():
     return Response('password reset', status=200)
 
 @auth_blueprint.route('/auth/password-update', methods=['PUT'])
-def password_update():
+@token_required
+def password_update(current_user):
     options = {}
-    payload = Auth.password_update(request.json['current_password'], request.json['new_password'], options)
+    print(current_user)
+    payload = Auth.password_update(request.json['current_password'], request.json['new_password'], current_user)
     return Response(payload, status=200)
 
 @auth_blueprint.route('/auth/send-email-address-verification-email', methods=['POST'])

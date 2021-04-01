@@ -140,7 +140,9 @@ class Auth:
 
             # if email sender is configured
             # send email address verification email
-            Auth.send_email_address_verification_email(user_email, host)
+            if EmailSender.isConfigured():
+                Auth.send_email_address_verification_email(user_email, host)
+
             token_expires_at = datetime.datetime.utcnow() + datetime.timedelta(days=0, hours=6)
             data = {
                 "exp": token_expires_at,
@@ -169,7 +171,8 @@ class Auth:
         
         # if email sender is configured
         # send email address verification email
-        Auth.send_email_address_verification_email(user_email, host)
+        if EmailSender.isConfigured():
+            Auth.send_email_address_verification_email(user_email, host)
         
         #del user.password
         
@@ -224,6 +227,8 @@ class Auth:
 
     def send_email_address_verification_email(email, host):
         print('send_email_address_verification_email')
+        if not EmailSender.isConfigured():
+            raise CustomError({'message': 'Error when sending email: Email provider is not configured. Please configure it in config.py\n'})
         # GENERATE EMAIL VERIFICATIOB TOKEN
         options = {}
         token = UserDBApi.generate_email_verification_token(email, options)
@@ -243,20 +248,24 @@ class Auth:
             'title': app.config['APP_TITLE']
         }
         email_sender.send(data)
-        # msg = Message(subject,  sender=app.config['MAIL_DEFAULT_SENDER'], recipients = [email])
-        # msg.html = render_template('mail/email_verification.html',
-        #                            link=link, app_title=app.config['APP_TITLE'])
-        # mail.send(msg)
 
-    def password_update(current_password, new_password, options):
+    def send_password_reset_email(email, host, type='register'):
+        if not EmailSender.isConfigured():
+            raise CustomError({
+                'message': 'Error when sending email: Email provider is not configured. Please configure it in config.py\n'
+            })
+        pass
+
+    def password_update(current_password, new_password, current_user):
+        print('Auth.password_update')
         # currentUser = options.currentUser
-        if not currentUser:
+        if not current_user:
             raise CustomError({'message': 'Error when updating password: Forbidden\n'})
 
-        if not check_password_hash(currentUser.password, current_password):
+        if not check_password_hash(current_user.password, current_password):
             raise CustomError({'message': 'Error when signing in: Wrong password\n'})
 
-        if check_password_hash(currentUser.password, new_password):
+        if check_password_hash(current_user.password, new_password):
             raise CustomError({'message': 'Error when signing in: The same password\n'})
 
         password_hash = generate_password_hash(new_password, method='sha256')
@@ -264,13 +273,12 @@ class Auth:
 
         UserDBApi.update_password()
 
-        currentUser.password = password_hash
-        app.session.add(currentUser)
+        current_user.password = password_hash
+        app.session.add(current_user)
         app.session.commit()
 
     
-    def send_password_reset_email(email, host, type='register'):
-        pass
+
     
     def verify_email(token, options):
         user = app.session.query(Users)\
