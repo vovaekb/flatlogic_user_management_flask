@@ -94,8 +94,10 @@ class UserDBApi:
         app.session.commit()
         return token
 
-    def update_password(id, password, current_user):
+    def update_password(id, password, current_user=None):
         print('UserDBApi.update_password')
+        if current_user is None:
+            current_user = Users(id=None)
         user = app.session.query(Users).filter_by(id=id).first()
         print(user)
         user.password = password
@@ -105,10 +107,24 @@ class UserDBApi:
         app.session.commit()
         return user
 
+    def mark_email_verified(id, current_user=None):
+        print('UserDBApi.update_password')
+        if current_user is None:
+            current_user = Users(id=None)
+
+        user = app.session.query(Users) \
+            .filter_by(id=id) \
+            .first()
+        print(user)
+        user.emailVerified = True
+        user.updatedById = current_user.id
+        app.session.add(user)
+        app.session.commit()
+
 
 # Auth service class
 class Auth:
-    def signup(email, password, host, options={}):
+    def signup(email, password, host, current_user=None):
         print('Auth.sign()')
         user_email = email
         print('user_email: ', user_email)
@@ -132,14 +148,8 @@ class Auth:
             if user.disabled:
                 raise CustomError({'message': 'Error when registering user in database: User disabled \n' })
 
-            # get current user
-
             # update password
-            user.password = password_hash
-            user.authenticationUid = user.id
-            # user.updatedById = currentUser.id
-            app.session.add(user)
-            app.session.commit()
+            user = UserDBApi.update_password(user.id, password_hash, current_user)
 
             print('host: ', host)
 
@@ -261,7 +271,7 @@ class Auth:
             })
         pass
 
-    def password_update(current_password, new_password, current_user):
+    def password_update(current_password, new_password, current_user=None):
         print('Auth.password_update')
         # currentUser = options.currentUser
         if not current_user:
@@ -279,11 +289,7 @@ class Auth:
         user = UserDBApi.update_password(current_user.id, password_hash, current_user)
         return user
 
-
-    
-
-    
-    def verify_email(token, options):
+    def verify_email(token, current_user=None):
         user = app.session.query(Users)\
             .filter(Users.emailVerificationToken==token)\
             .filter(Users.emailVerificationTokenExpiresAt > datetime.datetime.utcnow())\
@@ -293,14 +299,7 @@ class Auth:
             raise CustomError({'message': 'Error when verifying email: Invalid token\n' })
 
         # mark email verified
-        # current_user = options.user
-        user = app.session.query(Users)\
-            .filter_by(id=user.id)\
-            .first()
-        print(user)
-        user.emailVerified = True
-        #user.updatedById  = current_user.id
-        app.session.add(user)
-        app.session.commit()
+        UserDBApi.mark_email_verified(user.id, current_user)
+
         return True
 

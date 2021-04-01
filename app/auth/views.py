@@ -5,7 +5,7 @@ from app import app
 from app.auth.services import generate_salt, generate_hash, Auth
 from app.models import Users
 from app.serializers import UsersSchema, FilesSchema
-from app import CustomError, token_required
+from app import CustomError, get_current_user
 
 # CONFIG
 auth_blueprint = Blueprint('auth', __name__, template_folder='templates')
@@ -25,7 +25,7 @@ def password_reset():
     return Response('password reset', status=200)
 
 @auth_blueprint.route('/auth/password-update', methods=['PUT'])
-@token_required
+@get_current_user
 def password_update(current_user):
     print(current_user)
     user = Auth.password_update(request.json['current_password'], request.json['new_password'], current_user)
@@ -48,25 +48,10 @@ def signin_local():
     return Response(payload, status=200)
 
 @auth_blueprint.route('/auth/signup', methods=['POST'])
-def signup():
-    options = {}
+@get_current_user
+def signup(current_user):
     host = f'http://{request.host}'
-    payload = Auth.signup(request.json['email'], request.json['password'], host, options)
-
-    '''
-    if user_password == user_confirm_password and validate_user_input(
-        "authentication", email=user_email, password=user_password
-    ):
-        password_salt = generate_salt()
-        password_hash = generate_hash(user_password, password_salt)
-        # Save user to DB
-        # If failed to save user to DB
-        # return status 409
-    else:
-        # Registration Failed
-        # return status 400
-        pass
-    '''
+    payload = Auth.signup(request.json['email'], request.json['password'], host, current_user)
 
     return Response(payload, status=200)
 
@@ -75,11 +60,11 @@ def profile():
     return Response('profile', status=200)
 
 @auth_blueprint.route('/auth/verify-email', methods=['PUT'])
-def verify_email():
+@get_current_user
+def verify_email(current_user):
     print('Accept PUT to verify-email')
-    options = {}
     # host = f'http://{request.host}'
-    payload = Auth.verify_email(request.json['token'], options)
+    payload = Auth.verify_email(request.json['token'], current_user)
     #return Response('verify_email', status=200)
     return Response(str(payload), status=200)
 

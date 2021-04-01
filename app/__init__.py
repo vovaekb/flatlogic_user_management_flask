@@ -37,6 +37,33 @@ mail = Mail(app)
 class CustomError(Exception):
     pass
 
+
+def get_current_user(f):
+    @wraps(f)
+    def decorator(*args, **kwargs):
+        print('get_current_user')
+
+        if 'Authorization' in request.headers:
+            token = request.headers['Authorization'].split(' ')[1]
+            print('token: ', token)
+
+            try:
+                data = jwt.decode(token, app.config['SECRET_KEY'], algorithms='HS256')
+                print(data)
+                current_user = app.session.query(Users) \
+                    .filter(Users.id == data['id']) \
+                    .filter(Users.email==data['email']).first()
+                print(current_user)
+            except Exception as e:
+                print('Error when decoding token: ', str(e))
+                raise CustomError({'message': 'Error when verifying token: token is invalid\n'})
+        else:
+            current_user = None
+
+        return f(current_user, *args, **kwargs)
+    return decorator
+
+'''
 def token_required(f):
     @wraps(f)
     def decorator(*args, **kwargs):
@@ -63,6 +90,20 @@ def token_required(f):
 
         return f(current_user, *args, **kwargs)
     return decorator
+'''
+
+def token_included(f):
+    @wraps(f)
+    def decorator(*args, **kwargs):
+        print('token_included')
+        token = None
+
+        if 'Authorization' in request.headers:
+            token = request.headers['Authorization'].split(' ')[1]
+            print('token: ', token)
+
+        if not token:
+            current_user = None
 
 # BLUEPRINTS
 from app.auth.views import auth_blueprint
