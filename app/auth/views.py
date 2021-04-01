@@ -28,7 +28,9 @@ def password_reset():
 
 @auth_blueprint.route('/auth/password-update', methods=['PUT'])
 def password_update():
-    return Response('password reset', status=200)
+    options = {}
+    payload = Auth.password_update(request.json['current_password'], request.json['new_password'], options)
+    return Response(payload, status=200)
 
 @auth_blueprint.route('/auth/send-email-address-verification-email', methods=['POST'])
 def send_email_address_verification_email():
