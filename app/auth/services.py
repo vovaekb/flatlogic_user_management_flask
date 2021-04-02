@@ -74,6 +74,7 @@ class EmailSender:
     def isConfigured():
         return (app.config['MAIL_DEFAULT_SENDER'] and app.config['MAIL_SERVER'])
 
+# DB API classes
 class UserDBApi:
     def generate_email_verification_token(email, options):
         # get current user
@@ -103,6 +104,7 @@ class UserDBApi:
         user.password = password
         user.authenticationUid = user.id
         user.updatedById = current_user.id
+        user.updatedBy = current_user
         app.session.add(user)
         app.session.commit()
         return user
@@ -132,8 +134,6 @@ class Auth:
         print(user)
         user_password = password
         print('user_password: ', user_password)
-        #user_confirm_password = request.json['confirm_password']
-        #print(user_confirm_password)
         # password_salt = generate_salt()
         # print(password_salt)
         # password_hash = generate_hash(user_password, password_salt)
@@ -173,9 +173,10 @@ class Auth:
         print('Creating new user')
         # Create user
         user = Users(
-            firstName = user_email.split('@')[0], # data['firstName']
+            firstName = user_email.split('@')[0],
             password = password_hash,
             email = user_email,
+            # authenticationUid = data.authenticationUid,
             updatedAt = func.now()
         )
         app.session.add(user)
@@ -251,8 +252,6 @@ class Auth:
         print(link)
 
         # send email
-        subject = 'Verify your email for %s' % app.config['APP_TITLE']
-        print(subject)
         # TODO: Remove it. Use it for debug
         if os.environ['FLASK_DEV']:
             email = 'vladprivalov1990@gmail.com'
