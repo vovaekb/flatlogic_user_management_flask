@@ -18,8 +18,9 @@ def test_signup():
     '''
 
     # Create new user from admin panel
+    #'''
     with app.test_client() as c:
-        token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2MTczODUxNjEsImlhdCI6MTYxNzM2MzU2MSwiaWQiOiIyYTE2ZTRmYy0xNmNkLTRlYTktOTNhZS0wZTIwZjg0ZWUzMjAiLCJlbWFpbCI6ImJpbGxfeGF2aWVyQGhvc3QuY29tIn0.49G21qLF1QFeE3y77z8FTwId5R7suxuDaitovl4oMoo"
+        token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2MTczOTA5NjEsImlhdCI6MTYxNzM2OTM2MSwiaWQiOiJiNTM1MGQ1YS03ZmYyLTQwM2ItOTMzNC00Y2UzNjQ0M2YzYTYiLCJlbWFpbCI6ImJpbGxfeGF2aWVyQGhvc3QuY29tIn0.GHzmEbzhMj5z3Zesr4wR_sIr9Od0SZ6SxRzO9gb780o"
         authorization = 'Bearer ' + str(token)
 
         headers = {
@@ -27,17 +28,19 @@ def test_signup():
             # 'Content-Type': 'application/json',
             'Authorization': authorization
         }
+        password = 'sdvw3HGY' # '&hgvdsdf4xf'
         rv = c.post('/auth/signup', json={
-            'email': 'uman_lesset@host.com', 'password': '&hgvdsdf4xf'
+            'email': 'uman_lesset@host.com', 'password': password
         }, headers=headers)
         # json_data = rv.get_json()
         # print(json_data)
         print(rv.data)
         print('status: ', rv.status_code)
+    #'''
 
 def test_verify_email():
     print('testing /verify-email')
-    token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2MTczNjM3MTEsImlhdCI6MTYxNzM2MzM1MSwic3ViIjoiMmExNmU0ZmMtMTZjZC00ZWE5LTkzYWUtMGUyMGY4NGVlMzIwIn0.7U8jlilZpKjvdZF3YNFhkPaiPhIxRfBe3UdwkTpP5ns"
+    token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2MTczNjk1OTcsImlhdCI6MTYxNzM2OTIzNywic3ViIjoiYjUzNTBkNWEtN2ZmMi00MDNiLTkzMzQtNGNlMzY0NDNmM2E2In0.hIX8D--k-6s99wuYntarPyj35KJfpkP5ImOiT_t4fLo"
     with app.test_client() as c:
         rv = c.put('/auth/verify-email', json={
             'token': token
