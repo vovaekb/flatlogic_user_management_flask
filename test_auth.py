@@ -13,13 +13,15 @@ def test_signup():
 
 def test_verify_email():
     print('testing /verify-email')
-    token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2MTczNTYyMTAsImlhdCI6MTYxNzM1NTg1MCwic3ViIjoiYWI4YzA0YWEtNWUzMy00NmZjLWIwNTYtOGMxMWQ2OWFiYjExIn0.BqEJSRLjcXScZgIUILYpeug2joZQxwYvq4udj0IL5yA"
+    token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2MTczNjM3MTEsImlhdCI6MTYxNzM2MzM1MSwic3ViIjoiMmExNmU0ZmMtMTZjZC00ZWE5LTkzYWUtMGUyMGY4NGVlMzIwIn0.7U8jlilZpKjvdZF3YNFhkPaiPhIxRfBe3UdwkTpP5ns"
     with app.test_client() as c:
         rv = c.put('/auth/verify-email', json={
             'token': token
         })
         json_data = rv.get_json()
-        print(json_data)
+        print(rv.data)
+        print('status: ' , rv.status_code)
+        #print(json_data)
 
 def test_signin_local():
     print('testing /signin/local')
@@ -28,12 +30,15 @@ def test_signin_local():
             'email': 'bill_xavier@host.com', 'password': 'dfgvd564rf'
         })
         json_data = rv.get_json()
-        print(json_data)
+        #print(json_data)
+        print(rv.data)
+        token = str(rv.data)
+        print('status: ' , rv.status_code)
 
 def test_password_update():
     print('testing /signin/password-update')
-    token = ""
-    authorization = 'Bearer ' + token
+    token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2MTczODUxNjEsImlhdCI6MTYxNzM2MzU2MSwiaWQiOiIyYTE2ZTRmYy0xNmNkLTRlYTktOTNhZS0wZTIwZjg0ZWUzMjAiLCJlbWFpbCI6ImJpbGxfeGF2aWVyQGhvc3QuY29tIn0.49G21qLF1QFeE3y77z8FTwId5R7suxuDaitovl4oMoo"
+    authorization = 'Bearer ' + str(token)
 
     headers = {
         # 'Access-Control-Allow-Origin': '*',
@@ -41,15 +46,17 @@ def test_password_update():
         'Authorization': authorization
     }
     with app.test_client() as c:
-        rv = c.put('/auth/verify-email', json={
-            "current_password": "2fgsdf5zr",
-            "new_password": "2as25Ifzr"
+        rv = c.put('/auth/password-update', json={
+            "current_password": "dfgvd564rf",
+            "new_password": "dfgvd564rf", # "2as25Ifzr"
         }, headers=headers)
         json_data = rv.get_json()
+        print(rv.data)
+        print('status: ' , rv.status_code)
         print(json_data)
 
 if __name__ == '__main__':
-    # test_signup()
-    test_verify_email()
-    # test_signin_local()
-    # test_password_update()
+    #test_signup()
+    #test_verify_email()
+    #test_signin_local()
+    test_password_update()
