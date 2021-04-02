@@ -13,7 +13,7 @@ def test_signup():
 
 def test_verify_email():
     print('testing /verify-email')
-    token = ""
+    token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2MTczNTYyMTAsImlhdCI6MTYxNzM1NTg1MCwic3ViIjoiYWI4YzA0YWEtNWUzMy00NmZjLWIwNTYtOGMxMWQ2OWFiYjExIn0.BqEJSRLjcXScZgIUILYpeug2joZQxwYvq4udj0IL5yA"
     with app.test_client() as c:
         rv = c.put('/auth/verify-email', json={
             'token': token
@@ -49,7 +49,7 @@ def test_password_update():
         print(json_data)
 
 if __name__ == '__main__':
-    test_signup()
-    # test_verify_email()
+    # test_signup()
+    test_verify_email()
     # test_signin_local()
     # test_password_update()
