@@ -95,10 +95,15 @@ class UserDBApi:
         app.session.commit()
         return token
 
+    def generate_password_reset_token(email, options):
+        pass
+
     def update_password(id, password, current_user=None):
         print('UserDBApi.update_password')
         if current_user is None:
             current_user = Users(id=None)
+        print('current_user')
+        print(current_user.firstName)
         user = app.session.query(Users).filter_by(id=id).first()
         print(user)
         user.password = password
@@ -242,7 +247,7 @@ class Auth:
 
 
     def send_email_address_verification_email(email, host):
-        print('send_email_address_verification_email')
+        print('Auth.send_email_address_verification_email')
         if not EmailSender.isConfigured():
             raise CustomError({'message': 'Error when sending email: Email provider is not configured. Please configure it in config.py\n'})
         # GENERATE EMAIL VERIFICATIOB TOKEN
@@ -268,7 +273,7 @@ class Auth:
             raise CustomError({
                 'message': 'Error when sending email: Email provider is not configured. Please configure it in config.py\n'
             })
-        pass
+        token = UserDBApi.generatePasswordResetToken(email)
 
     def password_update(current_password, new_password, current_user=None):
         print('Auth.password_update')
@@ -287,6 +292,23 @@ class Auth:
 
         user = UserDBApi.update_password(current_user.id, password_hash, current_user)
         return user
+
+    def password_reset(token, password, current_user=None):
+        # find user by password reset token
+        user = app.session.query(Users) \
+            .filter(Users.passwordResetToken == token) \
+            .filter(Users.passwordResetTokenExpiresAt > datetime.datetime.utcnow()) \
+            .first()
+        print(user)
+        if not user:
+            raise CustomError({'message': 'Error when reset password: invalidToken\n'})
+
+        password_hash = generate_password_hash(password, method='sha256')
+        print(password_hash)
+
+        user = UserDBApi.update_password(user.id, password_hash, current_user)
+        return user
+
 
     def verify_email(token, current_user=None):
         user = app.session.query(Users)\

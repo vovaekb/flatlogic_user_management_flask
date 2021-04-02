@@ -50,6 +50,25 @@ def test_verify_email():
         print('status: ' , rv.status_code)
         #print(json_data)
 
+def test_send_email_address_verification_email():
+    with app.test_client() as c:
+        token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2MTczOTA5NjEsImlhdCI6MTYxNzM2OTM2MSwiaWQiOiJiNTM1MGQ1YS03ZmYyLTQwM2ItOTMzNC00Y2UzNjQ0M2YzYTYiLCJlbWFpbCI6ImJpbGxfeGF2aWVyQGhvc3QuY29tIn0.GHzmEbzhMj5z3Zesr4wR_sIr9Od0SZ6SxRzO9gb780o"
+        authorization = 'Bearer ' + str(token)
+
+        headers = {
+            # 'Access-Control-Allow-Origin': '*',
+            # 'Content-Type': 'application/json',
+            'Authorization': authorization
+        }
+        password = 'sdvw3HGY'  # '&hgvdsdf4xf'
+        rv = c.post('/auth/signup', json={
+            'email': 'uman_lesset@host.com', 'password': password
+        }, headers=headers)
+        # json_data = rv.get_json()
+        # print(json_data)
+        print(rv.data)
+        print('status: ', rv.status_code)
+
 def test_signin_local():
     print('testing /signin/local')
     with app.test_client() as c:
@@ -84,6 +103,7 @@ def test_password_update():
 
 if __name__ == '__main__':
     test_signup()
+    # test_send_email_address_verification_email()
     #test_verify_email()
     #test_signin_local()
     # test_password_update()
