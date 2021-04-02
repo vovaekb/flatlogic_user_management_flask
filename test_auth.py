@@ -4,12 +4,36 @@ from app import app
 
 def test_signup():
     print('testing /auth/signup')
+
+    # Create new user from sign in form
+    '''
     with app.test_client() as c:
         rv = c.post('/auth/signup', json={
             'email': 'bill_xavier@host.com', 'password': 'dfgvd564rf'
         })
         json_data = rv.get_json()
-        print(json_data)
+        # print(json_data)
+        print(rv.data)
+        print('status: ', rv.status_code)
+    '''
+
+    # Create new user from admin panel
+    with app.test_client() as c:
+        token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2MTczODUxNjEsImlhdCI6MTYxNzM2MzU2MSwiaWQiOiIyYTE2ZTRmYy0xNmNkLTRlYTktOTNhZS0wZTIwZjg0ZWUzMjAiLCJlbWFpbCI6ImJpbGxfeGF2aWVyQGhvc3QuY29tIn0.49G21qLF1QFeE3y77z8FTwId5R7suxuDaitovl4oMoo"
+        authorization = 'Bearer ' + str(token)
+
+        headers = {
+            # 'Access-Control-Allow-Origin': '*',
+            # 'Content-Type': 'application/json',
+            'Authorization': authorization
+        }
+        rv = c.post('/auth/signup', json={
+            'email': 'uman_lesset@host.com', 'password': '&hgvdsdf4xf'
+        }, headers=headers)
+        # json_data = rv.get_json()
+        # print(json_data)
+        print(rv.data)
+        print('status: ', rv.status_code)
 
 def test_verify_email():
     print('testing /verify-email')
@@ -18,7 +42,7 @@ def test_verify_email():
         rv = c.put('/auth/verify-email', json={
             'token': token
         })
-        json_data = rv.get_json()
+        # json_data = rv.get_json()
         print(rv.data)
         print('status: ' , rv.status_code)
         #print(json_data)
@@ -31,8 +55,8 @@ def test_signin_local():
         })
         json_data = rv.get_json()
         #print(json_data)
-        print(rv.data)
         token = str(rv.data)
+        print(token)
         print('status: ' , rv.status_code)
 
 def test_password_update():
@@ -53,10 +77,10 @@ def test_password_update():
         json_data = rv.get_json()
         print(rv.data)
         print('status: ' , rv.status_code)
-        print(json_data)
+        # print(json_data)
 
 if __name__ == '__main__':
-    #test_signup()
+    test_signup()
     #test_verify_email()
     #test_signin_local()
-    test_password_update()
+    # test_password_update()
