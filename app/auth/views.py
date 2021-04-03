@@ -5,6 +5,7 @@ from app import app
 from app.models import Users
 from app.serializers import UsersSchema, FilesSchema
 from app import CustomError, get_current_user
+from app.auth.services import Auth
 
 # CONFIG
 auth_blueprint = Blueprint('auth', __name__, template_folder='templates')
@@ -49,7 +50,11 @@ def send_email_address_verification_email(current_user):
 
 @auth_blueprint.route('/auth/send-password-reset-email', methods=['POST'])
 def send_password_reset_email():
-    return Response('send-password-reset-email', status=200)
+    print('POST query to /auth/send-email-address-verification-email accepted')
+    host = f'http://{request.host}'
+    Auth.send_password_reset_email(request.json['email'], host, 'register')
+    payload = True
+    return Response(str(payload), status=200)
 
 @auth_blueprint.route('/auth/signin/local', methods=['POST'])
 def signin_local():
