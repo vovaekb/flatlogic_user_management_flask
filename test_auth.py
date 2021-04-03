@@ -6,7 +6,7 @@ def test_signup():
     print('testing /auth/signup')
 
     # Create new user from sign in form
-    '''
+    #'''
     with app.test_client() as c:
         rv = c.post('/auth/signup', json={
             'email': 'bill_xavier@host.com', 'password': 'dfgvd564rf'
@@ -15,10 +15,10 @@ def test_signup():
         # print(json_data)
         print(rv.data)
         print('status: ', rv.status_code)
-    '''
+    #'''
 
     # Create new user from admin panel
-    #'''
+    '''
     with app.test_client() as c:
         token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2MTczOTA5NjEsImlhdCI6MTYxNzM2OTM2MSwiaWQiOiJiNTM1MGQ1YS03ZmYyLTQwM2ItOTMzNC00Y2UzNjQ0M2YzYTYiLCJlbWFpbCI6ImJpbGxfeGF2aWVyQGhvc3QuY29tIn0.GHzmEbzhMj5z3Zesr4wR_sIr9Od0SZ6SxRzO9gb780o"
         authorization = 'Bearer ' + str(token)
@@ -36,11 +36,11 @@ def test_signup():
         # print(json_data)
         print(rv.data)
         print('status: ', rv.status_code)
-    #'''
+    '''
 
 def test_verify_email():
     print('testing /verify-email')
-    token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2MTczNjk1OTcsImlhdCI6MTYxNzM2OTIzNywic3ViIjoiYjUzNTBkNWEtN2ZmMi00MDNiLTkzMzQtNGNlMzY0NDNmM2E2In0.hIX8D--k-6s99wuYntarPyj35KJfpkP5ImOiT_t4fLo"
+    token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2MTc0MDI1NjQsImlhdCI6MTYxNzQwMjIwNCwic3ViIjoiMGUwNTFmMTAtOGY3Ni00YjA5LTllZGMtODM4YmQ3MDNhMGQ4In0.vRcSxkoLIXSLcGezHZDgVJjWN4Ihtt7fKhc_Rgq_cXc"
     with app.test_client() as c:
         rv = c.put('/auth/verify-email', json={
             'token': token
@@ -52,18 +52,16 @@ def test_verify_email():
 
 def test_send_email_address_verification_email():
     with app.test_client() as c:
-        token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2MTczOTA5NjEsImlhdCI6MTYxNzM2OTM2MSwiaWQiOiJiNTM1MGQ1YS03ZmYyLTQwM2ItOTMzNC00Y2UzNjQ0M2YzYTYiLCJlbWFpbCI6ImJpbGxfeGF2aWVyQGhvc3QuY29tIn0.GHzmEbzhMj5z3Zesr4wR_sIr9Od0SZ6SxRzO9gb780o"
+        token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2MTc0MjM5OTEsImlhdCI6MTYxNzQwMjM5MSwiaWQiOiIwZTA1MWYxMC04Zjc2LTRiMDktOWVkYy04MzhiZDcwM2EwZDgiLCJlbWFpbCI6ImJpbGxfeGF2aWVyQGhvc3QuY29tIn0.GMOjL8Y3mVHW0OF-MtKPlaircX5mU504V5rIZQw-EHE"
         authorization = 'Bearer ' + str(token)
 
         headers = {
             # 'Access-Control-Allow-Origin': '*',
             # 'Content-Type': 'application/json',
-            'Authorization': authorization
+            #'Authorization': authorization
         }
         password = 'sdvw3HGY'  # '&hgvdsdf4xf'
-        rv = c.post('/auth/signup', json={
-            'email': 'uman_lesset@host.com', 'password': password
-        }, headers=headers)
+        rv = c.post('/auth/send-email-address-verification-email', json={}, headers=headers)
         # json_data = rv.get_json()
         # print(json_data)
         print(rv.data)
@@ -102,8 +100,8 @@ def test_password_update():
         # print(json_data)
 
 if __name__ == '__main__':
-    test_signup()
-    # test_send_email_address_verification_email()
+    #test_signup()
+    test_send_email_address_verification_email()
     #test_verify_email()
     #test_signin_local()
     # test_password_update()
