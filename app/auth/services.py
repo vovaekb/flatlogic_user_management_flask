@@ -10,20 +10,8 @@ from app.models import Users
 from app import app, mail
 #from app.auth.views import CustomError
 from app import CustomError
+from app.auth.notifications import EMAIL_CONFIG
 
-# Global dicts
-EMAIL_CONFIG = {
-    'email_address_verification': {
-        'from': '',
-        'subject': 'Verify your email for %s' % app.config['APP_TITLE'],
-        'html_template': 'mail/email_verification.html'
-    },
-    'password_reset': {
-        'from': '',
-        'subject': '',
-        'html_template': 'mail/password_reset.html'
-    }
-}
 
 
 def validate_user_input(input_type, **kwargs):
@@ -33,9 +21,11 @@ def validate_user_input(input_type, **kwargs):
         else:
             return False
 
+'''
 def generate_salt():
     salt = os.urandom(16)
     return salt.hex()
+'''
 
 def generate_token(payload):
     print('generate_token')
@@ -47,6 +37,8 @@ def generate_token(payload):
     print(f'{token}')
     return token
 
+
+'''
 def generate_hash(plain_password, password_salt):
     password_hash = pbkdf2_hmac(
         "sha256",
@@ -55,7 +47,7 @@ def generate_hash(plain_password, password_salt):
         10000
     )
     return password_hash.hex()
-
+'''
 
 
 class EmailSender:
@@ -76,9 +68,7 @@ class EmailSender:
 
 # DB API classes
 class UserDBApi:
-    def generate_email_verification_token(email, options):
-        # get current user
-        # current_user = options.currentUser
+    def generate_email_verification_token(email, current_user=None):
         user = app.session.query(Users).filter_by(email=email).first()
         token_expires_at = datetime.datetime.utcnow() + datetime.timedelta(days=0, seconds=360)
         payload = {
@@ -95,8 +85,22 @@ class UserDBApi:
         app.session.commit()
         return token
 
-    def generate_password_reset_token(email, options):
-        pass
+    def generate_password_reset_token(email, current_user=None):
+        user = app.session.query(Users).filter_by(email=email).first()
+        token_expires_at = datetime.datetime.utcnow() + datetime.timedelta(days=0, seconds=360)
+        payload = {
+            'exp': token_expires_at,
+            'iat': datetime.datetime.utcnow(),
+            'sub': str(user.id)
+        }
+        token = generate_token(payload)
+
+        user.passwordResetToken = token
+        user.passwordResetTokenExpiresAt = token_expires_at
+        # user.updatedById  = current_user.id
+        app.session.add(user)
+        app.session.commit()
+        return token
 
     def update_password(id, password, current_user=None):
         print('UserDBApi.update_password')
@@ -250,11 +254,15 @@ class Auth:
         print('Auth.send_email_address_verification_email')
         if not EmailSender.isConfigured():
             raise CustomError({'message': 'Error when sending email: Email provider is not configured. Please configure it in config.py\n'})
-        # GENERATE EMAIL VERIFICATIOB TOKEN
-        options = {}
-        token = UserDBApi.generate_email_verification_token(email, options)
-        link = f'{host}/auth/verify-email?token={token}'
-        print(link)
+        # Generate email verification token
+        try:
+            token = UserDBApi.generate_email_verification_token(email)
+            link = f'{host}/auth/verify-email?token={token}'
+            print(link)
+        except Exception as e:
+            print(str(e))
+            # Validation Error
+            raise CustomError({'message': 'Error during generating email address verification token occurred %s\n' % str(e)})
 
         # send email
         # TODO: Remove it. Use it for debug
@@ -269,11 +277,37 @@ class Auth:
         email_sender.send(data)
 
     def send_password_reset_email(email, host, type='register'):
+        print('Auth.send_password_reset_email')
         if not EmailSender.isConfigured():
             raise CustomError({
                 'message': 'Error when sending email: Email provider is not configured. Please configure it in config.py\n'
             })
-        token = UserDBApi.generatePasswordResetToken(email)
+        try:
+            token = UserDBApi.generate_password_reset_token(email)
+            link = f'{host}/auth/password-reset?token={token}'
+            print(link)
+        except Exception as e:
+            print(str(e))
+            # Validation Error
+            raise CustomError({'message': 'Error during generating password reset token occurred %s\n' % str(e)})
+
+        # send email
+        # TODO: Remove it. Use it for debug
+        if os.environ['FLASK_DEV']:
+            email = 'vladprivalov1990@gmail.com'
+        print(email)
+        email_type = None
+        if type == 'register':
+            email_type = 'password_reset'
+        elif type == 'invitation':
+            email_type = 'invitation'
+        email_sender = EmailSender(email, email_type)
+        data = {
+            'link': link,
+            'title': app.config['APP_TITLE'],
+            'email': email
+        }
+        email_sender.send(data)
 
     def password_update(current_password, new_password, current_user=None):
         print('Auth.password_update')
