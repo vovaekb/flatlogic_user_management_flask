@@ -31,6 +31,8 @@ class UserService:
     def create(data, current_user, host, send_invitation_emails = True):
         print('UserService.create')
         print(host)
+        if current_user is None:
+            current_user = Users(id=None)
         emails_to_invite = []
         try:
             email = data['email']
@@ -53,6 +55,8 @@ class UserService:
                     role=data['role'] or "user",
                     # importHash = data['importHash'] or None,
                     # createdAt = Column(DateTime(timezone=True), nullable=False, server_default=func.now())
+                    createdById = current_user.id,
+                    updatedById = current_user.id,
                     updatedAt=func.now()
                 )
                 user.disabled = data.get('disabled', False) or False
