@@ -112,8 +112,8 @@ class UserDBApi:
         print(user)
         user.password = password
         user.authenticationUid = user.id
-        user.updatedById = current_user.id
-        user.updatedBy = current_user
+        # user.updatedById = current_user.id
+        # user.updatedBy = current_user
         app.session.add(user)
         app.session.commit()
         return user
