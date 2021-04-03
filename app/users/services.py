@@ -100,4 +100,4 @@ class UserService:
             if not send_invitation_emails:
                 return
 
-        Auth.sendPasswordResetEmail(email, 'invitation', host)
+        Auth.send_password_reset_email(email, host, 'invitation')
