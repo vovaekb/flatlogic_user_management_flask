@@ -108,7 +108,7 @@ def test_send_pasword_reset_email():
         print('status: ', rv.status_code)
 
 def test_password_reset():
-    print('testing /signin/password-update')
+    print('testing /auth/password-reset')
     auth_token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2MTczODUxNjEsImlhdCI6MTYxNzM2MzU2MSwiaWQiOiIyYTE2ZTRmYy0xNmNkLTRlYTktOTNhZS0wZTIwZjg0ZWUzMjAiLCJlbWFpbCI6ImJpbGxfeGF2aWVyQGhvc3QuY29tIn0.49G21qLF1QFeE3y77z8FTwId5R7suxuDaitovl4oMoo"
     authorization = 'Bearer ' + str(auth_token)
 
@@ -120,10 +120,44 @@ def test_password_reset():
         'Authorization': authorization
     }
     with app.test_client() as c:
-        rv = c.put('/auth/password-update', json={
+        rv = c.put('/auth/password-reset', json={
             "password": "dfgvd564rf",
-            "token": password_reset_token,  # "2as25Ifzr"
+            "token": password_reset_token, # "2as25Ifzr"
         }, headers=headers)
+        print(rv.data)
+        print('status: ', rv.status_code)
+
+def test_profile():
+    print('testing /auth/profile')
+    auth_token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2MTczODUxNjEsImlhdCI6MTYxNzM2MzU2MSwiaWQiOiIyYTE2ZTRmYy0xNmNkLTRlYTktOTNhZS0wZTIwZjg0ZWUzMjAiLCJlbWFpbCI6ImJpbGxfeGF2aWVyQGhvc3QuY29tIn0.49G21qLF1QFeE3y77z8FTwId5R7suxuDaitovl4oMoo"
+    authorization = 'Bearer ' + str(auth_token)
+
+    password_reset_token = ""
+
+    profile_data = {}
+
+    headers = {
+        # 'Access-Control-Allow-Origin': '*',
+        # 'Content-Type': 'application/json',
+        'Authorization': authorization
+    }
+    with app.test_client() as c:
+        rv = c.put('/auth/profile', json={
+            "profile": profile_data,  # "2as25Ifzr"
+        }, headers=headers)
+        print(rv.data)
+        print('status: ', rv.status_code)
+
+def test_me():
+    print('testing /auth/me')
+    auth_token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2MTczODUxNjEsImlhdCI6MTYxNzM2MzU2MSwiaWQiOiIyYTE2ZTRmYy0xNmNkLTRlYTktOTNhZS0wZTIwZjg0ZWUzMjAiLCJlbWFpbCI6ImJpbGxfeGF2aWVyQGhvc3QuY29tIn0.49G21qLF1QFeE3y77z8FTwId5R7suxuDaitovl4oMoo"
+    authorization = 'Bearer ' + str(auth_token)
+
+    headers = {
+        'Authorization': authorization
+    }
+    with app.test_client() as c:
+        rv = c.get('/auth/me', json={}, headers=headers)
         print(rv.data)
         print('status: ', rv.status_code)
 
@@ -135,9 +169,13 @@ if __name__ == '__main__':
     # test_password_update()
 
     # Test password reset
-    test_signup()
+    # test_signup()
     # test_verify_email()
     # test_signin_local()
     # test_send_pasword_reset_email()
     # test_password_reset()
+
+    # Test profile and me
+    test_signin_local()
+    # test_me()
 

@@ -5,7 +5,7 @@ from app import app
 from app.models import Users
 from app.serializers import UsersSchema, FilesSchema
 from app import CustomError, get_current_user
-from app.auth.services import Auth
+from app.auth.services import Auth, EmailSender
 
 # CONFIG
 auth_blueprint = Blueprint('auth', __name__, template_folder='templates')
@@ -71,8 +71,14 @@ def signup(current_user):
     return Response(payload, status=200)
 
 @auth_blueprint.route('/auth/profile', methods=['PUT'])
-def profile():
-    return Response('profile', status=200)
+@get_current_user
+def profile(current_user):
+    if not current_user:
+        raise CustomError({'message': 'Error when loading profile: Forbidden\n'})
+
+    Auth.update_profile(request.json['profile'], current_user)
+    payload = True
+    return Response(str(payload), status=200)
 
 @auth_blueprint.route('/auth/verify-email', methods=['PUT'])
 @get_current_user
@@ -84,12 +90,20 @@ def verify_email(current_user):
     return Response(str(payload), status=200)
 
 @auth_blueprint.route('/auth/me', methods=['GET'])
-def me():
-    return Response('me', status=200)
+@get_current_user
+def me(current_user):
+    if not current_user:
+        raise CustomError({'message': 'Error when loading profile: Forbidden\n'})
+    print(current_user)
+    data = user_schema.dump(current_user)
+    print(data)
+    return jsonify(data)
+    # return Response(payload, status=200)
 
 @auth_blueprint.route('/auth/email-configured', methods=['GET'])
 def email_configured():
-    return Response('email_configured', status=200)
+    payload = EmailSender.isConfigured()
+    return Response(str(payload), status=200)
 
 @auth_blueprint.route('/auth/signin/google', methods=['GET'])
 def signin_google():
