@@ -35,6 +35,7 @@ def index_post(current_user):
     print(host)
     UserService.create(data, current_user, host, True)
     # TODO: Use host (http referer header for sending password reset email )
+    '''
     print(data)
     try:
         # Check if user already exists
@@ -102,6 +103,7 @@ def index_post(current_user):
         print("Error occurred")
         print(str(e))
         raise CustomError({'message': 'Error occurred %s\n' % str(e)})
+    '''
     text = 'true'
     return Response(text, status=200)
 
