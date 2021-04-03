@@ -99,6 +99,14 @@ def test_password_update():
         print('status: ' , rv.status_code)
         # print(json_data)
 
+def test_send_pasword_reset_email():
+    with app.test_client() as c:
+        rv = c.post('/auth/send-password-reset-email', json={
+            'email': 'bill_xavier@host.com'
+        })
+        print(rv.data)
+        print('status: ', rv.status_code)
+
 if __name__ == '__main__':
     #test_signup()
     test_send_email_address_verification_email()
