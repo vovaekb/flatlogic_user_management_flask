@@ -28,8 +28,9 @@ class EmailSender:
 
 # User service class
 class UserService:
-    def create(data, current_user, send_invitation_emails = True, host):
-        print('Auth.send_password_reset_email')
+    def create(data, current_user, host, send_invitation_emails = True):
+        print('UserService.create')
+        print(host)
         emails_to_invite = []
         try:
             email = data['email']
@@ -90,7 +91,7 @@ class UserService:
         except SQLAlchemyError as e:
             print("Unable to add user to database.")
             # error = e.__dict__['orig']
-            raise CustomError({'message': 'Error when saving brand to database: %s\n' % str(e)})  # error})
+            raise CustomError({'message': 'Error when creating user in database: %s\n' % str(e)})  # error})
         except Exception as e:
             print("Error occurred")
             print(str(e))

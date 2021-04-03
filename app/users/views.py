@@ -33,7 +33,7 @@ def index_post(current_user):
     data = request.get_json()
     host = request.host # request.host_url
     print(host)
-    UserService.create(data, current_user, True, host)
+    UserService.create(data, current_user, host, True)
     # TODO: Use host (http referer header for sending password reset email )
     print(data)
     try:
