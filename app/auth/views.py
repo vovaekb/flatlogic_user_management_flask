@@ -2,7 +2,6 @@ from flask import render_template, Blueprint, request, Response, jsonify
 import jwt
 # from app import database
 from app import app
-from app.auth.services import generate_salt, generate_hash, Auth
 from app.models import Users
 from app.serializers import UsersSchema, FilesSchema
 from app import CustomError, get_current_user
@@ -46,7 +45,7 @@ def send_email_address_verification_email(current_user):
     host = f'http://{request.host}'
     Auth.send_email_address_verification_email(current_user.email, host)
     payload = True
-    return Response(payload, status=200)
+    return Response(str(payload), status=200)
 
 @auth_blueprint.route('/auth/send-password-reset-email', methods=['POST'])
 def send_password_reset_email():
