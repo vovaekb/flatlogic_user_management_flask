@@ -119,16 +119,15 @@ class UserDBApi:
         return user
 
     def mark_email_verified(id, current_user=None):
-        print('UserDBApi.update_password')
-        if current_user is None:
-            current_user = Users(id=None)
+        print('UserDBApi.mark_email_verified')
 
         user = app.session.query(Users) \
             .filter_by(id=id) \
             .first()
         print(user)
         user.emailVerified = True
-        user.updatedById = current_user.id
+        user.updatedById = current_user.id if not current_user is None else None
+        updatedBy = current_user
         app.session.add(user)
         app.session.commit()
 
