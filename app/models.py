@@ -46,9 +46,9 @@ class Users(database.Base):
     createdAt = Column(DateTime(timezone=True), nullable=False, server_default=func.now())
     updatedAt = Column(DateTime(timezone=True), nullable=False, onupdate=func.now())
     deletedAt = Column(DateTime(timezone=True))
-    createdById = Column(UUID(as_uuid=True), ForeignKey('users.id'))
+    createdById = Column(UUID(as_uuid=True), ForeignKey('users.id', ondelete='SET NULL'), nullable=True)
     createdBy = relationship("Users", foreign_keys=[createdById], uselist=False)
-    updatedById = Column(UUID(as_uuid=True), ForeignKey('users.id'))
+    updatedById = Column(UUID(as_uuid=True), ForeignKey('users.id', ondelete='SET NULL'), nullable=True)
     updatedBy = relationship("Users", foreign_keys=[updatedById], uselist=False)
     # avatar = relationship('Files', backref='user') # , lazy='dynamic')
 
