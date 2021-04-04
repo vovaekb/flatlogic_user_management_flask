@@ -159,3 +159,13 @@ class UserService:
             print("Unable to update product to database.")
             #error = e.__dict__['orig']
             raise CustomError({'message': 'Error when updating user in database: %s\n' % str(e)})
+
+    def remove(id, current_user):
+        if current_user.id == id:
+            raise CustomError({'message': 'Error when removing user in database: deleting himself\n'})
+        if not current_user.role == 'admin':
+            raise CustomError({'message': 'Error when removing user in database: forbidden action for not admin user\n'})
+        user = app.session.query(Users).filter_by(id=id).first()
+        print(user.lastName)
+        app.session.delete(user)
+        app.session.commit()

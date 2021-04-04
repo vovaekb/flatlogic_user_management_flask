@@ -220,10 +220,13 @@ def user(current_user, user_id):
         text = 'true'
         return Response(text, status=200)
     elif request.method == 'DELETE':
+        UserService.remove(user_id, current_user)
+        '''
         user = app.session.query(Users).filter_by(id=user_id).first()
         print(user.lastName)
         app.session.delete(user)
         app.session.commit()
+        '''
         text = 'true'
         return Response(text, status=200)
 

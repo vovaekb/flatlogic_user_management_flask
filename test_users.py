@@ -67,8 +67,24 @@ def test_put_user():
         print(rv.data)
         print('status: ', rv.status_code)
 
+def test_delete_user():
+    print('testing /users/<user_id> PUT')
+    token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2MTc1NjU3ODIsImlhdCI6MTYxNzU0NDE4MiwiaWQiOiJjOTlhYTYyZi1hNTUzLTRkMDktOGZiYS0yYTBhN2Q4MzRkZGQiLCJlbWFpbCI6ImJpbGxfeGF2aWVyQGhvc3QuY29tIn0.k7nOe0C3XgFq-FzEZKEJHm5NeckPpz2I3w6QxYHc93k"
+    authorization = 'Bearer ' + str(token)
+    headers = {
+        # 'Content-Type': 'application/json',
+        # 'Authorization': authorization
+    }
+
+    id = "c99aa62f-a553-4d09-8fba-2a0a7d834ddd"
+    with app.test_client() as c:
+        rv = c.delete('/users/%s' % id, json={}, headers=headers)
+        print(rv.data)
+        print('status: ', rv.status_code)
+
 if __name__ == '__main__':
-    test_create()
+    # test_create()
     # test_get_all()
     # test_get_user()
     #test_put_user()
+    test_delete_user()
