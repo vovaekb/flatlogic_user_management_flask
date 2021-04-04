@@ -136,8 +136,12 @@ def index_get():
 
 @users_blueprint.route('/users/<user_id>', methods=['PUT', 'DELETE']) # 'GET',
 @get_current_user
-def user(user_id):
+def user(current_user, user_id):
     if request.method == 'PUT':
+        data = request.get_json()
+        print(data)
+        UserService.update(data, user_id, current_user)
+        '''
         try:
             # print('PUT accepted')
             user = app.session.query(Users).filter_by(id=user_id).first()
@@ -145,8 +149,7 @@ def user(user_id):
                 # Throw exception userAlreadyExists
                 raise CustomError({'message': 'Error when updating user in database: user not found\n' })
             print(user.lastName)
-            data = request.get_json()
-            print(data)
+
             user.firstName=data['firstName'] or None
             user.lastName = data['lastName'] or None
             user.phoneNumber = data['phoneNumber'] or None
@@ -155,15 +158,13 @@ def user(user_id):
             user.disabled = data['disabled'] or False
             # TODO: set updatedById to current user
             # user.updatedById
-            '''
-            if 'emailVerified' in data: # and not data['emailVerified'] is None:
-                user.emailVerified = data['emailVerified']
-            if 'emailVerificationToken' in data: # and not data['emailVerificationToken'] is None:
-                user.emailVerificationToken = data['emailVerificationToken']
-            user.passwordResetToken = data['passwordResetToken'] if 'passwordResetToken' in data else None
-            user.provider = data['provider'] if 'provider' in data else None
-            user.password = data['password'] if 'password' in data else None
-            '''
+            # if 'emailVerified' in data: # and not data['emailVerified'] is None:
+            #     user.emailVerified = data['emailVerified']
+            # if 'emailVerificationToken' in data: # and not data['emailVerificationToken'] is None:
+            #     user.emailVerificationToken = data['emailVerificationToken']
+            # user.passwordResetToken = data['passwordResetToken'] if 'passwordResetToken' in data else None
+            # user.provider = data['provider'] if 'provider' in data else None
+            # user.password = data['password'] if 'password' in data else None
             if not data['avatar'] is None:
                 print('avatar is not None')
                 images = data['avatar']
@@ -215,6 +216,7 @@ def user(user_id):
             print("Unable to update product to database.")
             #error = e.__dict__['orig']
             raise CustomError({'message': 'Error when updating user in database: %s\n' % str(e)}) # error})
+        '''
         text = 'true'
         return Response(text, status=200)
     elif request.method == 'DELETE':

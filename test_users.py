@@ -26,20 +26,36 @@ def test_create():
         print('status: ', rv.status_code)
 
 def test_get_all():
-    print('testing /users POST')
+    print('testing /users GET')
     with app.test_client() as c:
         rv = c.get('/users', json={})
         print(rv.data)
         print('status: ', rv.status_code)
 
 def test_get_user():
-    print('testing /users POST')
+    print('testing /users/<user_id> GET')
     id = "c99aa62f-a553-4d09-8fba-2a0a7d834ddd"
     with app.test_client() as c:
         rv = c.get('/users/%s' % id, json={})
         print(rv.data)
         print('status: ', rv.status_code)
 
+def test_put_user():
+    print('testing /users/<user_id> PUT')
+    id = "c99aa62f-a553-4d09-8fba-2a0a7d834ddd"
+    with app.test_client() as c:
+        rv = c.put('/users/%s' % id, json={
+            "email": "billy_xavier@host.com",
+            "firstName": "Billie",
+            "lastName": "Xaviert",
+            "phoneNumber": "2211945",
+            "role": "admin", "avatar": []
+        })
+        print(rv.data)
+        print('status: ', rv.status_code)
+
 if __name__ == '__main__':
-    test_create()
+    # test_create()
     # test_get_all()
+    # test_get_user()
+    test_put_user()
