@@ -6,19 +6,22 @@ def test_create():
 
     # Create new user from sign in form
     with app.test_client() as c:
-        token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2MTczOTA5NjEsImlhdCI6MTYxNzM2OTM2MSwiaWQiOiJiNTM1MGQ1YS03ZmYyLTQwM2ItOTMzNC00Y2UzNjQ0M2YzYTYiLCJlbWFpbCI6ImJpbGxfeGF2aWVyQGhvc3QuY29tIn0.GHzmEbzhMj5z3Zesr4wR_sIr9Od0SZ6SxRzO9gb780o"
+        token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2MTc1NzI4ODksImlhdCI6MTYxNzU1MTI4OSwiaWQiOiJjOTlhYTYyZi1hNTUzLTRkMDktOGZiYS0yYTBhN2Q4MzRkZGQiLCJlbWFpbCI6ImJpbGx5X3hhdmllckBob3N0LmNvbSJ9.7noCzG3ILFYpaVTHy4iXtRZidGSJnlJNvW2FxnxANlE"
         authorization = 'Bearer ' + str(token)
 
         headers = {
-            # 'Access-Control-Allow-Origin': '*',
             # 'Content-Type': 'application/json',
             'Authorization': authorization
         }
         rv = c.post('/users', json={
             "id": None,
-            "email": "ralf_stone@host.com",
-            "firstName": "Ralf",
-            "lastName": "Stone", "phoneNumber": "23241945", "role": "user", "authenticationUid": None, "avatar": []
+            "email": "vovaprivalov@gmail.com", # "ralf_stone@host.com",
+            "firstName": "Vladimir", # "Ralf",
+            "lastName": "Privalov", # "Stone",
+            "phoneNumber": "34645346", # "23241945",
+            "role": "user",
+            "authenticationUid": None,
+            "avatar": []
         }, headers=headers)
         # json_data = rv.get_json()
         # print(json_data)
@@ -42,20 +45,30 @@ def test_get_user():
 
 def test_put_user():
     print('testing /users/<user_id> PUT')
+    token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2MTc1NjU3ODIsImlhdCI6MTYxNzU0NDE4MiwiaWQiOiJjOTlhYTYyZi1hNTUzLTRkMDktOGZiYS0yYTBhN2Q4MzRkZGQiLCJlbWFpbCI6ImJpbGxfeGF2aWVyQGhvc3QuY29tIn0.k7nOe0C3XgFq-FzEZKEJHm5NeckPpz2I3w6QxYHc93k"
+    authorization = 'Bearer ' + str(token)
+    headers = {
+        # 'Content-Type': 'application/json',
+        'Authorization': authorization
+    }
+
     id = "c99aa62f-a553-4d09-8fba-2a0a7d834ddd"
     with app.test_client() as c:
         rv = c.put('/users/%s' % id, json={
+            "id": id,
             "email": "billy_xavier@host.com",
             "firstName": "Billie",
             "lastName": "Xaviert",
             "phoneNumber": "2211945",
-            "role": "admin", "avatar": []
-        })
+            "role": "admin", 
+            "disabled": False,
+            "avatar": []
+        }, headers=headers)
         print(rv.data)
         print('status: ', rv.status_code)
 
 if __name__ == '__main__':
-    # test_create()
+    test_create()
     # test_get_all()
     # test_get_user()
-    test_put_user()
+    #test_put_user()

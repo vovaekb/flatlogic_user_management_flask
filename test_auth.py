@@ -71,7 +71,7 @@ def test_signin_local():
     print('testing /signin/local')
     with app.test_client() as c:
         rv = c.post('/auth/signin/local', json={
-            'email': 'bill_xavier@host.com', 'password': 'dfgvd564rf'
+            'email': 'billy_xavier@host.com', 'password': 'dfgvd564rf'
         })
         json_data = rv.get_json()
         #print(json_data)
