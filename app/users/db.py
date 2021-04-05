@@ -5,6 +5,7 @@ from sqlalchemy.exc import SQLAlchemyError
 from app import app, mail, APP_ROOT
 from app.models import Users, Files
 from app import CustomError
+from app.auth.services import generate_token
 
 # DB API classes
 class UserDBApi:
