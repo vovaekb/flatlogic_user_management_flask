@@ -9,7 +9,7 @@ from app.models import Users
 from app import app
 from app import CustomError
 from app.services.email import EmailSender
-from app.users.services import UserDBApi
+from app.users.db import UserDBApi
 
 
 def validate_user_input(input_type, **kwargs):
