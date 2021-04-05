@@ -24,8 +24,9 @@ def handle_error(e):
 @get_current_user
 def password_reset(current_user):
     print(current_user)
-    payload = Auth.password_reset(request.json['token'], request.json['password'], current_user)
-    return Response(payload, status=200)
+    user = Auth.password_reset(request.json['token'], request.json['password'], current_user)
+    payload = user_schema.dump(user)
+    return jsonify(payload)
 
 @auth_blueprint.route('/auth/password-update', methods=['PUT'])
 @get_current_user

@@ -92,8 +92,8 @@ class UserDBApi:
         print(user)
         user.password = password
         user.authenticationUid = user.id
-        # user.updatedById = current_user.id
-        # user.updatedBy = current_user
+        user.updatedById = current_user.id
+        user.updatedBy = current_user
         app.session.add(user)
         app.session.commit()
         return user
@@ -314,12 +314,13 @@ class Auth:
             .first()
         print(user)
         if not user:
-            raise CustomError({'message': 'Error when reset password: invalidToken\n'})
+            raise CustomError({'message': 'Error when reset password: invalid token\n'})
 
         password_hash = generate_password_hash(password, method='sha256')
         print(password_hash)
 
         user = UserDBApi.update_password(user.id, password_hash, current_user)
+        print(user)
         return user
 
 

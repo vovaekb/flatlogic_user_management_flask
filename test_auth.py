@@ -9,7 +9,8 @@ def test_signup():
     #'''
     with app.test_client() as c:
         rv = c.post('/auth/signup', json={
-            'email': 'bill_xavier@host.com', 'password': 'dfgvd564rf'
+            'email': 'bill_xavier@host.com',
+            'password': 'dfgvd564rf'
         })
         json_data = rv.get_json()
         # print(json_data)
@@ -40,7 +41,7 @@ def test_signup():
 
 def test_verify_email():
     print('testing /verify-email')
-    token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2MTc0MDI1NjQsImlhdCI6MTYxNzQwMjIwNCwic3ViIjoiMGUwNTFmMTAtOGY3Ni00YjA5LTllZGMtODM4YmQ3MDNhMGQ4In0.vRcSxkoLIXSLcGezHZDgVJjWN4Ihtt7fKhc_Rgq_cXc"
+    token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2MTc2MTU2MDksImlhdCI6MTYxNzYxNTI1MCwic3ViIjoiMjI4ZjRiYmUtMjNlYy00YWZmLWE4NzQtMjU2ZTFjOGRlY2ZjIn0.NjFwQarP7avBANWum6R_Ffo1xqC_WAhwhRWoCDSQZhQ"
     with app.test_client() as c:
         rv = c.put('/auth/verify-email', json={
             'token': token
@@ -71,7 +72,8 @@ def test_signin_local():
     print('testing /signin/local')
     with app.test_client() as c:
         rv = c.post('/auth/signin/local', json={
-            'email': 'billy_xavier@host.com', 'password': 'dfgvd564rf'
+            'email': 'bill_xavier@host.com', # 'billy_xavier@host.com',
+            'password': 'dfgvd564rf'
         })
         json_data = rv.get_json()
         #print(json_data)
@@ -109,10 +111,10 @@ def test_send_pasword_reset_email():
 
 def test_password_reset():
     print('testing /auth/password-reset')
-    auth_token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2MTczODUxNjEsImlhdCI6MTYxNzM2MzU2MSwiaWQiOiIyYTE2ZTRmYy0xNmNkLTRlYTktOTNhZS0wZTIwZjg0ZWUzMjAiLCJlbWFpbCI6ImJpbGxfeGF2aWVyQGhvc3QuY29tIn0.49G21qLF1QFeE3y77z8FTwId5R7suxuDaitovl4oMoo"
+    auth_token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2MTc2MzcwNzQsImlhdCI6MTYxNzYxNTQ3NCwiaWQiOiIyMjhmNGJiZS0yM2VjLTRhZmYtYTg3NC0yNTZlMWM4ZGVjZmMiLCJlbWFpbCI6ImJpbGxfeGF2aWVyQGhvc3QuY29tIn0.B1FXZ-UfjKq-HILHZuoVTV6C3uzlYhq54HI9b5hKb4w"
     authorization = 'Bearer ' + str(auth_token)
 
-    password_reset_token = ""
+    password_reset_token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2MTc2MTY0ODcsImlhdCI6MTYxNzYxNjEyNywic3ViIjoiMjI4ZjRiYmUtMjNlYy00YWZmLWE4NzQtMjU2ZTFjOGRlY2ZjIn0.y-hPtyxpV21OJYiPtLw2qFZa_Bg6spgHV_q5ZTIZ_rA"
 
     headers = {
         # 'Access-Control-Allow-Origin': '*',
@@ -170,12 +172,12 @@ if __name__ == '__main__':
 
     # Test password reset
     # test_signup()
-    # test_verify_email()
-    # test_signin_local()
-    # test_send_pasword_reset_email()
-    # test_password_reset()
+    #test_verify_email()
+    #test_signin_local()
+    #test_send_pasword_reset_email()
+    test_password_reset()
 
     # Test profile and me
-    test_signin_local()
+    #test_signin_local()
     # test_me()
 
