@@ -34,7 +34,6 @@ def password_update(current_user):
     print(current_user)
     user = Auth.password_update(request.json['current_password'], request.json['new_password'], current_user)
     data = user_schema.dump(user)
-    #return Response(payload, status=200)
     return jsonify(data)
 
 @auth_blueprint.route('/auth/send-email-address-verification-email', methods=['POST'])
@@ -59,8 +58,7 @@ def send_password_reset_email():
 
 @auth_blueprint.route('/auth/signin/local', methods=['POST'])
 def signin_local():
-    options = {}
-    payload = Auth.signin(request.json['email'], request.json['password'], options)
+    payload = Auth.signin(request.json['email'], request.json['password'])
     return Response(payload, status=200)
 
 @auth_blueprint.route('/auth/signup', methods=['POST'])
@@ -85,9 +83,7 @@ def profile(current_user):
 @get_current_user
 def verify_email(current_user):
     print('Accept PUT to verify-email')
-    # host = f'http://{request.host}'
     payload = Auth.verify_email(request.json['token'], current_user)
-    #return Response('verify_email', status=200)
     return Response(str(payload), status=200)
 
 @auth_blueprint.route('/auth/me', methods=['GET'])
@@ -99,7 +95,6 @@ def me(current_user):
     data = user_schema.dump(current_user)
     print(data)
     return jsonify(data)
-    # return Response(payload, status=200)
 
 @auth_blueprint.route('/auth/email-configured', methods=['GET'])
 def email_configured():

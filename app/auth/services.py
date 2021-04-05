@@ -9,6 +9,7 @@ from app.models import Users
 from app import app
 from app import CustomError
 from app.services.email import EmailSender
+from app.users.services import UserDBApi
 
 
 def validate_user_input(input_type, **kwargs):
@@ -45,72 +46,6 @@ def generate_hash(plain_password, password_salt):
     )
     return password_hash.hex()
 '''
-
-# DB API classes
-class UserDBApi:
-    def generate_email_verification_token(email, current_user=None):
-        user = app.session.query(Users).filter_by(email=email).first()
-        token_expires_at = datetime.datetime.utcnow() + datetime.timedelta(days=0, seconds=360)
-        payload = {
-            'exp': token_expires_at,
-            'iat': datetime.datetime.utcnow(),
-            'sub': str(user.id)
-        }
-        token = generate_token(payload)
-        
-        user.emailVerificationToken = token
-        user.emailVerificationTokenExpiresAt = token_expires_at
-        #user.updatedById  = current_user.id
-        app.session.add(user)
-        app.session.commit()
-        return token
-
-    def generate_password_reset_token(email, current_user=None):
-        user = app.session.query(Users).filter_by(email=email).first()
-        token_expires_at = datetime.datetime.utcnow() + datetime.timedelta(days=0, seconds=360)
-        payload = {
-            'exp': token_expires_at,
-            'iat': datetime.datetime.utcnow(),
-            'sub': str(user.id)
-        }
-        token = generate_token(payload)
-
-        user.passwordResetToken = token
-        user.passwordResetTokenExpiresAt = token_expires_at
-        # user.updatedById  = current_user.id
-        app.session.add(user)
-        app.session.commit()
-        return token
-
-    def update_password(id, password, current_user=None):
-        print('UserDBApi.update_password')
-        if current_user is None:
-            current_user = Users(id=None)
-        print('current_user')
-        print(current_user.firstName)
-        user = app.session.query(Users).filter_by(id=id).first()
-        print(user)
-        user.password = password
-        user.authenticationUid = user.id
-        user.updatedById = current_user.id
-        user.updatedBy = current_user
-        app.session.add(user)
-        app.session.commit()
-        return user
-
-    def mark_email_verified(id, current_user=None):
-        print('UserDBApi.mark_email_verified')
-
-        user = app.session.query(Users) \
-            .filter_by(id=id) \
-            .first()
-        print(user)
-        user.emailVerified = True
-        user.updatedById = current_user.id if not current_user is None else None
-        updatedBy = current_user
-        app.session.add(user)
-        app.session.commit()
-
 
 # Auth service class
 class Auth:
@@ -335,6 +270,10 @@ class Auth:
 
         # mark email verified
         UserDBApi.mark_email_verified(user.id, current_user)
-
         return True
+
+    def update_profile(data, current_user):
+        user = app.session.query(Users).filter_by(id=current_user.id).first()
+        print(user)
+        UserDBApi.update(current_user.id, data, current_user)
 

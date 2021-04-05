@@ -140,7 +140,7 @@ def user(current_user, user_id):
     if request.method == 'PUT':
         data = request.get_json()
         print(data)
-        UserService.update(data, user_id, current_user)
+        UserService.update(user_id, data, current_user)
         '''
         try:
             # print('PUT accepted')

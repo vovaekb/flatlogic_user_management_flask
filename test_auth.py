@@ -134,9 +134,16 @@ def test_profile():
     auth_token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2MTczODUxNjEsImlhdCI6MTYxNzM2MzU2MSwiaWQiOiIyYTE2ZTRmYy0xNmNkLTRlYTktOTNhZS0wZTIwZjg0ZWUzMjAiLCJlbWFpbCI6ImJpbGxfeGF2aWVyQGhvc3QuY29tIn0.49G21qLF1QFeE3y77z8FTwId5R7suxuDaitovl4oMoo"
     authorization = 'Bearer ' + str(auth_token)
 
-    password_reset_token = ""
-
-    profile_data = {}
+    profile_data = {
+        "id": id,
+        "email": "billy_xavier@host.com",
+        "firstName": "Billie",
+        "lastName": "Xaviert",
+        "phoneNumber": "2211945",
+        "role": "admin",
+        "disabled": False,
+        "avatar": []
+    }
 
     headers = {
         # 'Access-Control-Allow-Origin': '*',
@@ -171,13 +178,14 @@ if __name__ == '__main__':
     # test_password_update()
 
     # Test password reset
-    # test_signup()
+    test_signup()
     #test_verify_email()
     #test_signin_local()
     #test_send_pasword_reset_email()
-    test_password_reset()
+    # test_password_reset()
 
     # Test profile and me
     #test_signin_local()
     # test_me()
+    # test_profile()
 

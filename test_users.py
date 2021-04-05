@@ -86,5 +86,5 @@ if __name__ == '__main__':
     # test_create()
     # test_get_all()
     # test_get_user()
-    #test_put_user()
-    test_delete_user()
+    test_put_user()
+    # test_delete_user()
