@@ -8,7 +8,6 @@ from app import app, mail, APP_ROOT
 from app.models import Users, Files
 #from app.auth.views import CustomError
 from app import CustomError
-from app.auth.services import Auth, generate_token
 from app.services.email import EmailSender
 from app.users.db import UserDBApi
 

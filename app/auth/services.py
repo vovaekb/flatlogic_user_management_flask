@@ -1,7 +1,6 @@
 import os
 import datetime
 from hashlib import pbkdf2_hmac
-import jwt
 from flask import render_template
 from werkzeug.security import generate_password_hash, check_password_hash
 from sqlalchemy.sql import func
@@ -9,6 +8,7 @@ from app.models import Users
 from app import app
 from app import CustomError
 from app.services.email import EmailSender
+from app.services.encoding import generate_token
 from app.users.db import UserDBApi
 
 
@@ -19,33 +19,6 @@ def validate_user_input(input_type, **kwargs):
         else:
             return False
 
-'''
-def generate_salt():
-    salt = os.urandom(16)
-    return salt.hex()
-'''
-
-def generate_token(payload):
-    print('generate_token')
-    token = jwt.encode(
-        payload,
-        app.config.get('SECRET_KEY'),
-        algorithm='HS256'
-    )
-    print(f'{token}')
-    return token
-
-
-'''
-def generate_hash(plain_password, password_salt):
-    password_hash = pbkdf2_hmac(
-        "sha256",
-        b"%b" % bytes(plain_password, "utf-8"),
-        b"%b" % bytes(password_salt, "utf-8"),
-        10000
-    )
-    return password_hash.hex()
-'''
 
 # Auth service class
 class Auth:
