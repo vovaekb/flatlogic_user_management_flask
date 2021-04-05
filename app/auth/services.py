@@ -99,7 +99,7 @@ class Auth:
         token = generate_token(data)
         return token
     
-    def signin(email, password, options):
+    def signin(email, password):
         user = app.session.query(Users).filter_by(email=email).first()
         print(user)
 
@@ -246,6 +246,7 @@ class Auth:
         return True
 
     def update_profile(data, current_user):
+        print('Auth.update_profile')
         user = app.session.query(Users).filter_by(id=current_user.id).first()
         print(user)
         UserDBApi.update(current_user.id, data, current_user)

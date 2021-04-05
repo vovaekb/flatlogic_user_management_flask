@@ -10,7 +10,7 @@ from app.services.encoding import generate_token
 
 # DB API classes
 class UserDBApi:
-    def update(user_id, data, current_user):
+    def update(id, data, current_user):
         print('UserDBApi.update()')
         user = app.session.query(Users).filter_by(id=id).first()
         if not user:
