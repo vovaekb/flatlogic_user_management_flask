@@ -139,6 +139,8 @@ def index_get():
 def user(current_user, user_id):
     if request.method == 'PUT':
         data = request.get_json()
+        print('PUT accepted')
+        print(user_id)
         print(data)
         UserService.update(user_id, data, current_user)
         '''

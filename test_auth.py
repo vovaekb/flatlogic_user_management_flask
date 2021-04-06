@@ -1,6 +1,8 @@
+import os
 from flask import json, jsonify
 from app import app
 
+AUTH_TOKEN = ""
 
 def test_signup():
     print('testing /auth/signup')
@@ -41,7 +43,7 @@ def test_signup():
 
 def test_verify_email():
     print('testing /verify-email')
-    token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2MTc2MTU2MDksImlhdCI6MTYxNzYxNTI1MCwic3ViIjoiMjI4ZjRiYmUtMjNlYy00YWZmLWE4NzQtMjU2ZTFjOGRlY2ZjIn0.NjFwQarP7avBANWum6R_Ffo1xqC_WAhwhRWoCDSQZhQ"
+    token = os.environ["AUTH_TOKEN"]
     with app.test_client() as c:
         rv = c.put('/auth/verify-email', json={
             'token': token
@@ -52,14 +54,15 @@ def test_verify_email():
         #print(json_data)
 
 def test_send_email_address_verification_email():
+    print('test_send_email_address_verification_email')
+    print(os.environ["AUTH_TOKEN"])
     with app.test_client() as c:
-        token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2MTc0MjM5OTEsImlhdCI6MTYxNzQwMjM5MSwiaWQiOiIwZTA1MWYxMC04Zjc2LTRiMDktOWVkYy04MzhiZDcwM2EwZDgiLCJlbWFpbCI6ImJpbGxfeGF2aWVyQGhvc3QuY29tIn0.GMOjL8Y3mVHW0OF-MtKPlaircX5mU504V5rIZQw-EHE"
+        token = os.environ["AUTH_TOKEN"]
         authorization = 'Bearer ' + str(token)
 
         headers = {
-            # 'Access-Control-Allow-Origin': '*',
             # 'Content-Type': 'application/json',
-            #'Authorization': authorization
+            'Authorization': authorization
         }
         password = 'sdvw3HGY'  # '&hgvdsdf4xf'
         rv = c.post('/auth/send-email-address-verification-email', json={}, headers=headers)
@@ -72,18 +75,23 @@ def test_signin_local():
     print('testing /signin/local')
     with app.test_client() as c:
         rv = c.post('/auth/signin/local', json={
-            'email': 'bill_xavier@host.com', # 'billy_xavier@host.com',
+            'email': 'billy_xavier@host.com', # 'billy_xavier@host.com',
             'password': 'dfgvd564rf'
         })
         json_data = rv.get_json()
         #print(json_data)
-        token = str(rv.data)
+        token = rv.data
+        os.environ["AUTH_TOKEN"] = token.decode("utf-8")
+        token_file = 'auth_token.txt'
+        with open(token_file, 'w') as f:
+            f.write(token.decode("utf-8"))
         print(token)
         print('status: ' , rv.status_code)
 
 def test_password_update():
     print('testing /signin/password-update')
-    token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2MTczODUxNjEsImlhdCI6MTYxNzM2MzU2MSwiaWQiOiIyYTE2ZTRmYy0xNmNkLTRlYTktOTNhZS0wZTIwZjg0ZWUzMjAiLCJlbWFpbCI6ImJpbGxfeGF2aWVyQGhvc3QuY29tIn0.49G21qLF1QFeE3y77z8FTwId5R7suxuDaitovl4oMoo"
+    print(os.environ["AUTH_TOKEN"])
+    token = os.environ["AUTH_TOKEN"] #token # "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2MTczODUxNjEsImlhdCI6MTYxNzM2MzU2MSwiaWQiOiIyYTE2ZTRmYy0xNmNkLTRlYTktOTNhZS0wZTIwZjg0ZWUzMjAiLCJlbWFpbCI6ImJpbGxfeGF2aWVyQGhvc3QuY29tIn0.49G21qLF1QFeE3y77z8FTwId5R7suxuDaitovl4oMoo"
     authorization = 'Bearer ' + str(token)
 
     headers = {
@@ -111,7 +119,8 @@ def test_send_pasword_reset_email():
 
 def test_password_reset():
     print('testing /auth/password-reset')
-    auth_token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2MTc2MzcwNzQsImlhdCI6MTYxNzYxNTQ3NCwiaWQiOiIyMjhmNGJiZS0yM2VjLTRhZmYtYTg3NC0yNTZlMWM4ZGVjZmMiLCJlbWFpbCI6ImJpbGxfeGF2aWVyQGhvc3QuY29tIn0.B1FXZ-UfjKq-HILHZuoVTV6C3uzlYhq54HI9b5hKb4w"
+    print(os.environ["AUTH_TOKEN"])
+    auth_token = os.environ["AUTH_TOKEN"] # token # "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2MTc2MzcwNzQsImlhdCI6MTYxNzYxNTQ3NCwiaWQiOiIyMjhmNGJiZS0yM2VjLTRhZmYtYTg3NC0yNTZlMWM4ZGVjZmMiLCJlbWFpbCI6ImJpbGxfeGF2aWVyQGhvc3QuY29tIn0.B1FXZ-UfjKq-HILHZuoVTV6C3uzlYhq54HI9b5hKb4w"
     authorization = 'Bearer ' + str(auth_token)
 
     password_reset_token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2MTc2MTY0ODcsImlhdCI6MTYxNzYxNjEyNywic3ViIjoiMjI4ZjRiYmUtMjNlYy00YWZmLWE4NzQtMjU2ZTFjOGRlY2ZjIn0.y-hPtyxpV21OJYiPtLw2qFZa_Bg6spgHV_q5ZTIZ_rA"
@@ -131,14 +140,16 @@ def test_password_reset():
 
 def test_profile():
     print('testing /auth/profile')
-    auth_token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2MTczODUxNjEsImlhdCI6MTYxNzM2MzU2MSwiaWQiOiIyYTE2ZTRmYy0xNmNkLTRlYTktOTNhZS0wZTIwZjg0ZWUzMjAiLCJlbWFpbCI6ImJpbGxfeGF2aWVyQGhvc3QuY29tIn0.49G21qLF1QFeE3y77z8FTwId5R7suxuDaitovl4oMoo"
+    print(os.environ["AUTH_TOKEN"])
+    auth_token = os.environ["AUTH_TOKEN"]
     authorization = 'Bearer ' + str(auth_token)
+    id = "4a58a55d-866b-4dba-9ea5-0f00670b5882"
 
     profile_data = {
-        "id": id,
-        "email": "billy_xavier@host.com",
-        "firstName": "Billie",
-        "lastName": "Xaviert",
+        #"id": id,
+        "email": "bill_xavier@host.com",
+        "firstName": "Billy",
+        "lastName": "Xavier1",
         "phoneNumber": "2211945",
         "role": "admin",
         "disabled": False,
@@ -147,19 +158,20 @@ def test_profile():
 
     headers = {
         # 'Access-Control-Allow-Origin': '*',
-        # 'Content-Type': 'application/json',
+        'Content-Type': 'application/json',
         'Authorization': authorization
     }
     with app.test_client() as c:
         rv = c.put('/auth/profile', json={
-            "profile": profile_data,  # "2as25Ifzr"
+            "profile": profile_data
         }, headers=headers)
         print(rv.data)
         print('status: ', rv.status_code)
 
 def test_me():
     print('testing /auth/me')
-    auth_token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2MTczODUxNjEsImlhdCI6MTYxNzM2MzU2MSwiaWQiOiIyYTE2ZTRmYy0xNmNkLTRlYTktOTNhZS0wZTIwZjg0ZWUzMjAiLCJlbWFpbCI6ImJpbGxfeGF2aWVyQGhvc3QuY29tIn0.49G21qLF1QFeE3y77z8FTwId5R7suxuDaitovl4oMoo"
+    print(os.environ["AUTH_TOKEN"])
+    auth_token = os.environ["AUTH_TOKEN"]
     authorization = 'Bearer ' + str(auth_token)
 
     headers = {
@@ -170,22 +182,31 @@ def test_me():
         print(rv.data)
         print('status: ', rv.status_code)
 
+def test_email_configured():
+    print('testing /auth/email-configured')
+    with app.test_client() as c:
+        rv = c.get('/auth/email-configured', json={})
+        print(rv.data)
+        print('status: ', rv.status_code)
+
 if __name__ == '__main__':
     #test_signup()
-    # test_send_email_address_verification_email()
+    #test_send_email_address_verification_email()
     #test_verify_email()
-    #test_signin_local()
-    # test_password_update()
+    #token = test_signin_local()
+    # test_password_update(token)
 
     # Test password reset
-    test_signup()
+    #test_signup()
     #test_verify_email()
-    #test_signin_local()
+    #token = test_signin_local()
     #test_send_pasword_reset_email()
-    # test_password_reset()
+    # test_password_reset(token)
 
     # Test profile and me
     #test_signin_local()
-    # test_me()
-    # test_profile()
+    #test_send_email_address_verification_email()
+    #test_me()
+    #test_profile()
+    test_email_configured()
 

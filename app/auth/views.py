@@ -40,6 +40,7 @@ def password_update(current_user):
 @get_current_user
 def send_email_address_verification_email(current_user):
     print('POST query to /auth/send-email-address-verification-email accepted')
+    print(current_user)
     if not current_user:
         raise CustomError({'message': 'Error when sending email address verification email: Forbidden\n'})
     # not presenting and not passed to send_email_address_verification_email() in NodeJS implementation
@@ -99,6 +100,7 @@ def me(current_user):
 @auth_blueprint.route('/auth/email-configured', methods=['GET'])
 def email_configured():
     payload = EmailSender.isConfigured()
+    print(payload)
     return Response(str(payload), status=200)
 
 @auth_blueprint.route('/auth/signin/google', methods=['GET'])

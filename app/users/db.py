@@ -10,9 +10,10 @@ from app.services.encoding import generate_token
 
 # DB API classes
 class UserDBApi:
-    def update(id, data, current_user):
+    def update(user_id: str, data: dict, current_user: Users):
         print('UserDBApi.update()')
-        user = app.session.query(Users).filter_by(id=id).first()
+        print(user_id)
+        user = app.session.query(Users).filter_by(id=user_id).first()
         if not user:
             raise CustomError({'message': 'Error when updating user in database: user not found\n'})
         print(user.lastName)
@@ -78,7 +79,7 @@ class UserDBApi:
         app.session.add(user)
         app.session.commit()
 
-    def generate_email_verification_token(email, current_user=None):
+    def generate_email_verification_token(email: str, current_user: Users = None):
         user = app.session.query(Users).filter_by(email=email).first()
         token_expires_at = datetime.datetime.utcnow() + datetime.timedelta(days=0, seconds=360)
         payload = {
@@ -95,7 +96,7 @@ class UserDBApi:
         app.session.commit()
         return token
 
-    def generate_password_reset_token(email, current_user=None):
+    def generate_password_reset_token(email: str, current_user: Users = None):
         user = app.session.query(Users).filter_by(email=email).first()
         token_expires_at = datetime.datetime.utcnow() + datetime.timedelta(days=0, seconds=360)
         payload = {
@@ -112,7 +113,7 @@ class UserDBApi:
         app.session.commit()
         return token
 
-    def update_password(id, password, current_user=None):
+    def update_password(id: str, password: str, current_user: Users = None):
         print('UserDBApi.update_password')
         if current_user is None:
             current_user = Users(id=None)
@@ -128,7 +129,7 @@ class UserDBApi:
         app.session.commit()
         return user
 
-    def mark_email_verified(id, current_user=None):
+    def mark_email_verified(id: str, current_user: Users = None):
         print('UserDBApi.mark_email_verified')
 
         user = app.session.query(Users) \

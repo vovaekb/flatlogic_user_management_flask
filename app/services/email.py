@@ -18,4 +18,4 @@ class EmailSender:
         mail.send(msg)
 
     def isConfigured():
-        return (app.config['MAIL_DEFAULT_SENDER'] and app.config['MAIL_SERVER'])
+        return (not app.config['MAIL_DEFAULT_SENDER'] is None and not app.config['MAIL_SERVER'] is None)

@@ -10,10 +10,11 @@ from app.models import Users, Files
 from app import CustomError
 from app.services.email import EmailSender
 from app.users.db import UserDBApi
+from app.auth.services import Auth
 
 # User service class
 class UserService:
-    def create(data, current_user, host, send_invitation_emails = True):
+    def create(data: dict, current_user: Users, host: str, send_invitation_emails: bool = True) -> None:
         print('UserService.create')
         print(host)
         emails_to_invite = []
@@ -89,16 +90,17 @@ class UserService:
                 return
         Auth.send_password_reset_email(email, host, 'invitation')
 
-    def update(data, id, current_user):
+    def update(user_id: str, data: dict, current_user: Users):
         print('UserService.update()')
+        print(user_id)
         try:
-            UserDBApi.update(id, data, current_user)
+            UserDBApi.update(user_id, data, current_user)
         except SQLAlchemyError as e:
             print("Unable to update product to database.")
             raise CustomError({'message': 'Error when updating user in database: %s\n' % str(e)})
 
-    def remove(id, current_user):
-        if current_user.id == id:
+    def remove(user_id: str, current_user: Users):
+        if current_user.id == user_id:
             raise CustomError({'message': 'Error when removing user in database: deleting himself\n'})
         if not current_user.role == 'admin':
             raise CustomError({'message': 'Error when removing user in database: forbidden action for not admin user\n'})
