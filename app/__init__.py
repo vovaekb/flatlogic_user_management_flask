@@ -1,8 +1,9 @@
 import os
+import flask
 from flask import Flask, _app_ctx_stack, render_template, request, jsonify, Response
 from flask_mail import Mail
 import jwt
-from functools import wraps
+from functools import wraps, update_wrapper
 from sqlalchemy.orm import scoped_session
 from app.database import SessionLocal, engine, Base
 from app.models import Users
@@ -18,6 +19,7 @@ print(APP_ROOT)
 
 app = Flask(__name__)
 app.session = scoped_session(SessionLocal, scopefunc=_app_ctx_stack.__ident_func__)
+app.secret_key = os.environ.get("FN_FLASK_SECRET_KEY", default=False)
 
 if os.environ['FLASK_DEV']:
     app.config.from_object(DevConfig)
@@ -26,8 +28,6 @@ else:
 
 print(app.config['UPLOAD_FOLDER'])
 print(app.config['MAIL_SERVER'])
-#app.config['UPLOAD_FOLDER'] = FILE_FOLDER
-#app.config['MAX_CONTENT_LENGTH'] = 10 * 1024 * 1024
 
 mail = Mail(app)
 
@@ -63,34 +63,17 @@ def get_current_user(f):
         return f(current_user, *args, **kwargs)
     return decorator
 
-'''
-def token_required(f):
-    @wraps(f)
-    def decorator(*args, **kwargs):
-        print('token_required')
-        token = None
+def no_cache(view):
+    @wraps(view)
+    def no_cache_impl(*args, **kwargs):
+        response = flask.make_response(view(*args, **kwargs))
+        response.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, max-age=0'
+        response.headers['Pragma'] = 'no-cache'
+        response.headers['Expires'] = '-1'
+        return response
 
-        if 'Authorization' in request.headers:
-            token = request.headers['Authorization'].split(' ')[1]
-            print('token: ', token)
+    return update_wrapper(no_cache_impl, view)
 
-        if not token:
-            raise CustomError({'message': 'Error when verifying token: a valid token is missing\n'})
-
-        try:
-            data = jwt.decode(token, app.config['SECRET_KEY'], algorithms='HS256')
-            print(data)
-            current_user = app.session.query(Users) \
-                .filter(Users.id == data['id']) \
-                .filter(Users.email==data['email']).first()
-            print(current_user)
-        except Exception as e:
-            print('Error when decoding token: ', str(e))
-            raise CustomError({'message': 'Error when verifying token: token is invalid\n'})
-
-        return f(current_user, *args, **kwargs)
-    return decorator
-'''
 
 def token_included(f):
     @wraps(f)

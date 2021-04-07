@@ -1,14 +1,11 @@
 import os
 import datetime
 from flask import render_template
-from flask_mail import Message
 from sqlalchemy.sql import func
 from sqlalchemy.exc import SQLAlchemyError
-from app import app, mail, APP_ROOT
+from app import app, mail
 from app.models import Users, Files
-#from app.auth.views import CustomError
 from app import CustomError
-from app.services.email import EmailSender
 from app.users.db import UserDBApi
 from app.auth.services import Auth
 
@@ -58,7 +55,6 @@ class UserService:
                     print('image is not None')
                     images = data['avatar']
                     for image in images:
-                        imageId = image['id']
                         # Add file to DB
                         file = Files(
                             name=image['name'],
@@ -78,8 +74,7 @@ class UserService:
 
         except SQLAlchemyError as e:
             print("Unable to add user to database.")
-            # error = e.__dict__['orig']
-            raise CustomError({'message': 'Error when creating user in database: %s\n' % str(e)})  # error})
+            raise CustomError({'message': 'Error when creating user in database: %s\n' % str(e)})
         except Exception as e:
             print("Error occurred")
             print(str(e))

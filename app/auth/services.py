@@ -1,15 +1,43 @@
 import os
 import datetime
-from hashlib import pbkdf2_hmac
+import flask
 from flask import render_template
 from werkzeug.security import generate_password_hash, check_password_hash
 from sqlalchemy.sql import func
+import google.oauth2.credentials
+import googleapiclient.discovery
 from app.models import Users
 from app import app
 from app import CustomError
+from app.auth.views import AUTH_TOKEN_KEY, CLIENT_ID, CLIENT_SECRET, ACCESS_TOKEN_URI
 from app.services.email import EmailSender
 from app.services.encoding import generate_token
 from app.users.db import UserDBApi
+
+
+def is_logged_in():
+    return True if AUTH_TOKEN_KEY in flask.session else False
+
+def build_credentials():
+    if not is_logged_in():
+        raise Exception('User must be logged in')
+
+    oauth2_tokens = flask.session[app.config['AUTH_TOKEN_KEY']]
+    return google.oauth2.credentials.Credentials(
+        oauth2_tokens['access_token'],
+        refresh_token=oauth2_tokens['refresh_token'],
+        client_id=CLIENT_ID,
+        client_secret=CLIENT_SECRET,
+        token_uri=ACCESS_TOKEN_URI)
+
+def get_user_info():
+    credentials = build_credentials()
+
+    oauth2_client = googleapiclient.discovery.build(
+        'oauth2', 'v2',
+        credentials=credentials)
+
+    return oauth2_client.userinfo().get().execute()
 
 
 def validate_user_input(input_type, **kwargs):
@@ -22,7 +50,7 @@ def validate_user_input(input_type, **kwargs):
 
 # Auth service class
 class Auth:
-    def signup(email, password, host, current_user=None):
+    def signup(email: str, password: str, host: str, current_user: Users = None):
         print('Auth.sign()')
         user_email = email
         print('user_email: ', user_email)
@@ -30,9 +58,6 @@ class Auth:
         print(user)
         user_password = password
         print('user_password: ', user_password)
-        # password_salt = generate_salt()
-        # print(password_salt)
-        # password_hash = generate_hash(user_password, password_salt)
         password_hash = generate_password_hash(user_password, method='sha256')
         print(password_hash)
 
@@ -99,7 +124,7 @@ class Auth:
         token = generate_token(data)
         return token
     
-    def signin(email, password):
+    def signin(email: str, password: str):
         user = app.session.query(Users).filter_by(email=email).first()
         print(user)
 
@@ -136,8 +161,7 @@ class Auth:
         token = generate_token(data)
         return token
 
-
-    def send_email_address_verification_email(email, host):
+    def send_email_address_verification_email(email: str, host: str):
         print('Auth.send_email_address_verification_email')
         if not EmailSender.isConfigured():
             raise CustomError({'message': 'Error when sending email: Email provider is not configured. Please configure it in config.py\n'})
@@ -163,7 +187,7 @@ class Auth:
         }
         email_sender.send(data)
 
-    def send_password_reset_email(email, host, type='register'):
+    def send_password_reset_email(email: str, host: str, type: str = 'register'):
         print('Auth.send_password_reset_email')
         if not EmailSender.isConfigured():
             raise CustomError({
@@ -175,8 +199,7 @@ class Auth:
             print(link)
         except Exception as e:
             print(str(e))
-            # Validation Error
-            raise CustomError({'message': 'Error during generating password reset token occurred %s\n' % str(e)})
+            raise CustomError({'message': 'Error during generating password reset token occurred: %s\n' % str(e)})
 
         # send email
         # TODO: Remove it. Use it for debug
@@ -196,9 +219,8 @@ class Auth:
         }
         email_sender.send(data)
 
-    def password_update(current_password, new_password, current_user=None):
+    def password_update(current_password: str, new_password: str, current_user: Users = None):
         print('Auth.password_update')
-        # currentUser = options.currentUser
         if not current_user:
             raise CustomError({'message': 'Error when updating password: Forbidden\n'})
 
@@ -214,7 +236,7 @@ class Auth:
         user = UserDBApi.update_password(current_user.id, password_hash, current_user)
         return user
 
-    def password_reset(token, password, current_user=None):
+    def password_reset(token: str, password: str, current_user: Users = None):
         # find user by password reset token
         user = app.session.query(Users) \
             .filter(Users.passwordResetToken == token) \
@@ -232,7 +254,7 @@ class Auth:
         return user
 
 
-    def verify_email(token, current_user=None):
+    def verify_email(token: str, current_user: Users = None):
         user = app.session.query(Users)\
             .filter(Users.emailVerificationToken==token)\
             .filter(Users.emailVerificationTokenExpiresAt > datetime.datetime.utcnow())\
@@ -245,7 +267,7 @@ class Auth:
         UserDBApi.mark_email_verified(user.id, current_user)
         return True
 
-    def update_profile(data, current_user):
+    def update_profile(data: dict, current_user: Users):
         print('Auth.update_profile')
         user = app.session.query(Users).filter_by(id=current_user.id).first()
         print(user)

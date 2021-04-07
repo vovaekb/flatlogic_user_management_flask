@@ -1,3 +1,5 @@
+import os
+
 # Scheme: "postgres+psycopg2://<USERNAME>:<PASSWORD>@<IP_ADDRESS>:<PORT>/<DATABASE_NAME>"
 DATABASE_URI = "postgres+psycopg2://postgres:123@localhost/user_management"
 
@@ -12,6 +14,8 @@ class Config:
     MAIL_DEFAULT_SENDER = "support@flatlogic.com"
     MAIL_USERNAME = "support@flatlogic.com"
     MAIL_PASSWORD="UBU2JGC2wEqc"
+    # Google Auth parameters
+
 
 class DevConfig(Config):
     EMAIL_ADDRESS = 'vladprivalov1990@gmail.com'
