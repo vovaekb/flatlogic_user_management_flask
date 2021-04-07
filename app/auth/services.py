@@ -24,7 +24,7 @@ def build_credentials():
     if not is_logged_in():
         raise Exception('User must be logged in')
 
-    oauth2_tokens = flask.session[app.config['AUTH_TOKEN_KEY']]
+    oauth2_tokens = flask.session[AUTH_TOKEN_KEY]
     return google.oauth2.credentials.Credentials(
         oauth2_tokens['access_token'],
         refresh_token=oauth2_tokens['refresh_token'],
@@ -289,20 +289,21 @@ class Auth:
         flask.session[AUTH_TOKEN_KEY] = oauth2_tokens
 
         user_info = get_user_info()
-        for k, v in user_info:
-            print('%s: %s' % (k, v))
+        print(user_info)
+        #for k, v in user_info:
+        #    print('%s: %s' % (k, v))
 
         token_expires_at = datetime.datetime.utcnow() + datetime.timedelta(days=0, hours=6)
-        '''
+        #'''
         data = {
             "exp": token_expires_at,
             "iat": datetime.datetime.utcnow(),
-            "id": str(user.id),
-            "email": str(user.email)
+            "id": str(user_info['id']),
+            "email": str(user_info['email'])
         }
         # return JWT sign with data
         token = generate_token(data)
-        '''
-        token = ''
+        print(token)
+        #'''
+        #token = ''
         return token
-
