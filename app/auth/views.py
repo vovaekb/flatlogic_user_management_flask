@@ -15,7 +15,7 @@ ACCESS_TOKEN_URI = 'https://www.googleapis.com/oauth2/v4/token'
 AUTHORIZATION_URL = 'https://accounts.google.com/o/oauth2/v2/auth?access_type=offline&prompt=consent'
 AUTHORIZATION_SCOPE = 'openid email profile'
 AUTH_REDIRECT_URI = "http://127.0.0.1:5000/auth/signin/google/callback" # os.environ.get("FN_AUTH_REDIRECT_URI", default=False)
-BASE_URI = "http://127.0.0.1:5000/login" # os.environ.get("FN_BASE_URI", default=False)
+BASE_URI = "http://127.0.0.1:5000" # os.environ.get("FN_BASE_URI", default=False)
 CLIENT_ID = os.environ.get("FN_CLIENT_ID", default=False)
 CLIENT_SECRET = os.environ.get("FN_CLIENT_SECRET", default=False)
 AUTH_TOKEN_KEY = 'auth_token'
@@ -118,6 +118,7 @@ def email_configured():
 @auth_blueprint.route('/auth/signin/google', methods=['GET'])
 @no_cache
 def signin_google():
+    # state = request.args.get('app')
     session = OAuth2Session(CLIENT_ID, CLIENT_SECRET,
                             scope=AUTHORIZATION_SCOPE,
                             redirect_uri=AUTH_REDIRECT_URI)
@@ -133,6 +134,8 @@ def signin_google():
 @no_cache
 def signin_google_callback():
     req_state = request.args.get('state', default=None, type=None)
+    app_url = request.args.get('app') if 'app' in request.args else BASE_URI
+    redirect_url = '%s/login?token=%s' % (app_url, req_state)
 
     if req_state != flask.session[AUTH_STATE_KEY]:
         # response = flask.make_response('Invalid state parameter', 401)
@@ -151,7 +154,7 @@ def signin_google_callback():
     flask.session[AUTH_TOKEN_KEY] = oauth2_tokens
 
     # TODO: redirect to /login endpoint
-    return redirect(BASE_URI, code=302)
+    return redirect(redirect_url, code=302)
 
 @auth_blueprint.route('/auth/signin/microsoft', methods=['GET'])
 def signin_microsoft():
