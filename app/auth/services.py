@@ -9,7 +9,7 @@ import googleapiclient.discovery
 from app.models import Users
 from app import app
 from app import CustomError
-from app.auth.views import AUTH_TOKEN_KEY, CLIENT_ID, CLIENT_SECRET, ACCESS_TOKEN_URI
+from app.auth import ACCESS_TOKEN_URI, CLIENT_ID, CLIENT_SECRET
 from app.services.email import EmailSender
 from app.services.encoding import generate_token
 from app.users.db import UserDBApi
