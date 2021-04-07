@@ -1,12 +1,9 @@
 import os
 import flask
 from flask import render_template, Blueprint, request, Response, jsonify, redirect
-import jwt
 from authlib.client import OAuth2Session
-# from app import database
 from app import app
-from app.models import Users
-from app.serializers import UsersSchema, FilesSchema
+from app.serializers import UsersSchema
 from app import CustomError, get_current_user, no_cache
 from app.auth.services import Auth, EmailSender, is_logged_in
 from app.auth import AUTHORIZATION_URL, ACCESS_TOKEN_URI, AUTHORIZATION_SCOPE, AUTH_REDIRECT_URI, AUTH_STATE_KEY, BASE_URI, CLIENT_ID, CLIENT_SECRET, AUTH_TOKEN_KEY

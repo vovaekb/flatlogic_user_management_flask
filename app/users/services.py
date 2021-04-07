@@ -1,6 +1,4 @@
 import os
-import datetime
-from flask import render_template
 from sqlalchemy.sql import func
 from sqlalchemy.exc import SQLAlchemyError
 from app import app, mail
@@ -8,6 +6,11 @@ from app.models import Users, Files
 from app import CustomError
 from app.users.db import UserDBApi
 from app.auth.services import Auth
+from app.serializers import UsersSchema, FilesSchema
+
+users_schema = UsersSchema(many=True)
+file_schema = FilesSchema()
+
 
 # User service class
 class UserService:
@@ -103,3 +106,23 @@ class UserService:
         print(user.lastName)
         app.session.delete(user)
         app.session.commit()
+
+    def get_all():
+        print('UserService.get_all()')
+        users = app.session.query(Users)
+        users = users.order_by(Users.email.asc()).all()
+        print(users)
+        users_dict = users_schema.dump(users)
+        users_list = []
+        for user_dict in users_dict:
+            user = app.session.query(Users).filter_by(id=user_dict['id']).first()
+            user_dict['avatars'] = []
+            if len(user.avatar):
+                print('avatar is not empty list')
+                for file_rel in user.avatar:
+                    fileId = file_rel.id
+                    file = app.session.query(Files).filter_by(id=fileId).first()
+                    print(file.name)
+                    file_dict = file_schema.dump(file)
+                    user_dict['avatars'].append(file_dict)
+            users_list.append(user_dict)

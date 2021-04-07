@@ -1,6 +1,5 @@
 import os
 from flask import render_template, Blueprint, request, Response, jsonify
-# from app import database
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.sql import func
 from app import app, APP_ROOT
@@ -16,9 +15,6 @@ users_schema = UsersSchema(many=True)
 file_schema = FilesSchema()
 files_schema = FilesSchema(many=True)
 
-# Error handlers
-# class CustomError(Exception):
-#     pass
 
 @users_blueprint.errorhandler(CustomError)
 def handle_error(e):
@@ -26,113 +22,46 @@ def handle_error(e):
     return Response(details['message'], status=200, mimetype='text/plain')
 
 # ROUTES
-@users_blueprint.route('/users', methods=['POST']) # 'GET',
+@users_blueprint.route('/users', methods=['POST'])
 @get_current_user
 def index_post(current_user):
-    # if request.method == 'POST':
+    print('/users POST accepted')
     data = request.get_json()
     host = request.host # request.host_url
     print(host)
     UserService.create(data, current_user, host, True)
     # TODO: Use host (http referer header for sending password reset email )
-    '''
-    print(data)
-    try:
-        # Check if user already exists
-        user = app.session.query(Users).filter_by(email=data['email']).first()
-
-        if user:
-            # Throw exception userAlreadyExists
-            raise CustomError({'message': 'Error when creating user to database: user already exists\n' })
-
-        user = Users(
-            id = data['id'] or None,
-            firstName=data['firstName'] or None,
-            lastName = data['lastName'] or None,
-            emailVerified = True,
-            phoneNumber = data['phoneNumber'] or None,
-            authenticationUid = data['authenticationUid'] or None,
-            email = data['email'],
-            role = data['role'] or "user",
-            # emailVerificationTokenExpiresAt =
-            # passwordResetTokenExpiresAt = Column(DateTime(timezone=True)) #, server_default=func.now())
-            # importHash = data['importHash'] or None,
-            # createdAt = Column(DateTime(timezone=True), nullable=False, server_default=func.now())
-            updatedAt = func.now()
-        )
-        user.disabled = data.get('disabled', False) or False
-        #if 'disabled' in data and not data['disabled'] is None:
-        #    user.disabled = data['disabled']
-        user.emailVerified = True
-        #if 'emailVerificationToken' in data and not data['emailVerificationToken'] is None:
-        #    user.emailVerificationToken = data['emailVerificationToken']
-        #user.passwordResetToken = data['passwordResetToken'] if 'passwordResetToken' in data else None
-        #if not data['passwordResetTokenExpiresAt'] is None:
-        #    pass
-        user.provider = data['provider'] if 'provider' in data else None
-        user.password = data['password'] if 'password' in data else None
-        app.session.add(user)
-        app.session.flush()
-        if not data['avatar'] is None:
-            print('image is not None')
-            images = data['avatar']
-            for image in images:
-                imageId = image['id']
-                # Add file to DB
-                file = Files(
-                    name = image['name'],
-                    sizeInBytes = image['sizeInBytes'],
-                    privateUrl = image['privateUrl'],
-                    publicUrl = image['publicUrl'],
-                    #createdBy = admin,
-                    #updatedBy = admin,
-                    updatedAt = func.now()
-                )
-                app.session.add(file)
-                app.session.flush()
-                print(file.name)
-                user.avatar.append(file)
-
-        app.session.add(user)
-        app.session.commit()
-    except SQLAlchemyError as e:
-        print("Unable to add user to database.")
-        # error = e.__dict__['orig']
-        raise CustomError({'message': 'Error when saving brand to database: %s\n' % str(e)}) # error})
-    except Exception as e:
-        print("Error occurred")
-        print(str(e))
-        raise CustomError({'message': 'Error occurred %s\n' % str(e)})
-    '''
     text = 'true'
     return Response(text, status=200)
 
 @users_blueprint.route('/users', methods=['GET'])
 def index_get():
-    # else:
-        users = app.session.query(Users)
-        users = users.order_by(Users.email.asc()).all()
-        print(users)
-        users_dict = users_schema.dump(users)
-        users_list = []
-        for user_dict in users_dict:
-            user = app.session.query(Users).filter_by(id=user_dict['id']).first()
-            user_dict['avatars'] = []
-            if len(user.avatar): #.count():
-                print('avatar is not empty list')
-                for file_rel in user.avatar:
-                    fileId = file_rel.id
-                    # print(categoryId)
-                    file = app.session.query(Files).filter_by(id=fileId).first()
-                    print(file.name)
-                    file_dict = file_schema.dump(file)
-                    user_dict['avatars'].append(file_dict)
-            users_list.append(user_dict)
-        data = {
-            'rows': users_list,
-            'count': len(users_list)
-        }
-        return jsonify(data)
+    print('/users GET accepted')
+    '''
+    users = app.session.query(Users)
+    users = users.order_by(Users.email.asc()).all()
+    print(users)
+    users_dict = users_schema.dump(users)
+    users_list = []
+    for user_dict in users_dict:
+        user = app.session.query(Users).filter_by(id=user_dict['id']).first()
+        user_dict['avatars'] = []
+        if len(user.avatar):
+            print('avatar is not empty list')
+            for file_rel in user.avatar:
+                fileId = file_rel.id
+                file = app.session.query(Files).filter_by(id=fileId).first()
+                print(file.name)
+                file_dict = file_schema.dump(file)
+                user_dict['avatars'].append(file_dict)
+        users_list.append(user_dict)
+    '''
+    users = UserService.get_all()
+    data = {
+        'rows': users,
+        'count': len(users)
+    }
+    return jsonify(data)
 
 @users_blueprint.route('/users/<user_id>', methods=['PUT', 'DELETE']) # 'GET',
 @get_current_user
@@ -223,12 +152,6 @@ def user(current_user, user_id):
         return Response(text, status=200)
     elif request.method == 'DELETE':
         UserService.remove(user_id, current_user)
-        '''
-        user = app.session.query(Users).filter_by(id=user_id).first()
-        print(user.lastName)
-        app.session.delete(user)
-        app.session.commit()
-        '''
         text = 'true'
         return Response(text, status=200)
 
