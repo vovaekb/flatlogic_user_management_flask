@@ -128,13 +128,13 @@ def signin_google():
 def signin_google_callback():
     req_state = request.args.get('state', default=None, type=None)
     app_url = request.args.get('app') if 'app' in request.args else BASE_URI
-    redirect_url = '%s/login?token=%s' % (app_url, req_state)
 
     if req_state != flask.session[AUTH_STATE_KEY]:
         # response = flask.make_response('Invalid state parameter', 401)
         # return response
         raise CustomError({'message': 'Error when signing in with Google: Invalid state parameter\n'})
 
+    '''
     session = OAuth2Session(CLIENT_ID, CLIENT_SECRET,
                             scope=AUTHORIZATION_SCOPE,
                             state=flask.session[AUTH_STATE_KEY],
@@ -145,6 +145,12 @@ def signin_google_callback():
         authorization_response=request.url)
 
     flask.session[AUTH_TOKEN_KEY] = oauth2_tokens
+    '''
+
+    # Generate token
+    token = Auth.signin_google_callback(request.url)
+
+    redirect_url = '%s/login?token=%s' % (app_url, token)
 
     # TODO: redirect to /login endpoint
     return redirect(redirect_url, code=302)

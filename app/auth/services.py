@@ -6,6 +6,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from sqlalchemy.sql import func
 import google.oauth2.credentials
 import googleapiclient.discovery
+from authlib.client import OAuth2Session
 from app.models import Users
 from app import app
 from app import CustomError
@@ -13,6 +14,7 @@ from app.auth import ACCESS_TOKEN_URI, CLIENT_ID, CLIENT_SECRET
 from app.services.email import EmailSender
 from app.services.encoding import generate_token
 from app.users.db import UserDBApi
+from app.auth import ACCESS_TOKEN_URI, AUTHORIZATION_SCOPE, AUTH_REDIRECT_URI, AUTH_STATE_KEY, CLIENT_ID, CLIENT_SECRET, AUTH_TOKEN_KEY
 
 
 def is_logged_in():
@@ -272,4 +274,35 @@ class Auth:
         user = app.session.query(Users).filter_by(id=current_user.id).first()
         print(user)
         UserDBApi.update(current_user.id, data, current_user)
+
+    def signin_google_callback(request_url):
+        print('signin_google_callback')
+
+        session = OAuth2Session(CLIENT_ID, CLIENT_SECRET,
+                                scope=AUTHORIZATION_SCOPE,
+                                state=flask.session[AUTH_STATE_KEY],
+                                redirect_uri=AUTH_REDIRECT_URI)
+
+        oauth2_tokens = session.fetch_access_token(
+            ACCESS_TOKEN_URI,
+            authorization_response=request_url)
+        flask.session[AUTH_TOKEN_KEY] = oauth2_tokens
+
+        user_info = get_user_info()
+        for k, v in user_info:
+            print('%s: %s' % (k, v))
+
+        token_expires_at = datetime.datetime.utcnow() + datetime.timedelta(days=0, hours=6)
+        '''
+        data = {
+            "exp": token_expires_at,
+            "iat": datetime.datetime.utcnow(),
+            "id": str(user.id),
+            "email": str(user.email)
+        }
+        # return JWT sign with data
+        token = generate_token(data)
+        '''
+        token = ''
+        return token
 
