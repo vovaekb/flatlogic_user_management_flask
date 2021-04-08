@@ -10,6 +10,66 @@ from app.services.encoding import generate_token
 
 # DB API classes
 class UserDBApi:
+    def create(data, current_user=None):
+        print('UserDBApi.create()')
+        user = Users(
+            id=data['id'] or None,
+            firstName=data['firstName'] or None,
+            lastName=data['lastName'] or None,
+            emailVerified=True,
+            phoneNumber=data['phoneNumber'] or None,
+            authenticationUid=data['authenticationUid'] or None,
+            email=data['email'],
+            role=data['role'] or "user",
+            # importHash = data['importHash'] or None,
+            createdById=current_user.id if not current_user is None else None,
+            createdBy=current_user,
+            updatedById=current_user.id if not current_user is None else None,
+            updatedBy=current_user,
+            updatedAt=func.now()
+        )
+        user.disabled = data.get('disabled', False) or False
+        user.emailVerified = True
+        # user.provider = data['provider'] if 'provider' in data else None
+        user.password = data['password'] if 'password' in data else None
+        app.session.add(user)
+        app.session.flush()
+        if not data['avatar'] is None:
+            print('image is not None')
+            images = data['avatar']
+            for image in images:
+                # Add file to DB
+                file = Files(
+                    name=image['name'],
+                    sizeInBytes=image['sizeInBytes'],
+                    privateUrl=image['privateUrl'],
+                    publicUrl=image['publicUrl'],
+                    updatedAt=func.now()
+                )
+                app.session.add(file)
+                app.session.flush()
+                print(file.name)
+                user.avatar.append(file)
+
+        app.session.add(user)
+        app.session.commit()
+
+    def create_from_auth(data): #, current_user):
+        print('UserDBApi.create_from_auth()')
+        user = Users(
+            firstName=data['first_name'],
+            password=data['password'],
+            email=data['email'],
+            # authenticationUid = data.authenticationUid,
+            updatedAt=func.now()
+        )
+        app.session.add(user)
+        app.session.flush()
+        user.authenticationUid = user.id
+        app.session.add(user)
+        app.session.commit()
+        return user
+
     def update(user_id: str, data: dict, current_user: Users):
         print('UserDBApi.update()')
         print(user_id)

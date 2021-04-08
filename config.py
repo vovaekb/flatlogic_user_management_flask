@@ -3,6 +3,11 @@ import os
 # Scheme: "postgres+psycopg2://<USERNAME>:<PASSWORD>@<IP_ADDRESS>:<PORT>/<DATABASE_NAME>"
 DATABASE_URI = "postgres+psycopg2://postgres:123@localhost/user_management"
 
+providers = {
+    "LOCAL": "local",
+    "GOOGLE": "google"
+}
+
 class Config:
     UPLOAD_FOLDER = 'static/'
     MAX_CONTENT_LENGTH = 10 * 1024 * 1024

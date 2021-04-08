@@ -26,6 +26,8 @@ class UserService:
                 if user:
                     raise CustomError({'message': 'Error when creating user to database: user already exists\n'})
 
+                UserDBApi.create(data, current_user)
+                '''
                 user = Users(
                     id=data['id'] or None,
                     firstName=data['firstName'] or None,
@@ -36,7 +38,6 @@ class UserService:
                     email=data['email'],
                     role=data['role'] or "user",
                     # importHash = data['importHash'] or None,
-                    # createdAt = Column(DateTime(timezone=True), nullable=False, server_default=func.now())
                     createdById = current_user.id if not current_user is None else None,
                     createdBy = current_user,
                     updatedById = current_user.id if not current_user is None else None,
@@ -44,12 +45,7 @@ class UserService:
                     updatedAt=func.now()
                 )
                 user.disabled = data.get('disabled', False) or False
-                # if 'disabled' in data and not data['disabled'] is None:
-                #    user.disabled = data['disabled']
                 user.emailVerified = True
-                # if 'emailVerificationToken' in data and not data['emailVerificationToken'] is None:
-                #    user.emailVerificationToken = data['emailVerificationToken']
-                # user.passwordResetToken = data['passwordResetToken'] if 'passwordResetToken' in data else None
                 user.provider = data['provider'] if 'provider' in data else None
                 user.password = data['password'] if 'password' in data else None
                 app.session.add(user)
@@ -73,6 +69,7 @@ class UserService:
 
                 app.session.add(user)
                 app.session.commit()
+                '''
                 emails_to_invite.append(email)
 
         except SQLAlchemyError as e:
