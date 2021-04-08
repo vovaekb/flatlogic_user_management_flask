@@ -9,8 +9,8 @@ import googleapiclient.discovery
 from authlib.client import OAuth2Session
 from app.models import Users
 from app import app
+from config import providers
 from app import CustomError
-from app.auth import ACCESS_TOKEN_URI, CLIENT_ID, CLIENT_SECRET
 from app.services.email import EmailSender
 from app.services.encoding import generate_token
 from app.users.db import UserDBApi
@@ -41,13 +41,6 @@ def get_user_info():
 
     return oauth2_client.userinfo().get().execute()
 
-
-def validate_user_input(input_type, **kwargs):
-    if input_type == "authentication":
-        if len(kwargs["email"]) <= 255 and len(kwargs["password"]) <= 255:
-            return True
-        else:
-            return False
 
 
 # Auth service class
@@ -95,6 +88,13 @@ class Auth:
         
         print('Creating new user')
         # Create user
+        data = {
+            'firstName': user_email.split('@')[0],
+            'password': password_hash,
+            'email': user_email
+        }
+        user = UserDBApi.create_from_auth(data)
+        '''
         user = Users(
             firstName = user_email.split('@')[0],
             password = password_hash,
@@ -107,6 +107,7 @@ class Auth:
         user.authenticationUid = user.id
         app.session.add(user)
         app.session.commit()
+        '''
         
         # if email sender is configured
         # send email address verification email
@@ -275,7 +276,7 @@ class Auth:
         print(user)
         UserDBApi.update(current_user.id, data, current_user)
 
-    def signin_google_callback(request_url):
+    def signin_google_callback(request_url: str):
         print('signin_google_callback')
 
         session = OAuth2Session(CLIENT_ID, CLIENT_SECRET,
@@ -291,7 +292,7 @@ class Auth:
         user_info = get_user_info()
         print(user_info)
 
-        provider = "google"
+        provider = providers["GOOGLE"]  # "google"
         user = app.session.query(Users) \
             .filter(Users.email == user_info['email']) \
             .filter(Users.provider == provider) \
@@ -300,7 +301,6 @@ class Auth:
         if not user:
             # Create new user
             print('Creating new user')
-            # Create user
             user = Users(
                 email=user_info['email'],
                 provider=provider,
@@ -308,13 +308,11 @@ class Auth:
             )
             app.session.add(user)
             app.session.flush()
-            user_id = user.id
             app.session.add(user)
             app.session.commit()
         print(user.id)
 
         token_expires_at = datetime.datetime.utcnow() + datetime.timedelta(days=0, hours=6)
-        #'''
         data = {
             "exp": token_expires_at,
             "iat": datetime.datetime.utcnow(),
@@ -325,6 +323,4 @@ class Auth:
         # return JWT sign with data
         token = generate_token(data)
         print(token)
-        #'''
-        #token = ''
         return token
