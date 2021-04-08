@@ -102,7 +102,7 @@ class UserService:
             raise CustomError({'message': 'Error when removing user in database: deleting himself\n'})
         if not current_user.role == 'admin':
             raise CustomError({'message': 'Error when removing user in database: forbidden action for not admin user\n'})
-        user = app.session.query(Users).filter_by(id=id).first()
+        user = app.session.query(Users).filter_by(id=user_id).first()
         print(user.lastName)
         app.session.delete(user)
         app.session.commit()
