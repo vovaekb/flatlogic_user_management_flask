@@ -11,8 +11,8 @@ def test_signup():
     #'''
     with app.test_client() as c:
         rv = c.post('/auth/signup', json={
-            'email': 'bill_xavier@host.com',
-            'password': 'dfgvd564rf'
+           'email': "ralf_stone@host.com", #'bill_xavier@host.com',
+            'password': 'jkht6fd4le,*', # 'nnjk4cb&%d3', # 'dfgvd564rf'
         })
         json_data = rv.get_json()
         # print(json_data)
@@ -43,7 +43,7 @@ def test_signup():
 
 def test_verify_email():
     print('testing /verify-email')
-    token = os.environ["AUTH_TOKEN"]
+    token = os.environ["EMAIL_VERIFY_TOKEN"] # AUTH_TOKEN"]
     with app.test_client() as c:
         rv = c.put('/auth/verify-email', json={
             'token': token
@@ -75,8 +75,8 @@ def test_signin_local():
     print('testing /signin/local')
     with app.test_client() as c:
         rv = c.post('/auth/signin/local', json={
-            'email': 'billy_xavier@host.com', # 'billy_xavier@host.com',
-            'password': 'dfgvd564rf'
+            'email': "ralf_stone@host.com", # 'billy_xavier@host.com', # 'billy_xavier@host.com',
+            'password': 'nnjk4cb&%d3', # 'dfgvd564rf'
         })
         json_data = rv.get_json()
         #print(json_data)
@@ -143,14 +143,14 @@ def test_profile():
     print(os.environ["AUTH_TOKEN"])
     auth_token = os.environ["AUTH_TOKEN"]
     authorization = 'Bearer ' + str(auth_token)
-    id = "4a58a55d-866b-4dba-9ea5-0f00670b5882"
+    id = "188b7d6a-3bbd-44bd-8e07-6be6bc4b1e1f"
 
     profile_data = {
         #"id": id,
-        "email": "bill_xavier@host.com",
-        "firstName": "Billy",
-        "lastName": "Xavier1",
-        "phoneNumber": "2211945",
+        "email": "ralf_stone@host.com", #"bill_xavier@host.com",
+        "firstName": "Daniel", # "Billy",
+        "lastName": None, # "Xavier1",
+        "phoneNumber": "254765342", # "2211945",
         "role": "admin",
         "disabled": False,
         "avatar": []
@@ -190,7 +190,7 @@ def test_email_configured():
         print('status: ', rv.status_code)
 
 if __name__ == '__main__':
-    #test_signup()
+    test_signup()
     #test_send_email_address_verification_email()
     #test_verify_email()
     #token = test_signin_local()
@@ -208,5 +208,5 @@ if __name__ == '__main__':
     #test_send_email_address_verification_email()
     #test_me()
     #test_profile()
-    test_email_configured()
+    #test_email_configured()
 

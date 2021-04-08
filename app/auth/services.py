@@ -89,7 +89,7 @@ class Auth:
         print('Creating new user')
         # Create user
         data = {
-            'firstName': user_email.split('@')[0],
+            'first_name': user_email.split('@')[0],
             'password': password_hash,
             'email': user_email
         }

@@ -179,13 +179,19 @@ class UserDBApi:
             current_user = Users(id=None)
         print('current_user')
         print(current_user.firstName)
-        user = app.session.query(Users).filter_by(id=id).first()
+        user_query = app.session.query(Users).filter_by(id=id) # .first()
+        #user = app.session.query(Users).filter_by(id=id).first()
+        user = user_query.first()
         print(user)
+        #print(user.email)
+        user_query.update({'password': password, 'authenticationUid': user.id, 'updatedById': current_user.id, 'updatedBy': current_user })
+        '''
         user.password = password
         user.authenticationUid = user.id
         user.updatedById = current_user.id
         user.updatedBy = current_user
         app.session.add(user)
+        '''
         app.session.commit()
         return user
 
