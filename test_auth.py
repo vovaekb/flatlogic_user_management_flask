@@ -76,7 +76,7 @@ def test_signin_local():
     with app.test_client() as c:
         rv = c.post('/auth/signin/local', json={
             'email': "ralf_stone@host.com", # 'billy_xavier@host.com', # 'billy_xavier@host.com',
-            'password': 'nnjk4cb&%d3', # 'dfgvd564rf'
+            'password': "dfgvd564rf", #  'nnjk4cb&%d3', # 'dfgvd564rf'
         })
         json_data = rv.get_json()
         #print(json_data)
@@ -101,7 +101,7 @@ def test_password_update():
     }
     with app.test_client() as c:
         rv = c.put('/auth/password-update', json={
-            "current_password": "dfgvd564rf",
+            "current_password": "nnjk4cb&%d3", # "dfgvd564rf",
             "new_password": "dfgvd564rf", # "2as25Ifzr"
         }, headers=headers)
         json_data = rv.get_json()
@@ -205,6 +205,7 @@ if __name__ == '__main__':
 
     # Test profile and me
     #test_signin_local()
+    #test_password_update()
     #test_send_email_address_verification_email()
     #test_me()
     #test_profile()

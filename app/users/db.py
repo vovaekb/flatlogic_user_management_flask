@@ -175,24 +175,18 @@ class UserDBApi:
 
     def update_password(id: str, password: str, current_user: Users = None):
         print('UserDBApi.update_password')
-        if current_user is None:
-            current_user = Users(id=None)
         print('current_user')
-        print(current_user.firstName)
-        user_query = app.session.query(Users).filter_by(id=id) # .first()
-        #user = app.session.query(Users).filter_by(id=id).first()
-        user = user_query.first()
-        print(user)
-        #print(user.email)
-        user_query.update({'password': password, 'authenticationUid': user.id, 'updatedById': current_user.id, 'updatedBy': current_user })
-        '''
+        print(current_user)
+        user = app.session.query(Users).filter_by(id=id).first()
+
         user.password = password
         user.authenticationUid = user.id
-        user.updatedById = current_user.id
+        if not current_user is None:
+            user.updatedById = current_user.id
         user.updatedBy = current_user
         app.session.add(user)
-        '''
         app.session.commit()
+        print('update_password complete')
         return user
 
     def mark_email_verified(id: str, current_user: Users = None):
