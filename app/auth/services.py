@@ -290,16 +290,37 @@ class Auth:
 
         user_info = get_user_info()
         print(user_info)
-        #for k, v in user_info:
-        #    print('%s: %s' % (k, v))
+
+        provider = "google"
+        user = app.session.query(Users) \
+            .filter(Users.email == user_info['email']) \
+            .filter(Users.provider == provider) \
+            .first()
+        print(user)
+        if not user:
+            # Create new user
+            print('Creating new user')
+            # Create user
+            user = Users(
+                email=user_info['email'],
+                provider=provider,
+                updatedAt=func.now()
+            )
+            app.session.add(user)
+            app.session.flush()
+            user_id = user.id
+            app.session.add(user)
+            app.session.commit()
+        print(user.id)
 
         token_expires_at = datetime.datetime.utcnow() + datetime.timedelta(days=0, hours=6)
         #'''
         data = {
             "exp": token_expires_at,
             "iat": datetime.datetime.utcnow(),
-            "id": str(user_info['id']),
-            "email": str(user_info['email'])
+            "id": str(user.id),
+            "email": str(user.email),
+            "name": user_info['name']
         }
         # return JWT sign with data
         token = generate_token(data)
