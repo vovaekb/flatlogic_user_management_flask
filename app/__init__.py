@@ -92,9 +92,11 @@ def token_included(f):
 from app.auth.views import auth_blueprint
 from app.files.views import files_blueprint
 from app.users.views import users_blueprint
+from app.products.views import products_blueprint
 
 app.register_blueprint(auth_blueprint)
 app.register_blueprint(files_blueprint)
 app.register_blueprint(users_blueprint)
+app.register_blueprint(products_blueprint)
 
 # from app import views
