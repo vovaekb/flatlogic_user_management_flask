@@ -2,8 +2,7 @@ from datetime import datetime, timezone
 from marshmallow_sqlalchemy import SQLAlchemyAutoSchema
 from marshmallow_sqlalchemy import fields
 from app import app
-from app.models import Files, Users
-
+from app.models import Files, Users, Products
 
 
 class FilesSchema(SQLAlchemyAutoSchema):
@@ -27,3 +26,11 @@ class UsersSchema(SQLAlchemyAutoSchema):
         include_fk = True
         exclude = ("createdBy", "updatedBy")
         #include_relationships = True
+
+class ProductsSchema(SQLAlchemyAutoSchema):
+    rating = fields.fields.Decimal(as_string=True)
+    price = fields.fields.Decimal(as_string=True)
+    discount = fields.fields.Decimal(as_string=True)
+    code = fields.fields.Decimal(as_string=True)
+    class Meta:
+        model = Products

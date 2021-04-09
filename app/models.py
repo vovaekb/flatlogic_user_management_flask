@@ -2,7 +2,7 @@ import datetime
 import enum
 import uuid
 # from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import Column, Table, Integer, ForeignKey
+from sqlalchemy import Column, Table, Integer, ForeignKey, ARRAY
 from sqlalchemy.types import Float, Numeric, String, DateTime, Date, Enum, UnicodeText, Boolean
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship, backref
@@ -78,3 +78,22 @@ class Files(database.Base):
     createdBy = relationship("Users", foreign_keys=[createdById], uselist=False)
     updatedById = Column(UUID(as_uuid=True), ForeignKey('users.id'))
     updatedBy = relationship("Users", foreign_keys=[updatedById], uselist=False)
+
+class Products(database.Base):
+    __tablename__ = 'products'
+    id = Column(UUID(as_uuid=True),
+        primary_key=True,
+        default=uuid.uuid4,
+        index=True
+    )
+    img = Column(String)
+    title = Column(String)
+    subtitle = Column(String)
+    price = Column(Float)
+    rating = Column(Float)
+    description_1 = Column(String)
+    description_2 = Column(String)
+    code = Column(Float)
+    hashtag = Column(String)
+    technology = Column(ARRAY(String))
+    discount = Column(Float)
