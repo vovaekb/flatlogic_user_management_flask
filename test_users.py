@@ -16,16 +16,45 @@ def get_token():
 
 def upload_file():
     print('testing /files/upload/users/avatar POST')
-    print(os.environ["AUTH_TOKEN"])
+    # print(os.environ["AUTH_TOKEN"])
     with app.test_client() as c:
-        token = os.environ["AUTH_TOKEN"]
+        # token = os.environ["AUTH_TOKEN"]
+        print('Uploading file 1')
+        '''
         data = {
                 'filename': 'eb4b4851-a5e4-483a-a1d0-3f3feedae3a6.png',
                 'file': (io.BytesIO(b"abcdef"), 'test1.png')
                 }
+        data = {
+            'filename': '79c2b036-2efb-4f82-bd8b-6158fe0f36de.jpeg',
+            'file': (io.BytesIO(b"5yt5fhg"), 'test2.jpeg')
+        }
         rv = c.post('/files/upload/users/avatar',
                 content_type='multipart/form-data',
                 data = data)
+        print(rv.data)
+        print('status: ', rv.status_code)
+        '''
+
+        # File 2
+        data = {
+            'filename': '79c2b036-2efb-4f82-bd8b-6158fe0f36de.jpeg',
+            'file': (io.BytesIO(b"5yt5fhg"), 'tynvnmm.jpeg')
+        }
+        rv = c.post('/files/upload/users/avatar',
+                    content_type='multipart/form-data',
+                    data=data)
+        print(rv.data)
+        print('status: ', rv.status_code)
+        # File 3
+        print('Uploading file 2')
+        data = {
+            'filename': '27e264dd-aa46-4c98-8c04-aecace218d9e.png',
+            'file': (io.BytesIO(b"8yt5JHdrrdg445"), 'heyhere.png')
+        }
+        rv = c.post('/files/upload/users/avatar',
+                    content_type='multipart/form-data',
+                    data=data)
         print(rv.data)
         print('status: ', rv.status_code)
 
@@ -115,9 +144,9 @@ def test_delete_user():
 
 if __name__ == '__main__':
     get_token()
-    #upload_file()
+    upload_file()
     #test_create()
     #test_get_all()
     # test_get_user()
     #test_put_user()
-    test_delete_user()
+    # test_delete_user()

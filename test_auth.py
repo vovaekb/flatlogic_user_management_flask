@@ -160,7 +160,25 @@ def test_profile():
         "phoneNumber": "250051342", # "2211945",
         "role": "admin",
         "disabled": False,
-        "avatar": []
+        "avatar": [
+            {
+                "id": '79c2b036-2efb-4f82-bd8b-6158fe0f36de',
+                "name": "tynvnmm.jpeg", # "test1.png",
+                "new": True,
+                "sizeInBytes": 321800,
+                "privateUrl": "users/avatar/79c2b036-2efb-4f82-bd8b-6158fe0f36de.jpeg", # "users/avatar/eb4b4851-a5e4-483a-a1d0-3f3feedae3a6.png",
+                "publicUrl": "http://127.0.0.1:5000/files/download?privateUrl=users/avatar/avatar/79c2b036-2efb-4f82-bd8b-6158fe0f36de.jpeg" # "http://127.0.0.1:5000/files/download?privateUrl=users/avatar/avatar/eb4b4851-a5e4-483a-a1d0-3f3feedae3a6.png"
+            },
+            {
+                "id": '27e264dd-aa46-4c98-8c04-aecace218d9e',
+                "name": "heyhere.png",
+                "new": True,
+                "sizeInBytes": 213500,
+                "privateUrl": "users/avatar/27e264dd-aa46-4c98-8c04-aecace218d9e.png",
+                "publicUrl": "http://127.0.0.1:5000/files/download?privateUrl=users/avatar/avatar/27e264dd-aa46-4c98-8c04-aecace218d9e.png"
+            },
+        ]
+        # "avatar": []
     }
 
     headers = {
