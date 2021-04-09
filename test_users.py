@@ -107,7 +107,7 @@ def test_delete_user():
         'Authorization': authorization
     }
 
-    user_id = "4a652f44-0b07-49a2-a0d2-20dca2b93223" # "c99aa62f-a553-4d09-8fba-2a0a7d834ddd"
+    user_id = "d17014dd-7ce3-4520-9faf-3d66612d2d8c"
     with app.test_client() as c:
         rv = c.delete('/users/%s' % user_id, json={}, headers=headers)
         print(rv.data)
@@ -116,8 +116,8 @@ def test_delete_user():
 if __name__ == '__main__':
     get_token()
     #upload_file()
-    test_create()
+    #test_create()
     #test_get_all()
     # test_get_user()
     #test_put_user()
-    #test_delete_user()
+    test_delete_user()

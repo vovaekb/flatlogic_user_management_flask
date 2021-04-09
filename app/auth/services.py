@@ -171,8 +171,9 @@ class Auth:
         # Generate email verification token
         try:
             token = UserDBApi.generate_email_verification_token(email)
+            print('')
             link = f'{host}/auth/verify-email?token={token}'
-            print(link)
+            #print(link)
         except Exception as e:
             print(str(e))
             # Validation Error
