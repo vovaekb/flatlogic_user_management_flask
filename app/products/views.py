@@ -14,7 +14,7 @@ products_schema = ProductsSchema(many=True)
 
 # ROUTES
 @products_blueprint.route('/products/images-list', methods=['GET'])
-def index():
+def images_list():
     payload = ProductService.get_images()
     return jsonify(payload)
 

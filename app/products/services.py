@@ -51,6 +51,8 @@ class ProductService:
             product.discount = data['discount']
             product.description_1 = data['description_1']
             product.description_2 = data['description_2']
+            app.session.add(product)
+            app.session.commit()
         except SQLAlchemyError as e:
             print("Unable to update product to database.")
             error = e.__dict__['orig']
