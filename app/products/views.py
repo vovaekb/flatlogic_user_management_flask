@@ -2,7 +2,7 @@ import os
 from flask import render_template, Blueprint, request, jsonify, Response
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.sql import func
-from app import app, APP_ROOT
+from app import app, CustomError
 from app.models import Products
 from app.serializers import ProductsSchema
 from app.products.services import ProductService
@@ -11,6 +11,12 @@ from app.products.services import ProductService
 products_blueprint = Blueprint('products', __name__) # , template_folder='templates')
 product_schema = ProductsSchema()
 products_schema = ProductsSchema(many=True)
+
+
+@products_blueprint.errorhandler(CustomError)
+def handle_error(e):
+    details = e.args[0]
+    return Response(details['message'], status=200, mimetype='text/plain')
 
 # ROUTES
 @products_blueprint.route('/products/images-list', methods=['GET'])
