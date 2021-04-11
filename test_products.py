@@ -6,7 +6,7 @@ from app import app
 def test_get_images():
     print('testing /products/images-list GET')
     with app.test_client() as c:
-        rv = c.get('/products', json={})
+        rv = c.get('/products/images-list', json={})
         print(rv.data)
         print('status: ', rv.status_code)
 

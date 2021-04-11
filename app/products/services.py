@@ -1,7 +1,7 @@
 import os
 from sqlalchemy.sql import func
 from sqlalchemy.exc import SQLAlchemyError
-from app import app
+from app import app, APP_ROOT
 from app.models import Users, Files, Products
 from app import CustomError
 from app.serializers import ProductsSchema
@@ -12,7 +12,10 @@ products_schema = ProductsSchema(many=True)
 class ProductService:
     def get_images():
         print('ProductService.get_images()')
-        pass
+        images_dir = 'public/assets/products/'
+        image_files = [f for f in os.listdir(os.path.join(APP_ROOT, images_dir)) if not f.startswith('.')]
+        # TODO: map each file to config.remote path
+        return image_files
 
     def get_products():
         print('ProductService.get_products()')
