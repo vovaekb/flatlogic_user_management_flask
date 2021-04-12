@@ -7,7 +7,7 @@ from functools import wraps, update_wrapper
 from sqlalchemy.orm import scoped_session
 from app.database import SessionLocal, engine, Base
 from app.models import Users
-from config import Config, DevConfig
+from config import Config, DevConfig, ProductionConfig
 
 # Create database structure
 #Base.metadata.create_all(bind=engine)
@@ -22,12 +22,14 @@ app.session = scoped_session(SessionLocal, scopefunc=_app_ctx_stack.__ident_func
 app.secret_key = os.environ.get("FN_FLASK_SECRET_KEY", default=False)
 
 if os.environ['FLASK_DEV']:
+    print("Dev env")
     app.config.from_object(DevConfig)
 else:
-    app.config.from_object(Config)
+    print("Prod env")
+    app.config.from_object(ProductionConfig)
 
-print(app.config['UPLOAD_FOLDER'])
-print(app.config['MAIL_SERVER'])
+# print(app.config['UPLOAD_FOLDER'])
+# print(app.config['MAIL_SERVER'])
 
 mail = Mail(app)
 

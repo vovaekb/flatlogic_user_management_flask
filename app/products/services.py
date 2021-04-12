@@ -15,6 +15,7 @@ class ProductService:
         images_dir = 'public/assets/products/'
         image_files = [f for f in os.listdir(os.path.join(APP_ROOT, images_dir)) if not f.startswith('.')]
         # TODO: map each file to config.remote path
+        image_files = map(lambda f: "%s/%s" % (app.config['REMOTE'], f), image_files)
         return image_files
 
     def get_products():
