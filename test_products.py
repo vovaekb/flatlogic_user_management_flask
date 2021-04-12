@@ -27,12 +27,13 @@ def test_get_product():
 
 def test_update_product():
     print('testing /products/<product_id> PUT')
-    id = "1d75b293-46dc-4687-8497-dc0b6146faed"
+    id = "fa95b6ff-617b-4cb9-a658-d10e396b0ee6"
     with app.test_client() as c:
         rv = c.put('/products/%s' % id, json={
             # "id": product_id,
             "title": "Curaprox 5460 Ultra Soft",
             "subtitle": "Toothpaste",
+            "img": "http://localhost:5000/assets/products/feature_correlation.png",
             "price": 110.0,
             "rating": 0.6,
             "code": 280,
@@ -53,6 +54,7 @@ def test_create_product():
         rv = c.post('/products', json={
             "title": "Curaprox Perio Plus+ Support zubní pasta (CHX 0,09%), 75 ml",
             "subtitle": "Toothpaste",
+            "img": "http://localhost:5000/assets/products/hxrvDnPTmSU.jpg",
             "price": 130.0,
             "rating": 0.4,
             "code": 240,
@@ -75,10 +77,10 @@ def test_delete_product():
         print('status: ', rv.status_code)
 
 if __name__ == '__main__':
-    # test_get_images()
+    #test_get_images()
     #test_get_all()
-    #test_update_product()
+    test_update_product()
     #test_get_product()
-    # test_create_product()
-    test_delete_product()
-    test_get_product()
+    #test_create_product()
+    #test_delete_product()
+    #test_get_product()

@@ -14,8 +14,7 @@ class ProductService:
         print('ProductService.get_images()')
         images_dir = 'public/assets/products/'
         image_files = [f for f in os.listdir(os.path.join(APP_ROOT, images_dir)) if not f.startswith('.')]
-        # TODO: map each file to config.remote path
-        image_files = map(lambda f: "%s/%s" % (app.config['REMOTE'], f), image_files)
+        image_files = list(map(lambda f: "%s/assets/products/%s" % (app.config['REMOTE'], f), image_files))
         return image_files
 
     def get_products():
@@ -47,6 +46,7 @@ class ProductService:
             print(product)
             product.title = data['title']
             product.subtitle = data['subtitle']
+            product.img = data['img']
             product.price = data['price']
             product.rating = data['rating']
             product.code = data['code']
@@ -55,6 +55,7 @@ class ProductService:
             product.discount = data['discount']
             product.description_1 = data['description_1']
             product.description_2 = data['description_2']
+            #product.updatedAt = func.now()
             app.session.add(product)
             app.session.commit()
         except SQLAlchemyError as e:
@@ -69,6 +70,7 @@ class ProductService:
             product = Products(
                 title=data['title'],
                 subtitle = data['subtitle'],
+                img = data['img'],
                 price=data['price'],
                 rating = data['rating'],
                 code = data['code'],
