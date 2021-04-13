@@ -55,7 +55,7 @@ class ProductService:
             product.discount = data['discount']
             product.description_1 = data['description_1']
             product.description_2 = data['description_2']
-            #product.updatedAt = func.now()
+            product.updatedAt = func.now()
             app.session.add(product)
             app.session.commit()
         except SQLAlchemyError as e:
@@ -78,7 +78,8 @@ class ProductService:
                 technology = data['technology'],
                 discount=data['discount'],
                 description_1=data['description_1'],
-                description_2=data['description_2']
+                description_2=data['description_2'],
+                updatedAt=func.now()
             )
             app.session.add(product)
             app.session.commit()

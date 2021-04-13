@@ -97,6 +97,7 @@ class Products(database.Base):
     hashtag = Column(String)
     technology = Column(ARRAY(String))
     discount = Column(Float)
-    #createdAt = Column(DateTime(timezone=True), nullable=False, server_default=func.now())
-    #updatedAt = Column(DateTime(timezone=True), nullable=False,
-    #                   onupdate=func.now())
+    createdAt = Column(DateTime(timezone=True), nullable=False, server_default=func.now())
+    updatedAt = Column(DateTime(timezone=True), nullable=False,
+                       onupdate=func.now())
+    deletedAt = Column(DateTime(timezone=True))
