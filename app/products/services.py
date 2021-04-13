@@ -44,17 +44,17 @@ class ProductService:
         try:
             product = app.session.query(Products).filter_by(id=product_id).first()
             print(product)
-            product.title = data['title']
-            product.subtitle = data['subtitle']
-            product.img = data['img']
-            product.price = data['price']
-            product.rating = data['rating']
-            product.code = data['code']
-            product.hashtag = data['hashtag']
-            product.technology = data['technology']
-            product.discount = data['discount']
-            product.description_1 = data['description_1']
-            product.description_2 = data['description_2']
+            product.title = data['title'] if 'title' in data else None
+            product.subtitle = data['subtitle'] if 'subtitle' in data else None
+            product.img = data['img'] if 'img' in data else None
+            product.price = data['price'] if 'price' in data else None
+            product.rating = data['rating'] if 'rating' in data else None
+            product.code = data['code'] if 'code' in data else None
+            product.hashtag = data['hashtag'] if 'hashtag' in data else None
+            product.technology = data['technology'] if 'technology' in data else None
+            product.discount = data['discount'] if 'discount' in data else None
+            product.description_1 = data['description_1'] if 'description_1' in data else None
+            product.description_2 = data['description_2'] if 'description_2' in data else None
             product.updatedAt = func.now()
             app.session.add(product)
             app.session.commit()
@@ -68,17 +68,17 @@ class ProductService:
         print('ProductService.create_product')
         try:
             product = Products(
-                title=data['title'],
-                subtitle = data['subtitle'],
-                img = data['img'],
-                price=data['price'],
-                rating = data['rating'],
-                code = data['code'],
-                hashtag = data['hashtag'],
-                technology = data['technology'],
-                discount=data['discount'],
-                description_1=data['description_1'],
-                description_2=data['description_2'],
+                title=data['title'] if 'title' in data else None,
+                subtitle = data['subtitle'] if 'subtitle' in data else None,
+                img = data['img'] if 'img' in data else None,
+                price=data['price'] if 'price' in data else None,
+                rating = data['rating'] if 'rating' in data else None,
+                code = data['code'] if 'code' in data else None,
+                hashtag = data['hashtag'] if 'hashtag' in data else None,
+                technology = data['technology'] if 'technology' in data else None,
+                discount=data['discount'] if 'discount' in data else None,
+                description_1=data['description_1'] if 'description_1' in data else None,
+                description_2=data['description_2'] if 'description_2' in data else None,
                 updatedAt=func.now()
             )
             app.session.add(product)

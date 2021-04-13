@@ -29,7 +29,11 @@ def test_update_product():
     print('testing /products/<product_id> PUT')
     id = "fa95b6ff-617b-4cb9-a658-d10e396b0ee6"
     with app.test_client() as c:
-        rv = c.put('/products/%s' % id, json={
+        data = {
+            "discount": None
+        }
+        '''
+        data = {
             # "id": product_id,
             "title": "Curaprox 5460 Ultra Soft",
             "subtitle": "Toothpaste",
@@ -42,7 +46,9 @@ def test_update_product():
             "discount": 42.5,
             "description_1": "Description 1",
             "description_2": "Description 2",
-        })
+        }
+        '''
+        rv = c.put('/products/%s' % id, json=data)
         print(rv.data)
         print('status: ', rv.status_code)
 
@@ -51,7 +57,11 @@ def test_create_product():
 
     # Create new user from sign in form
     with app.test_client() as c:
-        rv = c.post('/products', json={
+        data = {
+            "discount": None
+        }
+        '''
+        data = {
             "title": "Curaprox Perio Plus+ Support zubní pasta (CHX 0,09%), 75 ml",
             "subtitle": "Toothpaste",
             "img": "http://localhost:5000/assets/products/hxrvDnPTmSU.jpg",
@@ -63,7 +73,9 @@ def test_create_product():
             "discount": 25.4,
             "description_1": "Description 1",
             "description_2": "Description 2",
-        })
+        }
+        '''
+        rv = c.post('/products', json=data)
         print(rv.data)
         print('status: ', rv.status_code)
 
@@ -79,8 +91,8 @@ def test_delete_product():
 if __name__ == '__main__':
     #test_get_images()
     #test_get_all()
-    test_update_product()
+    # test_update_product()
     #test_get_product()
-    #test_create_product()
+    test_create_product()
     #test_delete_product()
     #test_get_product()
