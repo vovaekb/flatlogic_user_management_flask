@@ -180,9 +180,6 @@ class Auth:
             raise CustomError({'message': 'Error during generating email address verification token occurred %s\n' % str(e)})
 
         # send email
-        # TODO: Remove it. Use it for debug
-        if os.environ['FLASK_DEV']:
-            email = 'vladprivalov1990@gmail.com'
         print(email)
         email_sender = EmailSender(email, 'email_address_verification')
         data = {
@@ -206,9 +203,6 @@ class Auth:
             raise CustomError({'message': 'Error during generating password reset token occurred: %s\n' % str(e)})
 
         # send email
-        # TODO: Remove it. Use it for debug
-        if os.environ['FLASK_DEV']:
-            email = 'vladprivalov1990@gmail.com'
         print(email)
         email_type = None
         if type == 'register':
