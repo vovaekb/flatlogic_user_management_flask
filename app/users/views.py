@@ -1,5 +1,6 @@
 import os
 from flask import render_template, Blueprint, request, Response, jsonify
+from flask_cors import cross_origin
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.sql import func
 from app import app, APP_ROOT
@@ -23,6 +24,7 @@ def handle_error(e):
 
 # ROUTES
 @users_blueprint.route('/users', methods=['POST'])
+@cross_origin()
 @get_current_user
 def index_post(current_user):
     print('/users POST accepted')
@@ -35,6 +37,7 @@ def index_post(current_user):
     return Response(text, status=200)
 
 @users_blueprint.route('/users', methods=['GET'])
+@cross_origin()
 def index_get():
     print('/users GET accepted')
     '''
@@ -64,6 +67,7 @@ def index_get():
     return jsonify(data)
 
 @users_blueprint.route('/users/<user_id>', methods=['PUT', 'DELETE']) # 'GET',
+@cross_origin()
 @get_current_user
 def user(current_user, user_id):
     if request.method == 'PUT':
@@ -156,6 +160,7 @@ def user(current_user, user_id):
         return Response(text, status=200)
 
 @users_blueprint.route('/users/<user_id>', methods=['GET'])
+@cross_origin()
 def user_get(user_id):
     try:
         user = app.session.query(Users).filter_by(id=user_id).first()
@@ -179,6 +184,7 @@ def user_get(user_id):
     return jsonify(data)
 
 @users_blueprint.route('/users/autocomplete', methods=['GET'])
+@cross_origin()
 def autocomplete():
     query = str(request.args['query'])
     print(query)

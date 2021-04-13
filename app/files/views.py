@@ -1,5 +1,6 @@
 import os
 from flask import render_template, abort, Blueprint, request, Response, jsonify, send_file, send_from_directory
+from flask_cors import cross_origin
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.sql import func
 from app import app, ALLOWED_EXTENSIONS, FILE_FOLDER, APP_ROOT
@@ -26,6 +27,7 @@ def allowed_file(filename):
 
 # ROUTES
 @files_blueprint.route('/files/download', methods=['GET'])
+@cross_origin()
 def download():
     privateUrl = request.args['privateUrl']
     print(privateUrl)
@@ -43,6 +45,7 @@ def download():
 
 
 @files_blueprint.route('/files/upload/users/avatar', methods=['POST'])
+@cross_origin()
 def upload_users_avatar():
     folder = 'static/users/avatar'
     

@@ -1,6 +1,7 @@
 import os
 import flask
 from flask import Flask, _app_ctx_stack, render_template, request, jsonify, Response
+from flask_cors import CORS, cross_origin
 from flask_mail import Mail
 import jwt
 from functools import wraps, update_wrapper
@@ -18,10 +19,11 @@ ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg'])
 print(APP_ROOT)
 
 app = Flask(__name__)
+CORS(app)
 app.session = scoped_session(SessionLocal, scopefunc=_app_ctx_stack.__ident_func__)
 app.secret_key = os.environ.get("FN_FLASK_SECRET_KEY", default=False)
 
-if os.environ['FLASK_DEV']:
+if os.environ['FLASK_DEV'] == True:
     print("Dev env")
     app.config.from_object(DevConfig)
 else:

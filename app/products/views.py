@@ -1,5 +1,6 @@
 import os
 from flask import render_template, Blueprint, request, jsonify, Response
+from flask_cors import cross_origin
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.sql import func
 from app import app, CustomError
@@ -20,12 +21,14 @@ def handle_error(e):
 
 # ROUTES
 @products_blueprint.route('/products/images-list', methods=['GET'])
+@cross_origin()
 def images_list():
     payload = ProductService.get_images()
     return jsonify(payload)
 
 
 @products_blueprint.route('/products', methods=['GET', 'POST'])
+@cross_origin()
 def index():
     if request.method == 'POST':
         data = request.get_json()
@@ -38,6 +41,7 @@ def index():
 
 
 @products_blueprint.route('/products/<product_id>', methods=['GET', 'PUT', 'DELETE'])
+@cross_origin()
 def product(product_id):
     if request.method == 'PUT':
         data = request.get_json()
