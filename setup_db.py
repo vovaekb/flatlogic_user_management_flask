@@ -28,7 +28,7 @@ def session_scope():
 def reset_database():
     print('Reset database')
     Base.metadata.drop_all(engine)
-    Base.metadata.create_all(engine)
+    # Base.metadata.create_all(engine)
 
 def create_database():
     print('Create database')
@@ -75,5 +75,7 @@ def seed_users():
         s.add(user)
 
 if __name__ == '__main__':
+    #reset_database()
     create_database()
-
+    seed_products()
+    seed_users()
