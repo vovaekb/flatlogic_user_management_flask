@@ -15,16 +15,17 @@ First you need to create database called 'user_management'. Default PostgreSQL u
 SQLALCHEMY_DATABASE_URI = "postgres://postgres:123@localhost/user_management"
 ```
 
+Set environment variable for Development mode:
+```bash
+export FLASK_DEV=true
+```
+
 To setup database run setup_db.py script:
 ```bash
 python setup_db.py
 ```
 This script will create all necessary tables in database for data model defined in app/models.py.
 
-Set environment variable for Development mode:
-```bash
-export FLASK_DEV=true
-```
 Run server:
 ```bash
 python run.py
