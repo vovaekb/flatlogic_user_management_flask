@@ -22,6 +22,17 @@ def handle_error(e):
     return Response(details['message'], status=200, mimetype='text/plain')
 
 
+def build_preflight_response():
+    response = Response()
+    response.headers.add("Access-Control-Allow-Origin", "*")
+    response.headers.add('Access-Control-Allow-Headers', "*")
+    response.headers.add('Access-Control-Allow-Methods', "*")
+    return response
+
+def build_actual_response(response):
+    response.headers.add("Access-Control-Allow-Origin", "*")
+    return response
+
 # ROUTES
 @auth_blueprint.route('/auth/password-reset', methods=['PUT'])
 @cross_origin(supports_credentials=True)
@@ -64,11 +75,16 @@ def send_password_reset_email():
     payload = True
     return Response(str(payload), status=200)
 
-@auth_blueprint.route('/auth/signin/local', methods=['POST'])
+@auth_blueprint.route('/auth/signin/local', methods=['OPTIONS', 'POST'])
 @cross_origin(supports_credentials=True)
 def signin_local():
-    payload = Auth.signin(request.json['email'], request.json['password'])
-    return Response(payload, status=200)
+    if request.method == 'OPTIONS':
+        return build_preflight_response()
+    elif request.method == 'POST':
+        payload = Auth.signin(request.json['email'], request.json['password'])
+        resp = Response(payload, status=200)
+        build_actual_response(resp)
+        return resp # Response(payload, status=200)
 
 @auth_blueprint.route('/auth/signup', methods=['POST'])
 @cross_origin(supports_credentials=True)
