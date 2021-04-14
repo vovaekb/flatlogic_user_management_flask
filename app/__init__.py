@@ -19,7 +19,7 @@ ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg'])
 print(APP_ROOT)
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, supports_credentials=True)
 app.session = scoped_session(SessionLocal, scopefunc=_app_ctx_stack.__ident_func__)
 app.secret_key = os.environ.get("FN_FLASK_SECRET_KEY", default=False)
 

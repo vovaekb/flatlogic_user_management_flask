@@ -27,7 +27,7 @@ def allowed_file(filename):
 
 # ROUTES
 @files_blueprint.route('/files/download', methods=['GET'])
-@cross_origin()
+@cross_origin(supports_credentials=True)
 def download():
     privateUrl = request.args['privateUrl']
     print(privateUrl)
@@ -45,7 +45,7 @@ def download():
 
 
 @files_blueprint.route('/files/upload/users/avatar', methods=['POST'])
-@cross_origin()
+@cross_origin(supports_credentials=True)
 def upload_users_avatar():
     folder = 'static/users/avatar'
     

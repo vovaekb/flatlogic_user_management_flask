@@ -10,6 +10,6 @@ def resource_not_found(e):
     return jsonify(error=str(e)), 404
 
 @analytics_blueprint.route('/analytics', methods=['GET'])
-@cross_origin()
+@cross_origin(supports_credentials=True)
 def index():
     return jsonify(mock)
