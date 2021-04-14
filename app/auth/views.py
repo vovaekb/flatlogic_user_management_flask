@@ -75,16 +75,13 @@ def send_password_reset_email():
     payload = True
     return Response(str(payload), status=200)
 
-@auth_blueprint.route('/auth/signin/local', methods=['OPTIONS', 'POST'])
+@auth_blueprint.route('/auth/signin/local', methods=['POST'])
 @cross_origin(supports_credentials=True)
 def signin_local():
-    if request.method == 'OPTIONS':
-        return build_preflight_response()
-    elif request.method == 'POST':
-        payload = Auth.signin(request.json['email'], request.json['password'])
-        resp = Response(payload, status=200)
-        build_actual_response(resp)
-        return resp # Response(payload, status=200)
+    payload = Auth.signin(request.json['email'], request.json['password'])
+    resp = Response(payload, status=200)
+    build_actual_response(resp)
+    return resp # Response(payload, status=200)
 
 @auth_blueprint.route('/auth/signup', methods=['POST'])
 @cross_origin(supports_credentials=True)
