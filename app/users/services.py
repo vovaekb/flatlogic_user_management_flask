@@ -123,3 +123,4 @@ class UserService:
                     file_dict = file_schema.dump(file)
                     user_dict['avatars'].append(file_dict)
             users_list.append(user_dict)
+        return users_list
