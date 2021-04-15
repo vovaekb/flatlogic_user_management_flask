@@ -38,7 +38,7 @@ def password_reset(current_user):
 @get_current_user
 def password_update(current_user):
     print(current_user)
-    user = Auth.password_update(request.json['current_password'], request.json['new_password'], current_user)
+    user = Auth.password_update(request.json['currentPassword'], request.json['newPassword'], current_user)
     data = user_schema.dump(user)
     return jsonify(data)
 
