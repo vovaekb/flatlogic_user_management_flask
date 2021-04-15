@@ -99,10 +99,10 @@ from app.users.views import users_blueprint
 from app.products.views import products_blueprint
 from app.analytics.views import analytics_blueprint
 
-app.register_blueprint(auth_blueprint)
-app.register_blueprint(files_blueprint)
-app.register_blueprint(users_blueprint)
-app.register_blueprint(products_blueprint)
-app.register_blueprint(analytics_blueprint)
+app.register_blueprint(auth_blueprint, url_prefix='/api')
+app.register_blueprint(files_blueprint, url_prefix='/api')
+app.register_blueprint(users_blueprint, url_prefix='/api')
+app.register_blueprint(products_blueprint, url_prefix='/api')
+app.register_blueprint(analytics_blueprint, url_prefix='/api')
 
 # from app import views
