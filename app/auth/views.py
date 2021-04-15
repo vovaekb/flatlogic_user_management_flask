@@ -23,13 +23,15 @@ def handle_error(e):
 
 
 def build_preflight_response():
+    print('build_preflight_response')
     response = Response()
     response.headers.add("Access-Control-Allow-Origin", "*")
     response.headers.add('Access-Control-Allow-Headers', "*")
-    response.headers.add('Access-Control-Allow-Methods', "*")
+    response.headers.add('Access-Control-Allow-Methods', "OPTIONS, POST") # "*")
     return response
 
 def build_actual_response(response):
+    print('build_actual_response')
     response.headers.add("Access-Control-Allow-Origin", "*")
     return response
 
@@ -75,9 +77,16 @@ def send_password_reset_email():
     payload = True
     return Response(str(payload), status=200)
 
-@auth_blueprint.route('/auth/signin/local', methods=['POST'])
+@auth_blueprint.route('/api/auth/signin/local', methods=['POST']) #, 'OPTIONS'])
 @cross_origin(supports_credentials=True)
 def signin_local():
+    '''
+    if request.method == 'OPTIONS':
+        print('OPTIONS ACCEPTED')
+        return build_preflight_response()
+    if request.method == 'POST':
+    '''
+    print('POST ACCEPTED')
     payload = Auth.signin(request.json['email'], request.json['password'])
     resp = Response(payload, status=200)
     build_actual_response(resp)
