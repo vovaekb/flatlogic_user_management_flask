@@ -78,6 +78,7 @@ class UserService:
         except Exception as e:
             print("Error occurred")
             print(str(e))
+            app.session.rollback()
             raise CustomError({'message': 'Error occurred %s\n' % str(e)})
 
         if emails_to_invite and len(emails_to_invite):
@@ -92,6 +93,7 @@ class UserService:
             UserDBApi.update(user_id, data, current_user)
         except SQLAlchemyError as e:
             print("Unable to update product to database.")
+            app.session.rollback()
             raise CustomError({'message': 'Error when updating user in database: %s\n' % str(e)})
 
     def remove(user_id: str, current_user: Users):
@@ -110,9 +112,11 @@ class UserService:
         users = users.order_by(Users.email.asc()).all()
         print(users)
         users_dict = users_schema.dump(users)
+        #print(users_dict)
         users_list = []
         for user_dict in users_dict:
             user = app.session.query(Users).filter_by(id=user_dict['id']).first()
+            #print(user)
             user_dict['avatars'] = []
             if len(user.avatar):
                 print('avatar is not empty list')

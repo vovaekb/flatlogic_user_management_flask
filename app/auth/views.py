@@ -65,7 +65,7 @@ def send_password_reset_email():
     payload = True
     return Response(str(payload), status=200)
 
-@auth_blueprint.route('/api/auth/signin/local', methods=['POST']) #, 'OPTIONS'])
+@auth_blueprint.route('/auth/signin/local', methods=['POST']) #, 'OPTIONS'])
 @cross_origin(supports_credentials=True)
 def signin_local():
     print('POST ACCEPTED')

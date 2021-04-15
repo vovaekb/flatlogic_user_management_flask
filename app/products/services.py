@@ -26,7 +26,8 @@ class ProductService:
         return products_dict
 
     def get_product(product_id):
-        print('ProductService.get_products()')
+        print('ProductService.get_product()')
+        print(product_id)
         try:
             product = app.session.query(Products).filter_by(id=product_id).first()
             print(product.title)
@@ -35,6 +36,7 @@ class ProductService:
         except SQLAlchemyError as e:
             print("Unable to get product in database.")
             error = e.__dict__['orig']
+            app.session.rollback()
             # raise custom error
             raise CustomError({'message': 'Error when reading user in database: %s\n' % error})
         return data
@@ -61,6 +63,7 @@ class ProductService:
         except SQLAlchemyError as e:
             print("Unable to update product to database.")
             error = e.__dict__['orig']
+            app.session.rollback()
             # raise custom error
             raise CustomError({'message': 'Error when saving rate to database: %s' % error})
 
@@ -86,6 +89,7 @@ class ProductService:
         except SQLAlchemyError as e:
             print("Unable to add order to database.")
             error = e.__dict__['orig']
+            app.session.rollback()
             # raise custom error
             raise CustomError({'message': 'Error when saving rate to database: %s' % error})
         product = product_schema.dump(product)

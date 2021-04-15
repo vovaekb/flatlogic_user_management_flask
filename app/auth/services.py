@@ -128,6 +128,7 @@ class Auth:
         return token
     
     def signin(email: str, password: str):
+        print('\nAuth.signin')
         user = app.session.query(Users).filter_by(email=email).first()
         print(user)
 
@@ -160,6 +161,7 @@ class Auth:
             "id": str(user.id),
             "email": str(user.email)
         }
+        print(data)
         # return JWT sign with data
         token = generate_token(data)
         return token
@@ -172,7 +174,7 @@ class Auth:
         try:
             token = UserDBApi.generate_email_verification_token(email)
             print('')
-            link = f'{host}/auth/verify-email?token={token}'
+            link = f'{host}/api/auth/verify-email?token={token}'
             #print(link)
         except Exception as e:
             print(str(e))
@@ -196,7 +198,7 @@ class Auth:
             })
         try:
             token = UserDBApi.generate_password_reset_token(email)
-            link = f'{host}/auth/password-reset?token={token}'
+            link = f'{host}/api/auth/password-reset?token={token}'
             print(link)
         except Exception as e:
             print(str(e))
