@@ -1,5 +1,6 @@
 import os
 import flask
+import json
 from flask import Flask, _app_ctx_stack, render_template, request, jsonify, Response
 from flask_cors import CORS, cross_origin
 from flask_mail import Mail
@@ -53,10 +54,12 @@ def get_current_user(f):
 
             try:
                 data = jwt.decode(token, app.config['SECRET_KEY'], algorithms='HS256')
+                user = json.loads(data['user'])
                 print(data)
+                print(user)
                 current_user = app.session.query(Users) \
-                    .filter(Users.id == data['id']) \
-                    .filter(Users.email==data['email']).first()
+                    .filter(Users.id == user['id']) \
+                    .filter(Users.email==user['email']).first()
                 print(current_user)
             except Exception as e:
                 print('Error when decoding token: ', str(e))
