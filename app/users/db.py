@@ -12,15 +12,16 @@ from app.services.encoding import generate_token
 class UserDBApi:
     def create(data, current_user=None):
         print('UserDBApi.create()')
+        print(data)
         user = Users(
-            id=data['id'] or None,
-            firstName=data['firstName'] or None,
-            lastName=data['lastName'] or None,
+            id=data.get('id', None),
+            firstName=data.get('firstName', None),
+            lastName=data.get('lastName', None),
             emailVerified=True,
-            phoneNumber=data['phoneNumber'] or None,
-            authenticationUid=data['authenticationUid'] or None,
+            phoneNumber=data.get('phoneNumber', None),
+            authenticationUid=data.get('authenticationUid', None),
             email=data['email'],
-            role=data['role'] or "user",
+            role=data.get('role', "user"),
             # importHash = data['importHash'] or None,
             createdById=current_user.id if not current_user is None else None,
             createdBy=current_user,
@@ -28,13 +29,13 @@ class UserDBApi:
             updatedBy=current_user,
             updatedAt=func.now()
         )
-        user.disabled = data.get('disabled', False) or False
+        user.disabled = data.get('disabled', False)
         user.emailVerified = True
         # user.provider = data['provider'] if 'provider' in data else None
-        user.password = data['password'] if 'password' in data else None
+        user.password = data.get('password', None)
         app.session.add(user)
         app.session.flush()
-        if not data['avatar'] is None:
+        if 'avatar' in data and not data['avatar'] is None:
             print('image is not None')
             images = data['avatar']
             for image in images:
@@ -72,6 +73,7 @@ class UserDBApi:
 
     def update(user_id: str, data: dict, current_user: Users):
         print('UserDBApi.update()')
+        print(data)
         print(user_id)
         user = app.session.query(Users).filter_by(id=user_id).first()
         if not user:
