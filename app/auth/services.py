@@ -156,10 +156,13 @@ class Auth:
 
         token_expires_at = datetime.datetime.utcnow() + datetime.timedelta(days=0, hours=6)
         data = {
-            "exp": token_expires_at,
-            "iat": datetime.datetime.utcnow(),
-            "id": str(user.id),
-            "email": str(user.email)
+            "user":
+                {
+                    "exp": token_expires_at,
+                    "iat": datetime.datetime.utcnow(),
+                    "id": str(user.id),
+                    "email": str(user.email)
+                }
         }
         print(data)
         # return JWT sign with data
