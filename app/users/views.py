@@ -29,9 +29,10 @@ def handle_error(e):
 def index_post(current_user):
     print('/users POST accepted')
     data = request.get_json()
+    print(data)
     host = request.host # request.host_url
     print(host)
-    UserService.create(data, current_user, host, True)
+    UserService.create(data['data'], current_user, host, True)
     # TODO: Use host (http referer header for sending password reset email )
     text = 'true'
     return Response(text, status=200)
@@ -75,7 +76,7 @@ def user(current_user, user_id):
         print('PUT accepted')
         print(user_id)
         print(data)
-        UserService.update(user_id, data, current_user)
+        UserService.update(user_id, data['data'], current_user)
         '''
         try:
             # print('PUT accepted')

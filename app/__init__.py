@@ -47,7 +47,7 @@ def get_current_user(f):
     def decorator(*args, **kwargs):
         print('get_current_user')
 
-        if 'Authorization' in request.headers:
+        if 'Authorization' in request.headers and len(request.headers['Authorization'].split(' ')) > 1:
             token = request.headers['Authorization'].split(' ')[1]
             print('token: ', token)
 
