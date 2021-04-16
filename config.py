@@ -11,7 +11,7 @@ providers = {
 class Config:
     UPLOAD_FOLDER = 'static/'
     MAX_CONTENT_LENGTH = 10 * 1024 * 1024
-    SECRET_KEY = "\x88\xc7\x12I\xc1\x8b\xcf\xc5\x16\xc2\xefG\x92}\x8e\xe84Y\x19\x8d\xc7\xdd9\xbd"
+    SECRET_KEY = "HUEyqESqgQ1yTwzVlO6wprC9Kf1J1xuA" # "\x88\xc7\x12I\xc1\x8b\xcf\xc5\x16\xc2\xefG\x92}\x8e\xe84Y\x19\x8d\xc7\xdd9\xbd"
     APP_TITLE = 'Application'
     MAIL_SERVER = "smtp.googlemail.com" # os.environ.get('MAIL_SERVER')
     MAIL_PORT = 587
