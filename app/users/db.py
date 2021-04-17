@@ -73,12 +73,12 @@ class UserDBApi:
 
     def update(user_id: str, data: dict, current_user: Users):
         print('UserDBApi.update()')
-        print(data)
-        print(user_id)
+        #print(data)
+        #print(user_id)
         user = app.session.query(Users).filter_by(id=user_id).first()
         if not user:
             raise CustomError({'message': 'Error when updating user in database: user not found\n'})
-        print(user.lastName)
+        #print(user.lastName)
         user.firstName = data['firstName'] or None
         user.lastName = data['lastName'] or None
         user.phoneNumber = data['phoneNumber'] or None
@@ -119,13 +119,15 @@ class UserDBApi:
                     app.session.add(file)
                     app.session.flush()
                     # file = app.session.query(Files).filter_by(id=image_id).first()
-                    print(file.name)
+                    #print(file.name)
                     user.avatar.append(file)
             # remove images excluded from avatar
             print('remove images excluded')
             for image_id in image_ids:
                 if not image_id in query_image_ids:
+                    file = app.session.query(Files).filter_by(id=image_id).first()
                     file_path = os.path.join(APP_ROOT, app.config['UPLOAD_FOLDER'], file.privateUrl)
+                    print(file_path)
                     user.avatar.remove(file)
                     # Remove file from DB and disk
                     app.session.delete(file)

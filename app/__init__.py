@@ -54,7 +54,7 @@ def get_current_user(f):
 
             try:
                 data = jwt.decode(token, app.config['SECRET_KEY'], algorithms='HS256')
-                user = json.loads(data['user'])
+                user = data['user'] 
                 print(data)
                 print(user)
                 current_user = app.session.query(Users) \
