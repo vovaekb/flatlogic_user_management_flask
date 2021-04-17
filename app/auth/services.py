@@ -1,6 +1,7 @@
 import os
 import datetime
 import json
+from json import JSONEncoder
 import flask
 from flask import render_template
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -164,13 +165,13 @@ class Auth:
 
         token_expires_at = datetime.datetime.utcnow() + datetime.timedelta(days=0, hours=6)
         user_dict = {
-                    "exp": token_expires_at,
-                    "iat": datetime.datetime.utcnow(),
                     "id": str(user.id),
                     "email": str(user.email)
                 }
         data = {
-            "user": json.dumps(user_dict, default = myconverter)
+            "iat": datetime.datetime.utcnow(),
+            "exp": token_expires_at,
+            "user": user_dict 
         }
         print(data)
         # return JWT sign with data
