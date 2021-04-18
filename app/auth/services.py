@@ -286,7 +286,6 @@ class Auth:
         UserDBApi.update(current_user.id, data, current_user)
 
     def signin_google_callback(request_url: str):
-        print('signin_google_callback')
 
         session = OAuth2Session(CLIENT_ID, CLIENT_SECRET,
                                 scope=AUTHORIZATION_SCOPE,
@@ -322,12 +321,15 @@ class Auth:
         print(user.id)
 
         token_expires_at = datetime.datetime.utcnow() + datetime.timedelta(days=0, hours=6)
-        data = {
-            "exp": token_expires_at,
-            "iat": datetime.datetime.utcnow(),
+        user_dict = {
             "id": str(user.id),
             "email": str(user.email),
             "name": user_info['name']
+        }
+        data = {
+            "exp": token_expires_at,
+            "iat": datetime.datetime.utcnow(),
+            "user": user_dict
         }
         # return JWT sign with data
         token = generate_token(data)

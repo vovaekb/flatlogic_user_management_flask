@@ -16,6 +16,7 @@ auth_blueprint = Blueprint('auth', __name__, template_folder='templates')
 user_schema = UsersSchema()
 
 
+
 @auth_blueprint.errorhandler(CustomError)
 def handle_error(e):
     details = e.args[0]
@@ -163,7 +164,7 @@ def signin_google_callback():
     # Generate token
     token = Auth.signin_google_callback(request.url)
 
-    redirect_url = '%s/login?token=%s' % (app_url, token)
+    redirect_url = '%s/#/login?token=%s' % (app_url, token)
 
     # TODO: redirect to /login endpoint
     return redirect(redirect_url, code=302)
