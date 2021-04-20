@@ -19,9 +19,6 @@ from app.users.db import UserDBApi
 from app.auth import ACCESS_TOKEN_URI, AUTHORIZATION_SCOPE, AUTH_REDIRECT_URI, AUTH_STATE_KEY, CLIENT_ID, CLIENT_SECRET, AUTH_TOKEN_KEY
 
 
-def myconverter(o):
-    if isinstance(o, datetime.datetime):
-        return o.__str__()
 
 def is_logged_in():
     return True if AUTH_TOKEN_KEY in flask.session else False
@@ -82,13 +79,13 @@ class Auth:
 
             token_expires_at = datetime.datetime.utcnow() + datetime.timedelta(days=0, hours=6)
             user_dict = {
-                "exp": token_expires_at,
-                "iat": datetime.datetime.utcnow(),
                 "id": str(user.id),
                 "email": str(user.email)
             }
             data = {
-                "user": json.dumps(user_dict, default=myconverter)
+                "exp": token_expires_at,
+                "iat": datetime.datetime.utcnow(),
+                "user": user_dict
             }
             # return JWT sign with data
             token = generate_token(data)
