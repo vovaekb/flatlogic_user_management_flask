@@ -26,7 +26,7 @@ def allowed_file(filename):
         filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 # ROUTES
-@files_blueprint.route('/files/download', methods=['GET'])
+@files_blueprint.route('/file/download', methods=['GET'])
 @cross_origin(supports_credentials=True)
 def download():
     privateUrl = request.args['privateUrl']
@@ -44,7 +44,7 @@ def download():
     # return send_from_directory(app.config['UPLOAD_FOLDER'], privateUrl)
 
 
-@files_blueprint.route('/files/upload/users/avatar', methods=['POST'])
+@files_blueprint.route('/file/upload/users/avatar', methods=['POST'])
 @cross_origin(supports_credentials=True)
 def upload_users_avatar():
     folder = 'static/users/avatar'
@@ -53,12 +53,12 @@ def upload_users_avatar():
         abort(500)
     
     file = request.files['file']
-    print(request.files['file'])
+    #print(request.files['file'])
     
     if file and allowed_file(file.filename):
-        filename = file.filename # secure_filename(file.filename)
-        # privateUrl = os.path.join(app.config['UPLOAD_FOLDER'], folder, filename)
+        filename = request.form['filename']
         privateUrl = os.path.join(APP_ROOT, folder, filename)
-        print(privateUrl)
+        #print(privateUrl)
+        #print('\n')
         file.save(privateUrl)
     return Response('OK', status=200)
