@@ -17,6 +17,7 @@ from app.services.email import EmailSender
 from app.services.encoding import generate_token
 from app.users.db import UserDBApi
 from app.auth import ACCESS_TOKEN_URI, AUTHORIZATION_SCOPE, AUTH_REDIRECT_URI, AUTH_STATE_KEY, CLIENT_ID, CLIENT_SECRET, AUTH_TOKEN_KEY
+from app.auth import ValidationError, ForbiddenError
 
 
 
@@ -62,10 +63,10 @@ class Auth:
         if user:
             print(user.authenticationUid)
             if user.authenticationUid:
-                raise CustomError({'message': 'Error when registering user in database: Email already in use\n' })
+                raise ValidationError({'message': 'Error when registering user in database: Email already in use\n' })
 
             if user.disabled:
-                raise CustomError({'message': 'Error when registering user in database: User disabled \n' })
+                raise ValidationError({'message': 'Error when registering user in database: User disabled \n' })
 
             # update password
             user = UserDBApi.update_password(user.id, password_hash, current_user)
@@ -139,13 +140,13 @@ class Auth:
         print(user)
 
         if not user:
-            raise CustomError({'message': 'Error when signing in: User not found\n' })
+            raise ValidationError({'message': 'Error when signing in: User not found\n' })
 
         if user.disabled:
-            raise CustomError({'message': 'Error when signing in: User disabled\n'})
+            raise ValidationError({'message': 'Error when signing in: User disabled\n'})
 
         if not user.password:
-            raise CustomError({'message': 'Error when signing in: Wrong password\n'})
+            raise ValidationError({'message': 'Error when signing in: Wrong password\n'})
 
         # not email sender configured
         if not EmailSender.isConfigured():
@@ -154,11 +155,11 @@ class Auth:
             app.session.commit()
 
         if not user.emailVerified:
-            raise CustomError({'message': 'Error when signing in: User not verified\n'})
+            raise ValidationError({'message': 'Error when signing in: User not verified\n'})
 
         # check if entered password match the user password saved in BD
         if not check_password_hash(user.password, password):
-            raise CustomError({'message': 'Error when signing in: Wrong password\n'})
+            raise ValidationError({'message': 'Error when signing in: Wrong password\n'})
 
         token_expires_at = datetime.datetime.utcnow() + datetime.timedelta(days=0, hours=6)
         user_dict = {
@@ -178,7 +179,7 @@ class Auth:
     def send_email_address_verification_email(email: str, host: str):
         print('Auth.send_email_address_verification_email')
         if not EmailSender.isConfigured():
-            raise CustomError({'message': 'Error when sending email: Email provider is not configured. Please configure it in config.py\n'})
+            raise CustomError({'message': 'Email provider is not configured. Please configure it in config.py\n'})
         # Generate email verification token
         try:
             token = UserDBApi.generate_email_verification_token(email)
@@ -187,8 +188,7 @@ class Auth:
             #print(link)
         except Exception as e:
             print(str(e))
-            # Validation Error
-            raise CustomError({'message': 'Error during generating email address verification token occurred %s\n' % str(e)})
+            raise ValidationError({'message': 'Email address verification email error: %s\n' % str(e)})
 
         # send email
         print(email)
@@ -203,15 +203,15 @@ class Auth:
         print('Auth.send_password_reset_email')
         if not EmailSender.isConfigured():
             raise CustomError({
-                'message': 'Error when sending email: Email provider is not configured. Please configure it in config.py\n'
+                'message': 'Email provider is not configured. Please configure it in config.py\n'
             })
         try:
             token = UserDBApi.generate_password_reset_token(email)
-            link = f'{host}/api/auth/password-reset?token={token}'
+            link = f'{host}/password-reset?token={token}#/login'
             print(link)
         except Exception as e:
             print(str(e))
-            raise CustomError({'message': 'Error during generating password reset token occurred: %s\n' % str(e)})
+            raise ValidationError({'message': 'Password reset error: %s\n' % str(e)})
 
         # send email
         print(email)
@@ -230,14 +230,14 @@ class Auth:
 
     def password_update(current_password: str, new_password: str, current_user: Users = None):
         print('Auth.password_update')
-        if not current_user:
-            raise CustomError({'message': 'Error when updating password: Forbidden\n'})
+        if not current_user: 
+            raise ForbiddenError({'message': 'Password update error: Forbidden\n'})
 
-        if not check_password_hash(current_user.password, current_password):
-            raise CustomError({'message': 'Error when updating password: Wrong password\n'})
+        if not check_password_hash(current_user.password, current_password): 
+            raise ValidationError({'message': 'Password update error: Wrong password\n'})
 
         if check_password_hash(current_user.password, new_password):
-            raise CustomError({'message': 'Error when updating password: The same password\n'})
+            raise ValidationError({'message': 'Password update error: The same password\n'})
 
         password_hash = generate_password_hash(new_password, method='sha256')
         print(password_hash)
@@ -253,7 +253,7 @@ class Auth:
             .first()
         print(user)
         if not user:
-            raise CustomError({'message': 'Error when reset password: invalid token\n'})
+            raise ValidationError({'message': 'Password reset error: Invalid token\n'})
 
         password_hash = generate_password_hash(password, method='sha256')
         print(password_hash)
@@ -270,7 +270,7 @@ class Auth:
             .first()
         print(user)
         if not user:
-            raise CustomError({'message': 'Error when verifying email: Invalid token\n' })
+            raise ValidationError({'message': 'Verify email error: Invalid token\n' })
 
         # mark email verified
         UserDBApi.mark_email_verified(user.id, current_user)

@@ -8,6 +8,7 @@ from app.serializers import UsersSchema
 from app import CustomError, get_current_user, no_cache
 from app.auth.services import Auth, EmailSender, is_logged_in
 from app.auth import AUTHORIZATION_URL, ACCESS_TOKEN_URI, AUTHORIZATION_SCOPE, AUTH_REDIRECT_URI, AUTH_STATE_KEY, BASE_URI, CLIENT_ID, CLIENT_SECRET, AUTH_TOKEN_KEY
+from app.auth import ValidationError, ForbiddenError
 
 # CONFIG
 
@@ -20,8 +21,17 @@ user_schema = UsersSchema()
 @auth_blueprint.errorhandler(CustomError)
 def handle_error(e):
     details = e.args[0]
-    return Response(details['message'], status=200, mimetype='text/plain')
+    return Response(details['message'], status=500, mimetype='text/plain')
 
+@auth_blueprint.errorhandler(ValidationError)
+def handle_validation_error(e):
+    details = e.args[0]
+    return Response(details['message'], status=400, mimetype='text/plain') 
+
+@auth_blueprint.errorhandler(ForbiddenError)
+def handle_forbidden_error(e):
+    details = e.args[0]
+    return Response(details['message'], status=403, mimetype='text/plain') 
 
 
 # ROUTES

@@ -9,3 +9,13 @@ CLIENT_ID = os.environ.get("FN_CLIENT_ID", default=False)
 CLIENT_SECRET = os.environ.get("FN_CLIENT_SECRET", default=False)
 AUTH_TOKEN_KEY = 'auth_token'
 AUTH_STATE_KEY = 'auth_state'
+
+# Error handlers
+class ValidationError(Exception):
+    pass
+
+
+# Error handlers
+class ForbiddenError(Exception):
+    pass
+
