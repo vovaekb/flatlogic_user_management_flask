@@ -42,6 +42,13 @@ mail = Mail(app)
 class CustomError(Exception):
     pass
 
+# Error handlers
+class ValidationError(Exception):
+    pass
+
+# Error handlers
+class ForbiddenError(Exception):
+    pass
 
 def get_current_user(f):
     @wraps(f)

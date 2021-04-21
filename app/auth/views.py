@@ -5,17 +5,14 @@ from flask_cors import cross_origin
 from authlib.client import OAuth2Session
 from app import app
 from app.serializers import UsersSchema
-from app import CustomError, get_current_user, no_cache
+from app import CustomError, ValidationError, ForbiddenError, get_current_user, no_cache
 from app.auth.services import Auth, EmailSender, is_logged_in
 from app.auth import AUTHORIZATION_URL, ACCESS_TOKEN_URI, AUTHORIZATION_SCOPE, AUTH_REDIRECT_URI, AUTH_STATE_KEY, BASE_URI, CLIENT_ID, CLIENT_SECRET, AUTH_TOKEN_KEY
-from app.auth import ValidationError, ForbiddenError
 
 # CONFIG
 
-
 auth_blueprint = Blueprint('auth', __name__, template_folder='templates')
 user_schema = UsersSchema()
-
 
 
 @auth_blueprint.errorhandler(CustomError)

@@ -3,7 +3,7 @@ from sqlalchemy.sql import func
 from sqlalchemy.exc import SQLAlchemyError
 from app import app, mail
 from app.models import Users, Files
-from app import CustomError
+from app import CustomError, ValidationError, ForbiddenError
 from app.users.db import UserDBApi
 from app.auth.services import Auth
 from app.serializers import UsersSchema, FilesSchema
@@ -24,7 +24,7 @@ class UserService:
                 # Check if user already exists
                 user = app.session.query(Users).filter_by(email=data['email']).first()
                 if user:
-                    raise CustomError({'message': 'Error when creating user to database: user already exists\n'})
+                    raise ValidationError({'message': 'Error when creating user to database: user already exists\n'})
 
                 UserDBApi.create(data, current_user)
                 '''
@@ -98,9 +98,9 @@ class UserService:
 
     def remove(user_id: str, current_user: Users):
         if current_user.id == user_id:
-            raise CustomError({'message': 'Error when removing user in database: deleting himself\n'})
+            raise ValidationError({'message': 'Remove user error: Deleting himself\n'})
         if not current_user.role == 'admin':
-            raise CustomError({'message': 'Error when removing user in database: forbidden action for not admin user\n'})
+            raise ValidationError({'message': 'Remove user error: Forbidden\n'})
         user = app.session.query(Users).filter_by(id=user_id).first()
         print(user.lastName)
         app.session.delete(user)
