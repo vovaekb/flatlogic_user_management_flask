@@ -184,7 +184,7 @@ class Auth:
         try:
             token = UserDBApi.generate_email_verification_token(email)
             print('')
-            link = f'{host}/#/verify-email?token={token}'
+            link = f'{host}#/verify-email?token={token}'
             #print(link)
         except Exception as e:
             print(str(e))
@@ -207,7 +207,7 @@ class Auth:
             })
         try:
             token = UserDBApi.generate_password_reset_token(email)
-            link = f'{host}/password-reset?token={token}#/login'
+            link = f'{host}password-reset?token={token}#/login'
             print(link)
         except Exception as e:
             print(str(e))

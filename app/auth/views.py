@@ -62,7 +62,9 @@ def send_email_address_verification_email(current_user):
     if not current_user:
         raise CustomError({'message': 'Error when sending email address verification email: Forbidden\n'})
     # not presenting and not passed to send_email_address_verification_email() in NodeJS implementation
-    host = f'http://{request.host}'
+    referrer = request.headers.get("Referer")
+    #print(referrer)
+    host = f'http://{referrer}'
     Auth.send_email_address_verification_email(current_user.email, host)
     payload = True
     return Response(str(payload), status=200)
@@ -71,7 +73,9 @@ def send_email_address_verification_email(current_user):
 @cross_origin(supports_credentials=True)
 def send_password_reset_email():
     print('POST query to /auth/send-email-address-verification-email accepted')
-    host = f'http://{request.host}'
+    referrer = request.headers.get("Referer")
+    print(referrer)
+    host = f'http://{referrer}'
     Auth.send_password_reset_email(request.json['email'], host, 'register')
     payload = True
     return Response(str(payload), status=200)
@@ -88,7 +92,9 @@ def signin_local():
 @cross_origin(supports_credentials=True)
 @get_current_user
 def signup(current_user):
-    host = f'http://{request.host}'
+    referrer = request.headers.get("Referer")
+    #print(referrer)
+    host = f'http://{referrer}'
     payload = Auth.signup(request.json['email'], request.json['password'], host, current_user)
 
     return Response(payload, status=200)
