@@ -4,7 +4,7 @@ from sqlalchemy.sql import func
 from sqlalchemy.exc import SQLAlchemyError
 from app import app, mail, APP_ROOT
 from app.models import Users, Files
-from app import CustomError
+from app import CustomError, ValidationError, ForbiddenError
 from app.services.encoding import generate_token
 
 
@@ -77,7 +77,7 @@ class UserDBApi:
         #print(user_id)
         user = app.session.query(Users).filter_by(id=user_id).first()
         if not user:
-            raise CustomError({'message': 'Error when updating user in database: user not found\n'})
+            raise ValidationError({'message': 'Update user error: user not found\n'})
         #print(user.lastName)
         user.firstName = data['firstName'] or None
         user.lastName = data['lastName'] or None

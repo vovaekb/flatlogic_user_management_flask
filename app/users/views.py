@@ -4,7 +4,7 @@ from flask_cors import cross_origin
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.sql import func
 from app import app, APP_ROOT
-from app import CustomError, get_current_user
+from app import CustomError, ValidationError, ForbiddenError, get_current_user
 from app.models import Users, Files
 from app.serializers import UsersSchema, FilesSchema
 from app.users.services import UserService
@@ -21,6 +21,16 @@ files_schema = FilesSchema(many=True)
 def handle_error(e):
     details = e.args[0]
     return Response(details['message'], status=200, mimetype='text/plain')
+
+@users_blueprint.errorhandler(ValidationError)
+def handle_validation_error(e):
+    details = e.args[0]
+    return Response(details['message'], status=400, mimetype='text/plain')
+
+@users_blueprint.errorhandler(ForbiddenError)
+def handle_forbidden_error(e):
+    details = e.args[0]
+    return Response(details['message'], status=403, mimetype='text/plain')
 
 # ROUTES
 @users_blueprint.route('/users', methods=['POST'])

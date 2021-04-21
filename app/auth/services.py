@@ -12,12 +12,11 @@ from authlib.client import OAuth2Session
 from app.models import Users
 from app import app
 from config import providers
-from app import CustomError
+from app import CustomError, ValidationError, ForbiddenError
 from app.services.email import EmailSender
 from app.services.encoding import generate_token
 from app.users.db import UserDBApi
 from app.auth import ACCESS_TOKEN_URI, AUTHORIZATION_SCOPE, AUTH_REDIRECT_URI, AUTH_STATE_KEY, CLIENT_ID, CLIENT_SECRET, AUTH_TOKEN_KEY
-from app.auth import ValidationError, ForbiddenError
 
 
 
