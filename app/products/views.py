@@ -52,7 +52,7 @@ def index():
             payload = ProductService.get_products()
             return jsonify(payload)
         except SQLAlchemyError as e:
-            print("Unable to add product to database.")
+            print("Unable to get products in database.")
             details = e.args[0]
             return Response(details, status=555, mimetype='text/plain')
 
