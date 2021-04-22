@@ -37,27 +37,56 @@ def images_list():
 @cross_origin(supports_credentials=True)
 def index():
     if request.method == 'POST':
-        data = request.get_json()
-        print(data)
-        product = ProductService.create_product(data)
-        return jsonify(product)
+        try:
+            data = request.get_json()
+            print(data)
+            product = ProductService.create_product(data)
+            return jsonify(product)
+        except SQLAlchemyError as e:
+            print("Unable to add product to database.")
+            app.session.rollback()
+            details = e.args[0]
+            return Response(details, status=555, mimetype='text/plain')
     else:
-        payload = ProductService.get_products()
-        return jsonify(payload)
+        try:
+            payload = ProductService.get_products()
+            return jsonify(payload)
+        except SQLAlchemyError as e:
+            print("Unable to add product to database.")
+            details = e.args[0]
+            return Response(details, status=555, mimetype='text/plain')
 
 
 @products_blueprint.route('/products/<product_id>', methods=['GET', 'PUT', 'DELETE'])
 @cross_origin(supports_credentials=True)
 def product(product_id):
     if request.method == 'PUT':
-        data = request.get_json()
-        ProductService.update_product(product_id, data)
-        text = 'OK'
-        return Response(text, status=200)
+        try:
+            data = request.get_json()
+            ProductService.update_product(product_id, data)
+            text = 'OK'
+            return Response(text, status=200)
+        except SQLAlchemyError as e:
+            print("Unable to update product in database.")
+            app.session.rollback()
+            details = e.args[0]
+            return Response(details, status=555, mimetype='text/plain')
+
     elif request.method == 'DELETE':
-        ProductService.delete_product(product_id)
-        text = 'OK'
-        return Response(text, status=200)
+        try:
+            ProductService.delete_product(product_id)
+            text = 'OK'
+            return Response(text, status=200)
+        except SQLAlchemyError as e:
+            print("Unable to get product from database.")
+            app.session.rollback()
+            details = e.args[0]
+            return Response(details, status=555, mimetype='text/plain')
     elif request.method == 'GET':
-        product = ProductService.get_product(product_id)
-        return jsonify(product)
+        try:
+            product = ProductService.get_product(product_id)
+            return jsonify(product)
+        except SQLAlchemyError as e:
+            print("Unable to get product from database.")
+            details = e.args[0]
+            return Response(details, status=555, mimetype='text/plain')

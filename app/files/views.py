@@ -3,7 +3,7 @@ from flask import render_template, abort, Blueprint, request, Response, jsonify,
 from flask_cors import cross_origin
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.sql import func
-from app import app, ALLOWED_EXTENSIONS, FILE_FOLDER, APP_ROOT
+from app import app, ALLOWED_EXTENSIONS, FILE_FOLDER, APP_ROOT, get_current_user, ForbiddenError
 # from app.models import ...
 from app.models import Users, Files
 from app.serializers import UsersSchema, FilesSchema
@@ -16,6 +16,11 @@ files_schema = FilesSchema(many=True)
 user_schema = UsersSchema()
 users_schema = UsersSchema(many=True)
 
+
+@files_blueprint.errorhandler(ForbiddenError)
+def handle_forbidden_error(e):
+    details = e.args[0]
+    return Response(details['message'], status=403, mimetype='text/plain')
 
 @app.errorhandler(404)
 def resource_not_found(e):
@@ -31,22 +36,21 @@ def allowed_file(filename):
 def download():
     privateUrl = request.args['privateUrl']
     print(privateUrl)
-    path = os.path.join(app.config['UPLOAD_FOLDER'], privateUrl) #  folder, filename)
 
     if privateUrl is None:
         abort(404, description='Not found')
     # return file to download
-
     file_path = os.path.join(APP_ROOT, 'static', privateUrl)
     print(file_path)
     return send_file(file_path, as_attachment=True) # "%s/%s" % (APP_ROOT, privateUrl)) # FILE_FOLDER
-    # return send_file("%s/%s" % (app.config['UPLOAD_FOLDER'], privateUrl))
-    # return send_from_directory(app.config['UPLOAD_FOLDER'], privateUrl)
 
 
 @files_blueprint.route('/file/upload/users/avatar', methods=['POST'])
 @cross_origin(supports_credentials=True)
-def upload_users_avatar():
+@get_current_user
+def upload_users_avatar(current_user):
+    if not current_user:
+        raise ForbiddenError({'message': 'Upload user avatar error: Forbidden\n'})
     folder = 'static/users/avatar'
     
     if not 'file' in request.files:

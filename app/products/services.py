@@ -1,9 +1,7 @@
 import os
 from sqlalchemy.sql import func
-from sqlalchemy.exc import SQLAlchemyError
 from app import app, APP_ROOT
-from app.models import Users, Files, Products
-from app import CustomError
+from app.models import Products
 from app.serializers import ProductsSchema
 
 product_schema = ProductsSchema()
@@ -11,14 +9,14 @@ products_schema = ProductsSchema(many=True)
 
 class ProductService:
     def get_images():
-        print('ProductService.get_images()')
+        # print('ProductService.get_images()')
         images_dir = 'public/assets/products/'
         image_files = [f for f in os.listdir(os.path.join(APP_ROOT, images_dir)) if not f.startswith('.')]
         image_files = list(map(lambda f: "%s/assets/products/%s" % (app.config['REMOTE'], f), image_files))
         return image_files
 
     def get_products():
-        print('ProductService.get_products()')
+        # print('ProductService.get_products()')
         products = app.session.query(Products)
         products = products.order_by(Products.id.asc()).all()
         products_dict = products_schema.dump(products)
@@ -28,26 +26,16 @@ class ProductService:
     def get_product(product_id):
         print('ProductService.get_product()')
         print(product_id)
-        #try:
         product = app.session.query(Products).filter_by(id=product_id).first()
         print(product.title)
         data = product_schema.dump(product)
         print(data)
-        '''
-        except SQLAlchemyError as e:
-            print("Unable to get product in database.")
-            error = e.__dict__['orig']
-            app.session.rollback()
-            # raise custom error
-            raise CustomError({'message': 'Error when reading user in database: %s\n' % error})
-        '''
         return data
 
     def update_product(product_id, data):
-        print('ProductService.update_product')
-        #try:
+        # print('ProductService.update_product')
         product = app.session.query(Products).filter_by(id=product_id).first()
-        print(product)
+        # print(product)
         product.title = data['title'] if 'title' in data else None
         product.subtitle = data['subtitle'] if 'subtitle' in data else None
         product.img = data['img'] if 'img' in data else None
@@ -62,18 +50,10 @@ class ProductService:
         product.updatedAt = func.now()
         app.session.add(product)
         app.session.commit()
-        '''
-        except SQLAlchemyError as e:
-            print("Unable to update product to database.")
-            error = e.__dict__['orig']
-            app.session.rollback()
-            # raise custom error
-            raise CustomError({'message': 'Error when saving rate to database: %s' % error})
-        '''
+
 
     def create_product(data):
-        print('ProductService.create_product')
-        #try:
+        # print('ProductService.create_product')
         product = Products(
             title=data['title'] if 'title' in data else None,
             subtitle = data['subtitle'] if 'subtitle' in data else None,
@@ -90,19 +70,11 @@ class ProductService:
         )
         app.session.add(product)
         app.session.commit()
-        '''
-        except SQLAlchemyError as e:
-            print("Unable to add order to database.")
-            error = e.__dict__['orig']
-            app.session.rollback()
-            # raise custom error
-            raise CustomError({'message': 'Error when saving rate to database: %s' % error})
-        '''
         product = product_schema.dump(product)
         return product
 
     def delete_product(product_id):
-        print('ProductService.delete_product')
+        # print('ProductService.delete_product')
         product = app.session.query(Products).filter_by(id=product_id).first()
         print(product)
         app.session.delete(product)
