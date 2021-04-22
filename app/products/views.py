@@ -14,6 +14,12 @@ product_schema = ProductsSchema()
 products_schema = ProductsSchema(many=True)
 
 
+@products_blueprint.errorhandler(SQLAlchemyError)
+def handle_exception(e):
+    details = e.args[0]
+    return Response(details, status=555, mimetype='text/plain')
+
+
 @products_blueprint.errorhandler(CustomError)
 def handle_error(e):
     details = e.args[0]
