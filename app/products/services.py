@@ -20,7 +20,7 @@ class ProductService:
     def get_products():
         print('ProductService.get_products()')
         products = app.session.query(Products)
-        products = products.all() # .order_by(Products.createdAt.desc()).all()
+        products = products.order_by(Products.id.asc()).all()
         products_dict = products_schema.dump(products)
         print(products_dict)
         return products_dict
