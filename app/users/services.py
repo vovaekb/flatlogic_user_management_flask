@@ -39,7 +39,8 @@ class UserService:
         UserDBApi.update(user_id, data, current_user)
 
     def remove(user_id: str, current_user: Users):
-        if current_user.id == user_id:
+        #print('UserService.remove()')
+        if str(current_user.id) == str(user_id):
             raise ValidationError({'message': 'Remove user error: Deleting himself\n'})
         if not current_user.role == 'admin':
             raise ValidationError({'message': 'Remove user error: Forbidden\n'})
