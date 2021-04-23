@@ -39,12 +39,17 @@ def handle_forbidden_error(e):
 def index_post(current_user):
     print('/users POST accepted')
     data = request.get_json()
+    user_data = data['data']
+    if 'disabled' in user_data and user_data['disabled'] == '':
+        user_data['disabled'] = None
+    if 'role' in user_data and user_data['role'] == '':
+        user_data['role'] = None
     print(data)
     referrer = request.headers.get("Referer")
     # print(referrer)
     host = f'http://{referrer}'
     try:
-        UserService.create(data['data'], current_user, host, True)
+        UserService.create(user_data, current_user, host, True)
         text = 'true'
         return Response(text, status=200)
     except SQLAlchemyError as e:
