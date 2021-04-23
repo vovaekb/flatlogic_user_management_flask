@@ -47,9 +47,8 @@ def index_post(current_user):
     print(data)
     referrer = request.headers.get("Referer")
     # print(referrer)
-    host = f'http://{referrer}'
     try:
-        UserService.create(user_data, current_user, host, True)
+        UserService.create(user_data, current_user, referrer, True)
         text = 'true'
         return Response(text, status=200)
     except SQLAlchemyError as e:

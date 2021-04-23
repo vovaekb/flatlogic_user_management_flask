@@ -54,26 +54,24 @@ def password_update(current_user):
 @cross_origin(supports_credentials=True)
 @get_current_user
 def send_email_address_verification_email(current_user):
-    print('POST query to /auth/send-email-address-verification-email accepted')
+    print('POST to /auth/send-email-address-verification-email accepted')
     print(current_user)
     if not current_user:
         raise CustomError({'message': 'Error when sending email address verification email: Forbidden\n'})
     # not presenting and not passed to send_email_address_verification_email() in NodeJS implementation
     referrer = request.headers.get("Referer")
     #print(referrer)
-    host = f'http://{referrer}'
-    Auth.send_email_address_verification_email(current_user.email, host)
+    Auth.send_email_address_verification_email(current_user.email, referrer)
     payload = True
     return Response(str(payload), status=200)
 
 @auth_blueprint.route('/auth/send-password-reset-email', methods=['POST'])
 @cross_origin(supports_credentials=True)
 def send_password_reset_email():
-    print('POST query to /auth/send-email-address-verification-email accepted')
+    print('POST to /auth/send-email-address-verification-email accepted')
     referrer = request.headers.get("Referer")
-    print(referrer)
-    host = f'http://{referrer}'
-    Auth.send_password_reset_email(request.json['email'], host, 'register')
+    #print(referrer)
+    Auth.send_password_reset_email(request.json['email'], referrer, 'register') 
     payload = True
     return Response(str(payload), status=200)
 
@@ -89,10 +87,10 @@ def signin_local():
 @cross_origin(supports_credentials=True)
 @get_current_user
 def signup(current_user):
+    #print('POST to /auth/signup accepted')
     referrer = request.headers.get("Referer")
     #print(referrer)
-    host = f'http://{referrer}'
-    payload = Auth.signup(request.json['email'], request.json['password'], host, current_user)
+    payload = Auth.signup(request.json['email'], request.json['password'], referrer, current_user)
 
     return Response(payload, status=200)
 
@@ -179,7 +177,7 @@ def signin_google_callback():
 
     redirect_url = '%s/#/login?token=%s' % (app_url, token)
 
-    # TODO: redirect to /login endpoint
+    # redirect to /login endpoint
     return redirect(redirect_url, code=302)
 
 @auth_blueprint.route('/auth/signin/microsoft', methods=['GET'])
