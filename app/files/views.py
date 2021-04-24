@@ -7,7 +7,7 @@ from app import app, ALLOWED_EXTENSIONS, FILE_FOLDER, APP_ROOT, get_current_user
 # from app.models import ...
 from app.models import Users, Files
 from app.serializers import UsersSchema, FilesSchema
-
+from app.files.services import FileService
 
 # CONFIG
 files_blueprint = Blueprint('files', __name__) #, template_folder='templates')
@@ -26,9 +26,14 @@ def handle_forbidden_error(e):
 def resource_not_found(e):
     return jsonify(error=str(e)), 404
 
-def allowed_file(filename):
-    return '.' in filename and \
-        filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+@app.errorhandler(403)
+def forbidden(e):
+    return jsonify(error=str(e)), 403
+
+@app.errorhandler(500)
+def internal_server_error(e):
+    return jsonify(error=str(e)), 500
+
 
 # ROUTES
 @files_blueprint.route('/file/download', methods=['GET'])
@@ -52,17 +57,7 @@ def upload_users_avatar(current_user):
     if not current_user:
         raise ForbiddenError({'message': 'Upload user avatar error: Forbidden\n'})
     folder = 'static/users/avatar'
-    
-    if not 'file' in request.files:
-        abort(500)
-    
-    file = request.files['file']
-    #print(request.files['file'])
-    
-    if file and allowed_file(file.filename):
-        filename = request.form['filename']
-        privateUrl = os.path.join(APP_ROOT, folder, filename)
-        #print(privateUrl)
-        #print('\n')
-        file.save(privateUrl)
+    validations = {}
+    FileService.file_request(folder, request, validations)
+
     return Response('OK', status=200)
