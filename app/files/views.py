@@ -32,6 +32,8 @@ def forbidden(e):
 
 @app.errorhandler(500)
 def internal_server_error(e):
+    #print('error handler')
+    #print(e)
     return jsonify(error=str(e)), 500
 
 
@@ -40,7 +42,7 @@ def internal_server_error(e):
 @cross_origin(supports_credentials=True)
 def download():
     privateUrl = request.args['privateUrl']
-    print(privateUrl)
+    #print(privateUrl)
 
     if privateUrl is None:
         abort(404, description='Not found')

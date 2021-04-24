@@ -9,13 +9,13 @@ class FileService:
                filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
     def ensure_directory_exists(path):
-        print('FileService.ensure_directory_exists()')
-        if not os.path.exists(path):
-            os.mkdir(path)
+        file_dir = os.path.dirname(path)
+        if not os.path.exists(file_dir):
+            os.makedirs(file_dir)
 
     def file_request(folder, request, validations):
-        print('FileService.file_request()')
-        if validations['entity']:
+        #print('FileService.file_request()')
+        if validations.get('entity'):
             abort(403)
 
         if not 'file' in request.files:
@@ -33,4 +33,5 @@ class FileService:
                 # print('\n')
                 file.save(private_url)
         except Exception as e:
-            abort(500, description='Not found')
+            #print(str(e))
+            abort(500, description=str(e))
