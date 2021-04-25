@@ -36,17 +36,17 @@ class ProductService:
         # print('ProductService.update_product')
         product = app.session.query(Products).filter_by(id=product_id).first()
         # print(product)
-        product.title = data['title'] if 'title' in data else None
-        product.subtitle = data['subtitle'] if 'subtitle' in data else None
-        product.img = data['img'] if 'img' in data else None
-        product.price = data['price'] if 'price' in data else None
-        product.rating = data['rating'] if 'rating' in data else None
-        product.code = data['code'] if 'code' in data else None
-        product.hashtag = data['hashtag'] if 'hashtag' in data else None
-        product.technology = data['technology'] if 'technology' in data else None
-        product.discount = data['discount'] if 'discount' in data else None
-        product.description_1 = data['description_1'] if 'description_1' in data else None
-        product.description_2 = data['description_2'] if 'description_2' in data else None
+        product.title = data.get('title', None) # data['title'] if 'title' in data else None
+        product.subtitle = data.get('subtitle', None) # data['subtitle'] if 'subtitle' in data else None
+        product.img = data.get('img', None) # data['img'] if 'img' in data else None
+        product.price = data.get('price', None) # data['price'] if 'price' in data else None
+        product.rating = data.get('rating', None) # data['rating'] if 'rating' in data else None
+        product.code = data.get('code', None) #  data['code'] if 'code' in data else None
+        product.hashtag = data.get('hashtag', None) # data['hashtag'] if 'hashtag' in data else None
+        product.technology = data.get('technology', None) # data['technology'] if 'technology' in data else None
+        product.discount = data.get('discount', None) # data['discount'] if 'discount' in data else None
+        product.description_1 = data.get('description_1', None) # data['description_1'] if 'description_1' in data else None
+        product.description_2 = data.get('description_2', None) # data['description_2'] if 'description_2' in data else None
         product.updatedAt = func.now()
         app.session.add(product)
         app.session.commit()

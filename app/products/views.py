@@ -27,14 +27,12 @@ def handle_error(e):
 
 # ROUTES
 @products_blueprint.route('/products/images-list', methods=['GET'])
-@cross_origin(supports_credentials=True)
 def images_list():
     payload = ProductService.get_images()
     return jsonify(payload)
 
 
 @products_blueprint.route('/products', methods=['GET', 'POST'])
-@cross_origin(supports_credentials=True)
 def index():
     if request.method == 'POST':
         try:
@@ -58,7 +56,6 @@ def index():
 
 
 @products_blueprint.route('/products/<product_id>', methods=['GET', 'PUT', 'DELETE'])
-@cross_origin(supports_credentials=True)
 def product(product_id):
     if request.method == 'PUT':
         try:

@@ -39,7 +39,7 @@ def internal_server_error(e):
 
 # ROUTES
 @files_blueprint.route('/file/download', methods=['GET'])
-@cross_origin(supports_credentials=True)
+#@cross_origin(supports_credentials=True)
 def download():
     privateUrl = request.args['privateUrl']
     #print(privateUrl)
@@ -53,7 +53,7 @@ def download():
 
 
 @files_blueprint.route('/file/upload/users/avatar', methods=['POST'])
-@cross_origin(supports_credentials=True)
+#@cross_origin(supports_credentials=True)
 @get_current_user
 def upload_users_avatar(current_user):
     if not current_user:

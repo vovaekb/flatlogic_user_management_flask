@@ -13,7 +13,6 @@ class UserDBApi:
     def create(data, current_user=None):
         print('UserDBApi.create()')
         print(data)
-        print(data['disabled'])
         user = Users(
             id=data.get('id', None),
             firstName=data.get('firstName', None),

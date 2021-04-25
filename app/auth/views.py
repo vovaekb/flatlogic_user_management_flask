@@ -33,7 +33,7 @@ def handle_forbidden_error(e):
 
 # ROUTES
 @auth_blueprint.route('/auth/password-reset', methods=['PUT'])
-@cross_origin(supports_credentials=True)
+#@cross_origin(supports_credentials=True)
 @get_current_user
 def password_reset(current_user):
     print(current_user)
@@ -42,7 +42,7 @@ def password_reset(current_user):
     return jsonify(payload)
 
 @auth_blueprint.route('/auth/password-update', methods=['PUT'])
-@cross_origin(supports_credentials=True)
+#@cross_origin(supports_credentials=True)
 @get_current_user
 def password_update(current_user):
     print(current_user)
@@ -51,7 +51,7 @@ def password_update(current_user):
     return jsonify(data)
 
 @auth_blueprint.route('/auth/send-email-address-verification-email', methods=['POST'])
-@cross_origin(supports_credentials=True)
+#@cross_origin(supports_credentials=True)
 @get_current_user
 def send_email_address_verification_email(current_user):
     print('POST to /auth/send-email-address-verification-email accepted')
@@ -66,7 +66,7 @@ def send_email_address_verification_email(current_user):
     return Response(str(payload), status=200)
 
 @auth_blueprint.route('/auth/send-password-reset-email', methods=['POST'])
-@cross_origin(supports_credentials=True)
+#@cross_origin(supports_credentials=True)
 def send_password_reset_email():
     print('POST to /auth/send-email-address-verification-email accepted')
     referrer = request.headers.get("Referer")
@@ -76,7 +76,7 @@ def send_password_reset_email():
     return Response(str(payload), status=200)
 
 @auth_blueprint.route('/auth/signin/local', methods=['POST']) #, 'OPTIONS'])
-@cross_origin(supports_credentials=True)
+#@cross_origin(supports_credentials=True)
 def signin_local():
     print('POST ACCEPTED')
     payload = Auth.signin(request.json['email'], request.json['password'])
@@ -84,7 +84,7 @@ def signin_local():
     return resp # Response(payload, status=200)
 
 @auth_blueprint.route('/auth/signup', methods=['POST'])
-@cross_origin(supports_credentials=True)
+#@cross_origin(supports_credentials=True)
 @get_current_user
 def signup(current_user):
     #print('POST to /auth/signup accepted')
@@ -95,7 +95,7 @@ def signup(current_user):
     return Response(payload, status=200)
 
 @auth_blueprint.route('/auth/profile', methods=['PUT'])
-@cross_origin(supports_credentials=True)
+#@cross_origin(supports_credentials=True)
 @get_current_user
 def profile(current_user):
     if not current_user:
@@ -106,7 +106,7 @@ def profile(current_user):
     return Response(str(payload), status=200)
 
 @auth_blueprint.route('/auth/verify-email', methods=['PUT'])
-@cross_origin(supports_credentials=True)
+#@cross_origin(supports_credentials=True)
 @get_current_user
 def verify_email(current_user):
     print('Accept PUT to verify-email')
@@ -114,7 +114,7 @@ def verify_email(current_user):
     return Response(str(payload), status=200)
 
 @auth_blueprint.route('/auth/me', methods=['GET'])
-@cross_origin(supports_credentials=True)
+#@cross_origin(supports_credentials=True)
 @get_current_user
 def me(current_user):
     if not current_user:
@@ -125,14 +125,14 @@ def me(current_user):
     return jsonify(data)
 
 @auth_blueprint.route('/auth/email-configured', methods=['GET'])
-@cross_origin(supports_credentials=True)
+#@cross_origin(supports_credentials=True)
 def email_configured():
     payload = EmailSender.isConfigured()
     print(payload)
     return Response(str(payload), status=200)
 
 @auth_blueprint.route('/auth/signin/google', methods=['GET'])
-@cross_origin(supports_credentials=True)
+#@cross_origin(supports_credentials=True)
 @no_cache
 def signin_google():
     # state = request.args.get('app')
@@ -148,7 +148,7 @@ def signin_google():
     return redirect(uri, code=302)
 
 @auth_blueprint.route('/auth/signin/google/callback', methods=['GET'])
-@cross_origin(supports_credentials=True)
+#@cross_origin(supports_credentials=True)
 @no_cache
 def signin_google_callback():
     req_state = request.args.get('state', default=None, type=None)

@@ -34,7 +34,6 @@ def handle_forbidden_error(e):
 
 # ROUTES
 @users_blueprint.route('/users', methods=['POST'])
-@cross_origin(supports_credentials=True)
 @get_current_user
 def index_post(current_user):
     print('/users POST accepted')
@@ -58,7 +57,6 @@ def index_post(current_user):
         return Response(details, status=555, mimetype='text/plain')
 
 @users_blueprint.route('/users', methods=['GET'])
-@cross_origin(supports_credentials=True)
 def index_get():
     print('/users GET accepted')
     users = UserService.get_all()
@@ -69,7 +67,6 @@ def index_get():
     return jsonify(data)
 
 @users_blueprint.route('/users/<user_id>', methods=['PUT', 'DELETE'])
-@cross_origin(supports_credentials=True)
 @get_current_user
 def user(current_user, user_id):
     if request.method == 'PUT':
@@ -92,7 +89,6 @@ def user(current_user, user_id):
         return Response(text, status=200)
 
 @users_blueprint.route('/users/<user_id>', methods=['GET'])
-@cross_origin(supports_credentials=True)
 def user_get(user_id):
     try:
         user = app.session.query(Users).filter_by(id=user_id).first()
@@ -114,7 +110,6 @@ def user_get(user_id):
     return jsonify(data)
 
 @users_blueprint.route('/users/autocomplete', methods=['GET'])
-@cross_origin(supports_credentials=True)
 def autocomplete():
     query = str(request.args['query'])
     print(query)
