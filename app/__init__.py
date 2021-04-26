@@ -102,6 +102,11 @@ def token_included(f):
         if not token:
             current_user = None
 
+@app.after_request
+def set_headers(response):
+    response.headers["Referrer-Policy"] = 'no-referrer'
+    return response
+
 # BLUEPRINTS
 from app.auth.views import auth_blueprint
 from app.files.views import files_blueprint
