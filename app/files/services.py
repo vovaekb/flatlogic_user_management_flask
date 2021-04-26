@@ -1,6 +1,6 @@
 import os
 from flask import abort
-from app import app, ALLOWED_EXTENSIONS, APP_ROOT, ForbiddenError
+from app import app, ALLOWED_EXTENSIONS, APP_ROOT
 
 
 class FileService:

@@ -30,8 +30,7 @@ class UserDBApi:
             updatedAt=func.now()
         )
         user.disabled = data.get('disabled', False)
-        user.emailVerified = True
-        # user.provider = data['provider'] if 'provider' in data else None
+        # user.provider = data.get('provider', None)
         user.password = data.get('password', None)
         app.session.add(user)
         app.session.flush()
@@ -61,7 +60,7 @@ class UserDBApi:
             firstName=data['first_name'],
             password=data['password'],
             email=data['email'],
-            # authenticationUid = data.authenticationUid,
+            # authenticationUid = data['authenticationUid'],
             updatedAt=func.now()
         )
         app.session.add(user)
@@ -74,11 +73,9 @@ class UserDBApi:
     def update(user_id: str, data: dict, current_user: Users):
         print('UserDBApi.update()')
         #print(data)
-        #print(user_id)
         user = app.session.query(Users).filter_by(id=user_id).first()
         if not user:
             raise ValidationError({'message': 'Update user error: user not found\n'})
-        #print(user.lastName)
         user.firstName = data['firstName'] or None
         user.lastName = data['lastName'] or None
         user.phoneNumber = data['phoneNumber'] or None
@@ -88,13 +85,9 @@ class UserDBApi:
         user.updatedById = current_user.id
         user.updatedBy = current_user
         '''
-        if 'emailVerified' in data: # and not data['emailVerified'] is None:
-            user.emailVerified = data['emailVerified']
-        if 'emailVerificationToken' in data: # and not data['emailVerificationToken'] is None:
-            user.emailVerificationToken = data['emailVerificationToken']
-        user.passwordResetToken = data['passwordResetToken'] if 'passwordResetToken' in data else None
-        user.provider = data['provider'] if 'provider' in data else None
-        user.password = data['password'] if 'password' in data else None
+        user.emailVerified = data.get('emailVerified', None)
+        user.provider = data.get('provider', None)
+        user.password = data.get('password', None)
         '''
         if not data['avatar'] is None:
             print('avatar is not None')
@@ -155,7 +148,7 @@ class UserDBApi:
 
         user.emailVerificationToken = token
         user.emailVerificationTokenExpiresAt = token_expires_at
-        # user.updatedById  = current_user.id
+        # user.updatedById = current_user.id
         app.session.add(user)
         app.session.commit()
         return token
@@ -202,6 +195,6 @@ class UserDBApi:
         print(user)
         user.emailVerified = True
         user.updatedById = current_user.id if not current_user is None else None
-        updatedBy = current_user
+        # user.updatedBy = current_user
         app.session.add(user)
         app.session.commit()

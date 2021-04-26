@@ -1,9 +1,6 @@
-import os
 from flask import render_template, Blueprint, request, Response, jsonify
-from flask_cors import cross_origin
 from sqlalchemy.exc import SQLAlchemyError
-from sqlalchemy.sql import func
-from app import app, APP_ROOT
+from app import app
 from app import CustomError, ValidationError, ForbiddenError, get_current_user
 from app.models import Users, Files
 from app.serializers import UsersSchema, FilesSchema
@@ -20,7 +17,7 @@ files_schema = FilesSchema(many=True)
 @users_blueprint.errorhandler(CustomError)
 def handle_error(e):
     details = e.args[0]
-    return Response(details['message'], status=200, mimetype='text/plain')
+    return Response(details['message'], status=500, mimetype='text/plain')
 
 @users_blueprint.errorhandler(ValidationError)
 def handle_validation_error(e):

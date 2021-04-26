@@ -1,11 +1,6 @@
 import os
 from flask import render_template, abort, Blueprint, request, Response, jsonify, send_file, send_from_directory
-from flask_cors import cross_origin
-from sqlalchemy.exc import SQLAlchemyError
-from sqlalchemy.sql import func
-from app import app, ALLOWED_EXTENSIONS, FILE_FOLDER, APP_ROOT, get_current_user, ForbiddenError
-# from app.models import ...
-from app.models import Users, Files
+from app import app, FILE_FOLDER, APP_ROOT, get_current_user, ForbiddenError
 from app.serializers import UsersSchema, FilesSchema
 from app.files.services import FileService
 
@@ -36,10 +31,8 @@ def internal_server_error(e):
     #print(e)
     return jsonify(error=str(e)), 500
 
-
 # ROUTES
 @files_blueprint.route('/file/download', methods=['GET'])
-#@cross_origin(supports_credentials=True)
 def download():
     privateUrl = request.args['privateUrl']
     #print(privateUrl)
@@ -49,16 +42,14 @@ def download():
     # return file to download
     file_path = os.path.join(APP_ROOT, 'static', privateUrl)
     print(file_path)
-    return send_file(file_path, as_attachment=True) # "%s/%s" % (APP_ROOT, privateUrl)) # FILE_FOLDER
-
+    return send_file(file_path, as_attachment=True)
 
 @files_blueprint.route('/file/upload/users/avatar', methods=['POST'])
-#@cross_origin(supports_credentials=True)
 @get_current_user
 def upload_users_avatar(current_user):
     if not current_user:
         raise ForbiddenError({'message': 'Upload user avatar error: Forbidden\n'})
-    folder = 'static/users/avatar'
+    folder = '%susers/avatar' % FILE_FOLDER
     validations = {}
     FileService.file_request(folder, request, validations)
 

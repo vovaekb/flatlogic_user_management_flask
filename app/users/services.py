@@ -1,6 +1,4 @@
 import os
-from sqlalchemy.sql import func
-from sqlalchemy.exc import SQLAlchemyError
 from app import app, mail
 from app.models import Users, Files
 from app import CustomError, ValidationError, ForbiddenError

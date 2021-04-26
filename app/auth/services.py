@@ -1,9 +1,5 @@
-import os
 import datetime
-import json
-from json import JSONEncoder
 import flask
-from flask import render_template
 from werkzeug.security import generate_password_hash, check_password_hash
 from sqlalchemy.sql import func
 import google.oauth2.credentials
@@ -17,7 +13,6 @@ from app.services.email import EmailSender
 from app.services.encoding import generate_token
 from app.users.db import UserDBApi
 from app.auth import ACCESS_TOKEN_URI, AUTHORIZATION_SCOPE, AUTH_REDIRECT_URI, AUTH_STATE_KEY, CLIENT_ID, CLIENT_SECRET, AUTH_TOKEN_KEY
-
 
 
 def is_logged_in():
@@ -37,13 +32,11 @@ def build_credentials():
 
 def get_user_info():
     credentials = build_credentials()
-
     oauth2_client = googleapiclient.discovery.build(
         'oauth2', 'v2',
         credentials=credentials)
 
     return oauth2_client.userinfo().get().execute()
-
 
 
 # Auth service class
@@ -72,7 +65,6 @@ class Auth:
 
             print('host: ', host)
 
-            # if email sender is configured
             # send email address verification email
             if EmailSender.isConfigured():
                 Auth.send_email_address_verification_email(user_email, host)
@@ -100,28 +92,11 @@ class Auth:
             'email': user_email
         }
         user = UserDBApi.create_from_auth(data)
-        '''
-        user = Users(
-            firstName = user_email.split('@')[0],
-            password = password_hash,
-            email = user_email,
-            # authenticationUid = data.authenticationUid,
-            updatedAt = func.now()
-        )
-        app.session.add(user)
-        app.session.flush()
-        user.authenticationUid = user.id
-        app.session.add(user)
-        app.session.commit()
-        '''
-        
-        # if email sender is configured
+
         # send email address verification email
         if EmailSender.isConfigured():
             Auth.send_email_address_verification_email(user_email, host)
-        
-        #del user.password
-        
+
         token_expires_at = datetime.datetime.utcnow() + datetime.timedelta(days=0, hours=6)
         data = {
             "exp": token_expires_at,
@@ -156,7 +131,7 @@ class Auth:
         if not user.emailVerified:
             raise ValidationError({'message': 'Error when signing in: User not verified\n'})
 
-        # check if entered password match the user password saved in BD
+        # check if entered password match the user password saved in DB
         if not check_password_hash(user.password, password):
             raise ValidationError({'message': 'Error when signing in: Wrong password\n'})
 
@@ -206,7 +181,7 @@ class Auth:
             })
         try:
             token = UserDBApi.generate_password_reset_token(email)
-            link = f'{host}password-reset?token={token}#/login'
+            link = f'{host}#/password-reset?token={token}#/login'
             print(link)
         except Exception as e:
             print(str(e))
@@ -282,7 +257,6 @@ class Auth:
         UserDBApi.update(current_user.id, data, current_user)
 
     def signin_google_callback(request_url: str):
-
         session = OAuth2Session(CLIENT_ID, CLIENT_SECRET,
                                 scope=AUTHORIZATION_SCOPE,
                                 state=flask.session[AUTH_STATE_KEY],
@@ -296,7 +270,7 @@ class Auth:
         user_info = get_user_info()
         print(user_info)
 
-        provider = providers["GOOGLE"]  # "google"
+        provider = providers["GOOGLE"]
         user = app.session.query(Users) \
             .filter(Users.email == user_info['email']) \
             .filter(Users.provider == provider) \
