@@ -25,7 +25,7 @@ class FileService:
             file = request.files['file']
             # print(request.files['file'])
 
-            if file and FileService.allowed_file(file.filename):
+            if file:
                 filename = request.form['filename']
                 private_url = os.path.join(APP_ROOT, folder, filename)
                 FileService.ensure_directory_exists(private_url)
