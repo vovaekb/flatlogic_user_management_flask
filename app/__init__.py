@@ -4,6 +4,7 @@ import json
 from flask import Flask, _app_ctx_stack, render_template, request, jsonify, Response
 from flask_cors import CORS, cross_origin
 from flask_mail import Mail
+from whitenoise import WhiteNoise
 import jwt
 from functools import wraps, update_wrapper
 from sqlalchemy.orm import scoped_session
@@ -21,6 +22,8 @@ print(APP_ROOT)
 
 app = Flask(__name__)
 CORS(app, supports_credentials=True)
+# add serving static files
+app.wsgi_app = WhiteNoise(app.wsgi_app, root='static/')
 app.session = scoped_session(SessionLocal, scopefunc=_app_ctx_stack.__ident_func__)
 app.secret_key = os.environ.get("FN_FLASK_SECRET_KEY", default=False)
 
