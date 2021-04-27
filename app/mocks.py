@@ -31,7 +31,7 @@ def get_random_data(length, min, max, multiplier = 10, max_diff = 10):
             random_value = math.floor(random() * multiplier + 1)
 
         last_value = random_value
-        array.append(random_value)
+        array.append([i, random_value])
 
     return array
 
