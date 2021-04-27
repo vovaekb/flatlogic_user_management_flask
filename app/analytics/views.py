@@ -12,4 +12,4 @@ def resource_not_found(e):
 @analytics_blueprint.route('/analytics', methods=['GET'])
 @cross_origin(supports_credentials=True)
 def index():
-    return jsonify(mock)
+    return jsonify(mock['analytics'])
