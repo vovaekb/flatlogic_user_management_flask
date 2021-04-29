@@ -27,15 +27,18 @@ app.wsgi_app = WhiteNoise(app.wsgi_app, root='static/')
 app.session = scoped_session(SessionLocal, scopefunc=_app_ctx_stack.__ident_func__)
 app.secret_key = os.environ.get("FN_FLASK_SECRET_KEY", default=False)
 
-if os.environ['FLASK_DEV'] == True:
-    print("Dev env")
-    app.config.from_object(DevConfig)
+#if os.environ['FLASK_DEV'] == True:
+print("Dev env")
+app.config.from_object(DevConfig)
+'''
 else:
     print("Prod env")
     app.config.from_object(ProductionConfig)
+'''
 
 # print(app.config['UPLOAD_FOLDER'])
 # print(app.config['MAIL_SERVER'])
+print(app.config['REMOTE'])
 
 mail = Mail(app)
 
@@ -109,6 +112,7 @@ def token_included(f):
 def set_headers(response):
     response.headers["Referrer-Policy"] = 'no-referrer'
     return response
+
 
 # BLUEPRINTS
 from app.auth.views import auth_blueprint

@@ -1,10 +1,11 @@
-from flask import render_template, Blueprint, request, jsonify, Response
+import os
+from flask import render_template, Blueprint, request, jsonify, Response, send_file
 from sqlalchemy.exc import SQLAlchemyError
-from app import app, CustomError
+from app import app, CustomError, APP_ROOT
 from app.serializers import ProductsSchema
 from app.products.services import ProductService
 
-products_blueprint = Blueprint('products', __name__) # , template_folder='templates')
+products_blueprint = Blueprint('products', __name__) #, static_folder='static', static_url_path='') # assets # , template_folder='templates')
 product_schema = ProductsSchema()
 products_schema = ProductsSchema(many=True)
 
@@ -81,3 +82,12 @@ def product(product_id):
             print("Unable to get product from database.")
             details = e.args[0]
             return Response(details, status=555, mimetype='text/plain')
+
+@products_blueprint.route('/assets/products/<path:filename>', methods=['GET'])
+def product_image(filename):
+    print('GET to /assets/products/<filename> accepted')
+    print(filename)
+    #return Response('OK', status=200, mimetype='text/plain')
+    file_path = os.path.join(APP_ROOT, 'static/assets/products/', filename)
+    print(file_path)
+    return send_file(file_path, as_attachment=True)

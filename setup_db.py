@@ -41,7 +41,7 @@ def seed_products():
         product = Products(
             title="trainers",
             subtitle='Trainers In White',
-            img='%s/assets/products/img1.jpg' % app.config['REMOTE'],
+            img='%s/api/assets/products/img1.jpg' % app.config['REMOTE'],
             price=76,
             rating=4.6,
             code=135234,
@@ -61,7 +61,7 @@ def seed_products():
         product = Products(
             title="boots",
             subtitle='Trainers In Blue',
-            img='%s/assets/products/img2.jpg' % app.config['REMOTE'],
+            img='%s/api/assets/products/img2.jpg' % app.config['REMOTE'],
             price=45,
             rating=4.6,
             code=135234,
@@ -81,7 +81,7 @@ def seed_products():
         product = Products(
             title="flat sandals",
             subtitle='Trainers In White',
-            img='%s/assets/products/img3.jpg' % app.config['REMOTE'],
+            img='%s/api/assets/products/img3.jpg' % app.config['REMOTE'],
             price=55,
             rating=4.6,
             code=135234,
@@ -101,7 +101,7 @@ def seed_products():
         product = Products(
             title="trainers",
             subtitle='Trainers In White',
-            img='%s/assets/products/img4.jpg' % app.config['REMOTE'],
+            img='%s/api/assets/products/img4.jpg' % app.config['REMOTE'],
             price=76,
             rating=4.6,
             code=135234,
@@ -121,7 +121,7 @@ def seed_products():
         product = Products(
             title="boots",
             subtitle='Trainers In Blue',
-            img='%s/assets/products/img5.jpeg' % app.config['REMOTE'],
+            img='%s/api/assets/products/img5.jpeg' % app.config['REMOTE'],
             price=45,
             rating=4.6,
             code=135234,
@@ -141,7 +141,7 @@ def seed_products():
         product = Products(
             title="flat sandals",
             subtitle='Trainers In White',
-            img='%s/assets/products/img6.jpg' % app.config['REMOTE'],
+            img='%s/api/assets/products/img6.jpg' % app.config['REMOTE'],
             price=55,
             rating=4.6,
             code=135234,
@@ -161,7 +161,7 @@ def seed_products():
         product = Products(
             title="trainers",
             subtitle='Trainers In White',
-            img='%s/assets/products/img1.jpg' % app.config['REMOTE'],
+            img='%s/api/assets/products/img1.jpg' % app.config['REMOTE'],
             price=76,
             rating=4.6,
             code=135234,
@@ -181,7 +181,7 @@ def seed_products():
         product = Products(
             title="boots",
             subtitle='Trainers In Blue',
-            img='%s/assets/products/img2.jpg' % app.config['REMOTE'],
+            img='%s/api/assets/products/img2.jpg' % app.config['REMOTE'],
             price=45,
             rating=4.6,
             code=135234,
@@ -201,7 +201,7 @@ def seed_products():
         product = Products(
             title="flat sandals",
             subtitle='Trainers In White',
-            img='%s/assets/products/img3.jpg' % app.config['REMOTE'],
+            img='%s/api/assets/products/img3.jpg' % app.config['REMOTE'],
             price=55,
             rating=4.6,
             code=135234,
@@ -221,7 +221,7 @@ def seed_products():
         product = Products(
             title="trainers",
             subtitle='Trainers In White',
-            img='%s/assets/products/img4.jpg' % app.config['REMOTE'],
+            img='%s/api/assets/products/img4.jpg' % app.config['REMOTE'],
             price=76,
             rating=4.6,
             code=135234,
@@ -241,7 +241,7 @@ def seed_products():
         product = Products(
             title="boots",
             subtitle='Trainers In Blue',
-            img='%s/assets/products/img5.jpeg' % app.config['REMOTE'],
+            img='%s/api/assets/products/img5.jpeg' % app.config['REMOTE'],
             price=45,
             rating=4.6,
             code=135234,
@@ -261,7 +261,7 @@ def seed_products():
         product = Products(
             title="flat sandals",
             subtitle='Trainers In White',
-            img='%s/assets/products/img6.jpg' % app.config['REMOTE'],
+            img='%s/api/assets/products/img6.jpg' % app.config['REMOTE'],
             price=55,
             rating=4.6,
             code=135234,
