@@ -1,4 +1,4 @@
-# flask User management 
+# Flask User management 
 Flask REST API for user management with user profile and JWT authentication.
 
 ## Setup and running
