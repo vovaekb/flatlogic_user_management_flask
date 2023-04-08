@@ -1,5 +1,5 @@
 # flask User management 
-Simple Flask app for displaying player scores in game contest.
+Flask REST API for user management with user profile and JWT authentication.
 
 ## Setup and running
 First install all necessary python packages using requirements.txt
@@ -12,7 +12,7 @@ pip install -r requirements.txt
 User Management backend using PostgreSQL DBMS on default.
 First you need to create database called 'user_management'. Default PostgreSQL user/password is postgres/123. You can change database name and user credentials in file app/database.py in line
 ```bash
-SQLALCHEMY_DATABASE_URI = "postgres://postgres:123@localhost/user_management"
+SQLALCHEMY_DATABASE_URI = "postgres://<user>:<password>@localhost/user_management"
 ```
 
 Set environment variable for Development mode:
