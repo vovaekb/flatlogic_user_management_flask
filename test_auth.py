@@ -4,23 +4,20 @@ from app import app
 
 AUTH_TOKEN = ""
 
-def test_signup():
-    print('testing /auth/signup')
 
-    # Create new user from sign in form
-    #'''
+def test_signup():
+    """Create new user from sign in form
+    """
+    print('testing /auth/signup')
     with app.test_client() as c:
         rv = c.post('/auth/signup', json={
-           'email': "ralf_stone@host.com", #'bill_xavier@host.com',
-            'password': 'jkht6fd4le,*', # 'nnjk4cb&%d3', # 'dfgvd564rf'
+           'email': 'ralf_stone@host.com',  # 'bill_xavier@host.com',
+            'password': 'jkht6fd4le,*',  # 'nnjk4cb&%d3', # 'dfgvd564rf'
         })
-        json_data = rv.get_json()
-        # print(json_data)
         print(rv.data)
         token = rv.data
         os.environ["AUTH_TOKEN"] = token.decode("utf-8")
         print('status: ', rv.status_code)
-    #'''
 
     # Create new user from admin panel
     '''
@@ -43,7 +40,10 @@ def test_signup():
         print('status: ', rv.status_code)
     '''
 
+
 def test_verify_email():
+    """Test email verification endpoint
+    """
     print('testing /verify-email')
     token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2MTc5Njk3NzUsImlhdCI6MTYxNzk2OTQxNSwic3ViIjoiN2YxZTVhMTAtNTdkNC00MGJmLThlZDAtODAzYzgzMTBlZjc3In0.oIFpXNmD2Ao1CT9GC9I426NUkmAHilVbV0RbUtFjtoQ"
     # os.environ["EMAIL_VERIFY_TOKEN"] # AUTH_TOKEN"]
@@ -57,7 +57,10 @@ def test_verify_email():
         print('status: ' , rv.status_code)
         #print(json_data)
 
+
 def test_send_email_address_verification_email():
+    """Test sending email verification endpoint
+    """
     print('test_send_email_address_verification_email')
     #print(os.environ["AUTH_TOKEN"])
     with app.test_client() as c:
@@ -76,7 +79,10 @@ def test_send_email_address_verification_email():
         print(rv.data)
         print('status: ', rv.status_code)
 
+
 def test_signin_local():
+    """Test local signing in endpoint
+    """
     print('testing /signin/local')
     with app.test_client() as c:
         rv = c.post('/auth/signin/local', json={
@@ -94,6 +100,8 @@ def test_signin_local():
         print('status: ' , rv.status_code)
 
 def test_password_update():
+    """Test updating password endpoint
+    """
     print('testing /signin/password-update')
     #print(os.environ["AUTH_TOKEN"])
     token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2MTc5OTA2MjAsImlhdCI6MTYxNzk2OTAyMCwiaWQiOiI3ZjFlNWExMC01N2Q0LTQwYmYtOGVkMC04MDNjODMxMGVmNzciLCJlbWFpbCI6InJhbGZfc3RvbmVAaG9zdC5jb20ifQ.Rzz27cK0SXsSA2Tgbg3V2lA5pnvL5BUzMHU0T4DL4s4" # os.environ["AUTH_TOKEN"]
@@ -116,6 +124,8 @@ def test_password_update():
         # print(json_data)
 
 def test_send_pasword_reset_email():
+    """Test sending password reset email endpoint
+    """
     with app.test_client() as c:
         rv = c.post('/auth/send-password-reset-email', json={
             'email': "ralf_stone@host.com" # 'bill_xavier@host.com'
@@ -123,7 +133,10 @@ def test_send_pasword_reset_email():
         print(rv.data)
         print('status: ', rv.status_code)
 
+
 def test_password_reset():
+    """Test password reset endpoint endpoint
+    """
     print('testing /auth/password-reset')
     #print(os.environ["AUTH_TOKEN"])
     auth_token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2MTc5OTA2MjAsImlhdCI6MTYxNzk2OTAyMCwiaWQiOiI3ZjFlNWExMC01N2Q0LTQwYmYtOGVkMC04MDNjODMxMGVmNzciLCJlbWFpbCI6InJhbGZfc3RvbmVAaG9zdC5jb20ifQ.Rzz27cK0SXsSA2Tgbg3V2lA5pnvL5BUzMHU0T4DL4s4" # os.environ["AUTH_TOKEN"]
@@ -146,6 +159,8 @@ def test_password_reset():
         print('status: ', rv.status_code)
 
 def test_profile():
+    """Test user profile endpoint
+    """
     print('testing /auth/profile')
     print(os.environ["AUTH_TOKEN"])
     auth_token = os.environ["AUTH_TOKEN"]
@@ -193,7 +208,10 @@ def test_profile():
         print(rv.data)
         print('status: ', rv.status_code)
 
+
 def test_me():
+    """Test updating password endpoint
+    """
     print('testing /auth/me')
     #print(os.environ["AUTH_TOKEN"])
     auth_token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2MTc5OTA2MjAsImlhdCI6MTYxNzk2OTAyMCwiaWQiOiI3ZjFlNWExMC01N2Q0LTQwYmYtOGVkMC04MDNjODMxMGVmNzciLCJlbWFpbCI6InJhbGZfc3RvbmVAaG9zdC5jb20ifQ.Rzz27cK0SXsSA2Tgbg3V2lA5pnvL5BUzMHU0T4DL4s4" # os.environ["AUTH_TOKEN"]
@@ -208,14 +226,19 @@ def test_me():
         print(rv.data)
         print('status: ', rv.status_code)
 
+
 def test_email_configured():
+    """Test if email is configured endpoint
+    """
     print('testing /auth/email-configured')
     with app.test_client() as c:
         rv = c.get('/auth/email-configured', json={})
         print(rv.data)
         print('status: ', rv.status_code)
 
+
 if __name__ == '__main__':
+    pass
     #test_signup()
     #test_signin_local()
     #test_send_email_address_verification_email()

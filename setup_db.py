@@ -15,6 +15,11 @@ Session = sessionmaker(bind=engine)
 
 @contextmanager
 def session_scope():
+    """context manager for SQLAlchemy session
+
+    Yields:
+        Session: SQLAlchemy session
+    """
     session = Session()
     try:
         yield session
@@ -25,18 +30,27 @@ def session_scope():
     finally:
         session.close()
 
+
 def reset_database():
-    print('Reset database')
+    """Completely refresh data base 
+    """
+    print('Reset database ...')
     Base.metadata.drop_all(engine)
     Base.metadata.create_all(engine)
 
+
 def create_database():
-    print('Create database')
+    """Create database
+    """
+    print('Create database ...')
     # Base.metadata.drop_all(engine)
     Base.metadata.create_all(engine)
 
+
 def seed_products():
-    print('Seed products')
+    """Insert mock products data to database for testing
+    """
+    print('Seed products ...')
     with session_scope() as s:
         product = Products(
             title="trainers",
@@ -280,6 +294,8 @@ def seed_products():
 
 
 def seed_users():
+    """Insert mock users data to database for testing
+    """
     print('Seed users')
     with session_scope() as s:
         password = "password"
@@ -294,6 +310,7 @@ def seed_users():
             updatedAt=func.now()
         )
         s.add(user)
+
 
 if __name__ == '__main__':
     reset_database()
