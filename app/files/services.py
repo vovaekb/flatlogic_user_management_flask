@@ -14,7 +14,6 @@ class FileService:
             os.makedirs(file_dir)
 
     def file_request(folder, request, validations):
-        #print('FileService.file_request()')
         if validations.get('entity'):
             abort(403)
 
@@ -23,15 +22,11 @@ class FileService:
 
         try:
             file = request.files['file']
-            # print(request.files['file'])
 
             if file:
                 filename = request.form['filename']
                 private_url = os.path.join(APP_ROOT, folder, filename)
                 FileService.ensure_directory_exists(private_url)
-                # print(private_url)
-                # print('\n')
                 file.save(private_url)
         except Exception as e:
-            #print(str(e))
             abort(500, description=str(e))

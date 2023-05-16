@@ -18,6 +18,7 @@ from app.auth import ACCESS_TOKEN_URI, AUTHORIZATION_SCOPE, AUTH_REDIRECT_URI, A
 def is_logged_in():
     return True if AUTH_TOKEN_KEY in flask.session else False
 
+
 def build_credentials():
     if not is_logged_in():
         raise Exception('User must be logged in')

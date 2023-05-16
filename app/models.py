@@ -79,6 +79,7 @@ class Files(database.Base):
     updatedById = Column(UUID(as_uuid=True), ForeignKey('users.id'))
     updatedBy = relationship("Users", foreign_keys=[updatedById], uselist=False)
 
+
 class Products(database.Base):
     __tablename__ = 'products'
     id = Column(Integer,

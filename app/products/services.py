@@ -7,6 +7,7 @@ from app.serializers import ProductsSchema
 product_schema = ProductsSchema()
 products_schema = ProductsSchema(many=True)
 
+
 class ProductService:
     def get_images():
         # print('ProductService.get_images()')
@@ -50,7 +51,6 @@ class ProductService:
         product.updatedAt = func.now()
         app.session.add(product)
         app.session.commit()
-
 
     def create_product(data):
         # print('ProductService.create_product')

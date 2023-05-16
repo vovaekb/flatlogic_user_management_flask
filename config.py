@@ -8,6 +8,7 @@ providers = {
     "GOOGLE": "google"
 }
 
+
 class Config:
     UPLOAD_FOLDER = 'static/'
     MAX_CONTENT_LENGTH = 10 * 1024 * 1024
@@ -25,6 +26,7 @@ class Config:
 class DevConfig(Config):
     EMAIL_ADDRESS = 'vladprivalov1990@gmail.com'
     REMOTE = "http://localhost:5000" # http://localhost:8080
+
 
 class ProductionConfig(Config):
     REMOTE = "https://sing-generator-node.herokuapp.com"

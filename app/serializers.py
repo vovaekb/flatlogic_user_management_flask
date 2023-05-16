@@ -27,6 +27,7 @@ class UsersSchema(SQLAlchemyAutoSchema):
         exclude = ("createdBy", "updatedBy")
         #include_relationships = True
 
+
 class ProductsSchema(SQLAlchemyAutoSchema):
     rating = fields.fields.Decimal(as_string=True)
     price = fields.fields.Decimal(as_string=True)
