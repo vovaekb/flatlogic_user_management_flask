@@ -1,11 +1,18 @@
 import os
-from flask import render_template, abort, Blueprint, request, Response, jsonify, send_file, send_from_directory
+from flask import (
+    abort, 
+    Blueprint, 
+    request, 
+    Response, 
+    jsonify, 
+    send_file
+)
 from app import app, FILE_FOLDER, APP_ROOT, get_current_user, ForbiddenError
 from app.serializers import UsersSchema, FilesSchema
 from app.files.services import FileService
 
 # CONFIG
-files_blueprint = Blueprint('files', __name__) #, template_folder='templates')
+files_blueprint = Blueprint('files', __name__)
 file_schema = FilesSchema()
 files_schema = FilesSchema(many=True)
 user_schema = UsersSchema()
@@ -17,19 +24,23 @@ def handle_forbidden_error(e):
     details = e.args[0]
     return Response(details['message'], status=403, mimetype='text/plain')
 
+
 @app.errorhandler(404)
 def resource_not_found(e):
     return jsonify(error=str(e)), 404
 
+
 @app.errorhandler(403)
 def forbidden(e):
     return jsonify(error=str(e)), 403
+
 
 @app.errorhandler(500)
 def internal_server_error(e):
     #print('error handler')
     #print(e)
     return jsonify(error=str(e)), 500
+
 
 # ROUTES
 @files_blueprint.route('/file/download', methods=['GET'])
@@ -43,6 +54,7 @@ def download():
     file_path = os.path.join(APP_ROOT, 'static', privateUrl)
     print(file_path)
     return send_file(file_path, as_attachment=True)
+
 
 @files_blueprint.route('/file/upload/users/avatar', methods=['POST'])
 @get_current_user

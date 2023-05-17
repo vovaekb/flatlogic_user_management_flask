@@ -1,6 +1,6 @@
 import os
 from flask import abort
-from app import app, ALLOWED_EXTENSIONS, APP_ROOT
+from app import ALLOWED_EXTENSIONS, APP_ROOT
 
 
 class FileService:
@@ -17,7 +17,7 @@ class FileService:
         if validations.get('entity'):
             abort(403)
 
-        if not 'file' in request.files:
+        if 'file' not in request.files:
             abort(500)
 
         try:
