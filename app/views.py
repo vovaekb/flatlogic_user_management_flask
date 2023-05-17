@@ -1,7 +1,5 @@
 from flask import Flask, request, jsonify, Response
-from sqlalchemy.exc import SQLAlchemyError
 import datetime
-# from app.models import Employee, ActionTicket, InformationTicket, Task
 from app import app
 
 

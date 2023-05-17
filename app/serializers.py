@@ -6,9 +6,21 @@ from app.models import Files, Users, Products
 
 
 class FilesSchema(SQLAlchemyAutoSchema):
-    createdAt = fields.fields.Function(lambda obj: obj.createdAt.astimezone(timezone.utc).isoformat('T', timespec='milliseconds').replace('+00:00', 'Z'))
-    updatedAt = fields.fields.Function(lambda obj: obj.updatedAt.astimezone(timezone.utc).isoformat('T', timespec='milliseconds').replace('+00:00', 'Z'))
-    deletedAt = fields.fields.Function(lambda obj: obj.deletedAt.astimezone(timezone.utc).isoformat('T', timespec='milliseconds').replace('+00:00', 'Z') if not obj.deletedAt is None else None)
+    createdAt = (fields.fields.Function(lambda obj: obj.createdAt
+                    .astimezone(timezone.utc)
+                    .isoformat('T', timespec='milliseconds')
+                    .replace('+00:00', 'Z'))
+                )
+    updatedAt = (fields.fields.Function(lambda obj: obj.updatedAt
+                    .astimezone(timezone.utc)
+                    .isoformat('T', timespec='milliseconds')
+                    .replace('+00:00', 'Z'))
+                )
+    deletedAt = (fields.fields.Function(lambda obj: obj.deletedAt
+                    .astimezone(timezone.utc)
+                    .isoformat('T', timespec='milliseconds')
+                    .replace('+00:00', 'Z') if not obj.deletedAt is None else None)
+                )
     class Meta:
         model = Files
         include_fk = True
@@ -18,9 +30,16 @@ class FilesSchema(SQLAlchemyAutoSchema):
 
 
 class UsersSchema(SQLAlchemyAutoSchema):
-    createdAt = fields.fields.Function(lambda obj: obj.createdAt.astimezone(timezone.utc).isoformat('T', timespec='milliseconds').replace('+00:00', 'Z'))
-    updatedAt = fields.fields.Function(lambda obj: obj.updatedAt.astimezone(timezone.utc).isoformat('T', timespec='milliseconds').replace('+00:00', 'Z'))
-    deletedAt = fields.fields.Function(lambda obj: obj.deletedAt.astimezone(timezone.utc).isoformat('T', timespec='milliseconds').replace('+00:00', 'Z') if not obj.deletedAt is None else None)
+    createdAt = (fields.fields.Function(lambda obj: obj.createdAt
+                    .astimezone(timezone.utc).isoformat('T', timespec='milliseconds').replace('+00:00', 'Z'))
+                )
+    updatedAt = (fields.fields.Function(lambda obj: obj.updatedAt
+                    .astimezone(timezone.utc).isoformat('T', timespec='milliseconds').replace('+00:00', 'Z'))
+                )
+    deletedAt = (fields.fields.Function(lambda obj: obj.deletedAt
+                    .astimezone(timezone.utc).isoformat('T', timespec='milliseconds').replace('+00:00', 'Z') if not obj.deletedAt is None else None)
+                )
+    
     class Meta:
         model = Users
         include_fk = True
@@ -33,5 +52,6 @@ class ProductsSchema(SQLAlchemyAutoSchema):
     price = fields.fields.Decimal(as_string=True)
     discount = fields.fields.Decimal(as_string=True)
     code = fields.fields.Decimal(as_string=True)
+    
     class Meta:
         model = Products
