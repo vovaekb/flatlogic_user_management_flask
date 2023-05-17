@@ -5,8 +5,13 @@
 import math
 from random import random
 
+
 def get_revenue_data():
-    print('get_revenue_data')
+    """Get mock revenue data
+
+    Returns:
+        list: mock revenue data
+    """
     data = []
     series_count = 3
     accessories = ['SMX', 'Direct', 'Networks']
@@ -20,6 +25,18 @@ def get_revenue_data():
 
 
 def get_random_data(length, min, max, multiplier = 10, max_diff = 10):
+    """Get random values for main_chart
+
+    Args:
+        length (int): number of elements in series
+        min (int): minimal number in series
+        max (int): maximal number in series
+        multiplier (int, optional): parameter for multiplication. Defaults to 10.
+        max_diff (int, optional): maximal difference btw neighboring elements in series. Defaults to 10.
+
+    Returns:
+        list: series of random values
+    """
     array = []
     last_value = None
 
@@ -37,6 +54,11 @@ def get_random_data(length, min, max, multiplier = 10, max_diff = 10):
 
 
 def get_main_chart_data():
+    """Generates data for chart
+
+    Returns:
+        list: list of series of random values
+    """
     d1 = get_random_data(31, 3500, 6500, 7500, 1000)
     d2 = get_random_data(31, 1500, 7500, 7500, 1500)
     d3 = get_random_data(31, 1500, 7500, 7500, 1500)
