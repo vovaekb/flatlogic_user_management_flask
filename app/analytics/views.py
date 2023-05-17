@@ -3,7 +3,7 @@ from flask_cors import cross_origin
 from app import app
 from app.mocks import mock
 
-analytics_blueprint = Blueprint('analytics', __name__) #, template_folder='templates')
+analytics_blueprint = Blueprint('analytics', __name__)
 
 @app.errorhandler(404)
 def resource_not_found(e):

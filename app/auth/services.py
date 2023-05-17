@@ -12,7 +12,15 @@ from app import CustomError, ValidationError, ForbiddenError
 from app.services.email import EmailSender
 from app.services.encoding import generate_token
 from app.users.db import UserDBApi
-from app.auth import ACCESS_TOKEN_URI, AUTHORIZATION_SCOPE, AUTH_REDIRECT_URI, AUTH_STATE_KEY, CLIENT_ID, CLIENT_SECRET, AUTH_TOKEN_KEY
+from app.auth import (
+    ACCESS_TOKEN_URI,
+    AUTHORIZATION_SCOPE,
+    AUTH_REDIRECT_URI,
+    AUTH_STATE_KEY,
+    CLIENT_ID,
+    CLIENT_SECRET,
+    AUTH_TOKEN_KEY
+)
 
 
 def is_logged_in():
@@ -30,6 +38,7 @@ def build_credentials():
         client_id=CLIENT_ID,
         client_secret=CLIENT_SECRET,
         token_uri=ACCESS_TOKEN_URI)
+
 
 def get_user_info():
     credentials = build_credentials()
@@ -240,7 +249,7 @@ class Auth:
 
     def verify_email(token: str, current_user: Users = None):
         user = app.session.query(Users)\
-            .filter(Users.emailVerificationToken==token)\
+            .filter(Users.emailVerificationToken == token)\
             .filter(Users.emailVerificationTokenExpiresAt > datetime.datetime.utcnow())\
             .first()
         print(user)
