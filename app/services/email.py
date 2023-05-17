@@ -6,6 +6,8 @@ from app.auth.notifications import EMAIL_CONFIG
 
 
 class EmailSender:
+    """Class for sending email
+    """
     def __init__(self, email: str, email_type: str):
         self.email = email
         self.config = EMAIL_CONFIG[email_type]
