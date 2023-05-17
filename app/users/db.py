@@ -11,8 +11,6 @@ from app.services.encoding import generate_token
 # DB API classes
 class UserDBApi:
     def create(data, current_user=None):
-        print('UserDBApi.create()')
-        print(data)
         user = Users(
             id=data.get('id', None),
             firstName=data.get('firstName', None),
@@ -23,9 +21,9 @@ class UserDBApi:
             email=data['email'],
             role=data.get('role', "user"),
             # importHash = data['importHash'] or None,
-            createdById=current_user.id if not current_user is None else None,
+            createdById=current_user.id if current_user is not None else None,
             createdBy=current_user,
-            updatedById=current_user.id if not current_user is None else None,
+            updatedById=current_user.id if current_user is not None else None,
             updatedBy=current_user,
             updatedAt=func.now()
         )
@@ -34,8 +32,7 @@ class UserDBApi:
         user.password = data.get('password', None)
         app.session.add(user)
         app.session.flush()
-        if 'avatar' in data and not data['avatar'] is None:
-            print('image is not None')
+        if 'avatar' in data and data['avatar'] is not None:
             images = data['avatar']
             for image in images:
                 # Add file to DB
@@ -48,14 +45,12 @@ class UserDBApi:
                 )
                 app.session.add(file)
                 app.session.flush()
-                print(file.name)
                 user.avatar.append(file)
 
         app.session.add(user)
         app.session.commit()
 
-    def create_from_auth(data): #, current_user):
-        print('UserDBApi.create_from_auth()')
+    def create_from_auth(data):
         user = Users(
             firstName=data['first_name'],
             password=data['password'],
@@ -71,8 +66,6 @@ class UserDBApi:
         return user
 
     def update(user_id: str, data: dict, current_user: Users):
-        print('UserDBApi.update()')
-        #print(data)
         user = app.session.query(Users).filter_by(id=user_id).first()
         if not user:
             raise ValidationError({'message': 'Update user error: user not found\n'})
@@ -84,21 +77,15 @@ class UserDBApi:
         user.disabled = data['disabled'] or False
         user.updatedById = current_user.id
         user.updatedBy = current_user
-        '''
-        user.emailVerified = data.get('emailVerified', None)
-        user.provider = data.get('provider', None)
-        user.password = data.get('password', None)
-        '''
-        if not data['avatar'] is None:
-            print('avatar is not None')
+
+        if data['avatar'] is not None:
             images = data['avatar']
             image_ids = [image.id for image in user.avatar]
             query_image_ids = [image['id'] for image in images]
             # add images to user avatar
-            print('add images to user avatar')
             for image in images:
                 image_id = image['id']
-                if not image_id in image_ids:
+                if image_id not in image_ids:
                     # Add file to DB
                     file = Files(
                         name=image['name'],
@@ -111,16 +98,12 @@ class UserDBApi:
                     )
                     app.session.add(file)
                     app.session.flush()
-                    # file = app.session.query(Files).filter_by(id=image_id).first()
-                    #print(file.name)
                     user.avatar.append(file)
             # remove images excluded from avatar
-            print('remove images excluded')
             for image_id in image_ids:
-                if not image_id in query_image_ids:
+                if image_id not in query_image_ids:
                     file = app.session.query(Files).filter_by(id=image_id).first()
                     file_path = os.path.join(APP_ROOT, app.config['UPLOAD_FOLDER'], file.privateUrl)
-                    print(file_path)
                     user.avatar.remove(file)
                     # Remove file from DB and disk
                     app.session.delete(file)
@@ -171,30 +154,23 @@ class UserDBApi:
         return token
 
     def update_password(id: str, password: str, current_user: Users = None):
-        print('UserDBApi.update_password')
-        print('current_user')
-        print(current_user)
         user = app.session.query(Users).filter_by(id=id).first()
 
         user.password = password
         user.authenticationUid = user.id
-        if not current_user is None:
+        if current_user is not None:
             user.updatedById = current_user.id
         user.updatedBy = current_user
         app.session.add(user)
         app.session.commit()
-        print('update_password complete')
         return user
 
     def mark_email_verified(id: str, current_user: Users = None):
-        print('UserDBApi.mark_email_verified')
-
         user = app.session.query(Users) \
             .filter_by(id=id) \
             .first()
-        print(user)
         user.emailVerified = True
-        user.updatedById = current_user.id if not current_user is None else None
+        user.updatedById = current_user.id if current_user is not None else None
         # user.updatedBy = current_user
         app.session.add(user)
         app.session.commit()
