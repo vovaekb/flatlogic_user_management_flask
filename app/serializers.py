@@ -25,7 +25,7 @@ class FilesSchema(SQLAlchemyAutoSchema):
         model = Files
         include_fk = True
         # include_relationships = True
-        exclude = ("createdBy", "updatedBy", "userId") # "user", 
+        exclude = ('createdBy', 'updatedBy', 'userId') # 'user', 
         # include_fk = True
 
 
@@ -43,7 +43,7 @@ class UsersSchema(SQLAlchemyAutoSchema):
     class Meta:
         model = Users
         include_fk = True
-        exclude = ("createdBy", "updatedBy")
+        exclude = ('createdBy', 'updatedBy')
         #include_relationships = True
 
 

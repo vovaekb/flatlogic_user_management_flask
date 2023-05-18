@@ -25,14 +25,14 @@ CORS(app, supports_credentials=True)
 # add serving static files
 app.wsgi_app = WhiteNoise(app.wsgi_app, root='static/')
 app.session = scoped_session(SessionLocal, scopefunc=_app_ctx_stack.__ident_func__)
-app.secret_key = os.environ.get("FN_FLASK_SECRET_KEY", default=False)
+app.secret_key = os.environ.get('FN_FLASK_SECRET_KEY', default=False)
 
 #if os.environ['FLASK_DEV'] == True:
-print("Dev env")
+print('Dev env')
 app.config.from_object(DevConfig)
 '''
 else:
-    print("Prod env")
+    print('Prod env')
     app.config.from_object(ProductionConfig)
 '''
 
@@ -110,7 +110,7 @@ def token_included(f):
 
 @app.after_request
 def set_headers(response):
-    response.headers["Referrer-Policy"] = 'no-referrer'
+    response.headers['Referrer-Policy'] = 'no-referrer'
     return response
 
 

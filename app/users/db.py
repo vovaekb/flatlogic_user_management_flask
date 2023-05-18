@@ -19,7 +19,7 @@ class UserDBApi:
             phoneNumber=data.get('phoneNumber', None),
             authenticationUid=data.get('authenticationUid', None),
             email=data['email'],
-            role=data.get('role', "user"),
+            role=data.get('role', 'user'),
             # importHash = data['importHash'] or None,
             createdById=current_user.id if current_user is not None else None,
             createdBy=current_user,
@@ -73,7 +73,7 @@ class UserDBApi:
         user.lastName = data['lastName'] or None
         user.phoneNumber = data['phoneNumber'] or None
         user.email = data['email']
-        user.role = data['role'] or "user"
+        user.role = data['role'] or 'user'
         user.disabled = data['disabled'] or False
         user.updatedById = current_user.id
         user.updatedBy = current_user
