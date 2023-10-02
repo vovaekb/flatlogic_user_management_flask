@@ -1,8 +1,7 @@
 import os
 import flask
-import json
-from flask import Flask, _app_ctx_stack, render_template, request, jsonify, Response
-from flask_cors import CORS, cross_origin
+from flask import Flask, _app_ctx_stack, request, Response
+from flask_cors import CORS
 from flask_mail import Mail
 from whitenoise import WhiteNoise
 import jwt
@@ -12,8 +11,9 @@ from app.database import SessionLocal, engine, Base
 from app.models import Users
 from config import Config, DevConfig, ProductionConfig
 
+
 # Create database structure
-#Base.metadata.create_all(bind=engine)
+# Base.metadata.create_all(bind=engine)
 
 FILE_FOLDER = 'static/'
 APP_ROOT = os.path.dirname(os.path.abspath(__file__))
@@ -27,7 +27,7 @@ app.wsgi_app = WhiteNoise(app.wsgi_app, root='static/')
 app.session = scoped_session(SessionLocal, scopefunc=_app_ctx_stack.__ident_func__)
 app.secret_key = os.environ.get('FN_FLASK_SECRET_KEY', default=False)
 
-#if os.environ['FLASK_DEV'] == True:
+# if os.environ['FLASK_DEV'] == True:
 print('Dev env')
 app.config.from_object(DevConfig)
 '''
@@ -44,35 +44,44 @@ mail = Mail(app)
 
 # Global methods and classes
 
+
 # Error handlers
 class CustomError(Exception):
     pass
+
 
 # Error handlers
 class ValidationError(Exception):
     pass
 
+
 # Error handlers
 class ForbiddenError(Exception):
     pass
+
 
 def get_current_user(f):
     @wraps(f)
     def decorator(*args, **kwargs):
         print('get_current_user')
 
-        if 'Authorization' in request.headers and len(request.headers['Authorization'].split(' ')) > 1:
+        if 'Authorization' in request.headers and len(
+            request.headers['Authorization'].split(' ')
+        ) > 1:
             token = request.headers['Authorization'].split(' ')[1]
             print('token: ', token)
 
             try:
-                data = jwt.decode(token, app.config['SECRET_KEY'], algorithms='HS256')
+                data = jwt.decode(
+                    token, app.config['SECRET_KEY'], 
+                    algorithms='HS256'
+                )
                 user = data['user'] 
                 print(data)
                 print(user)
                 current_user = app.session.query(Users) \
                     .filter(Users.id == user['id']) \
-                    .filter(Users.email==user['email']).first()
+                    .filter(Users.email == user['email']).first()
                 print(current_user)
             except Exception as e:
                 print('Error when decoding token: ', str(e))
@@ -82,6 +91,7 @@ def get_current_user(f):
 
         return f(current_user, *args, **kwargs)
     return decorator
+
 
 def no_cache(view):
     @wraps(view)

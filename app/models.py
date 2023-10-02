@@ -4,17 +4,13 @@ import uuid
 from sqlalchemy import Column, Table, Integer, ForeignKey, ARRAY
 from sqlalchemy.types import (
     Float,
-    Numeric,
     String,
     DateTime,
-    Date,
     Enum,
-    UnicodeText,
     Boolean
 )
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship, backref
-from sqlalchemy.ext.associationproxy import association_proxy
 from sqlalchemy.sql import func
 from app import database
 
@@ -55,12 +51,31 @@ class Users(database.Base):
     updatedAt = Column(DateTime(timezone=True), nullable=False,
                        onupdate=func.now())
     deletedAt = Column(DateTime(timezone=True))
-    createdById = Column(UUID(as_uuid=True), ForeignKey('users.id',
-                                                        ondelete='SET NULL'), nullable=True)
-    createdBy = relationship("Users", foreign_keys=[createdById],
-                             uselist=False, post_update=True)
-    updatedById = Column(UUID(as_uuid=True), ForeignKey('users.id', ondelete='SET NULL'), nullable=True)
-    updatedBy = relationship("Users", foreign_keys=[updatedById], uselist=False, post_update=True)
+    createdById = Column(
+        UUID(as_uuid=True),
+        ForeignKey(
+            'users.id',
+            ondelete='SET NULL'
+        ), 
+        nullable=True
+    )
+    createdBy = relationship(
+        "Users", 
+        foreign_keys=[createdById],
+        uselist=False,
+        post_update=True
+    )
+    updatedById = Column(
+        UUID(as_uuid=True),
+        ForeignKey('users.id', ondelete='SET NULL'),
+        nullable=True
+    )
+    updatedBy = relationship(
+        "Users",
+        foreign_keys=[updatedById],
+        uselist=False,
+        post_update=True
+    )
 
 
 class Files(database.Base):
@@ -71,7 +86,11 @@ class Files(database.Base):
         index=True
     )
     userId = Column(UUID(as_uuid=True), ForeignKey('users.id'))
-    user = relationship("Users", foreign_keys=[userId], backref="avatar")
+    user = relationship(
+        "Users",
+        foreign_keys=[userId],
+        backref="avatar"
+    )
     name = Column(String(2083), nullable=False)
     sizeInBytes = Column(Integer, nullable=True)
     privateUrl = Column(String(2083), nullable=True)
@@ -82,14 +101,26 @@ class Files(database.Base):
                        onupdate=func.now())
     deletedAt = Column(DateTime(timezone=True))
     createdById = Column(UUID(as_uuid=True), ForeignKey('users.id'))
-    createdBy = relationship("Users", foreign_keys=[createdById], uselist=False)
-    updatedById = Column(UUID(as_uuid=True), ForeignKey('users.id'))
-    updatedBy = relationship("Users", foreign_keys=[updatedById], uselist=False)
+    createdBy = relationship(
+        "Users",
+        foreign_keys=[createdById],
+        uselist=False
+    )
+    updatedById = Column(
+        UUID(as_uuid=True),
+        ForeignKey('users.id')
+    )
+    updatedBy = relationship(
+        "Users",
+        foreign_keys=[updatedById],
+        uselist=False
+    )
 
 
 class Products(database.Base):
     __tablename__ = 'products'
-    id = Column(Integer,
+    id = Column(
+        Integer,
         primary_key=True
     )
     img = Column(String)
@@ -103,7 +134,14 @@ class Products(database.Base):
     hashtag = Column(String)
     technology = Column(ARRAY(String))
     discount = Column(Float)
-    createdAt = Column(DateTime(timezone=True), nullable=False, server_default=func.now())
-    updatedAt = Column(DateTime(timezone=True), nullable=False,
-                       onupdate=func.now())
+    createdAt = Column(
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=func.now()
+    )
+    updatedAt = Column(
+        DateTime(timezone=True),
+        nullable=False,
+        onupdate=func.now()
+    )
     deletedAt = Column(DateTime(timezone=True))

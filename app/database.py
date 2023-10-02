@@ -3,8 +3,8 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 import os
 
-SQLALCHEMY_DATABASE_URI = 'postgres://postgres:123@localhost/user_management'
-# SQLALCHEMY_DATABASE_URI = os.environ['DATABASE_URL'] - for production 
+
+SQLALCHEMY_DATABASE_URI = os.environ['DATABASE_URL'] 
 
 engine = create_engine(
     SQLALCHEMY_DATABASE_URI
