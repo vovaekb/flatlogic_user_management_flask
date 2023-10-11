@@ -1,6 +1,3 @@
-#
-# Use: mock.js in NodeJS backend
-#
 
 import math
 from random import random
@@ -24,7 +21,10 @@ def get_revenue_data():
     return data
 
 
-def get_random_data(length, min, max, multiplier = 10, max_diff = 10):
+def get_random_data(
+    length, min, max, multiplier=10,
+    max_diff=10
+):
     """Get random values for main_chart
 
     Args:
@@ -63,6 +63,7 @@ def get_main_chart_data():
     d2 = get_random_data(31, 1500, 7500, 7500, 1500)
     d3 = get_random_data(31, 1500, 7500, 7500, 1500)
     return [d1, d2, d3]
+
 
 mock = {
   'analytics': {

@@ -24,7 +24,9 @@ class Config:
 class DevConfig(Config):
     EMAIL_ADDRESS = 'vladprivalov1990@gmail.com'
     REMOTE = 'http://localhost:5000'
+    DATABASE_URL = 'postgres://postgres:123@localhost/user_management'
 
 
 class ProductionConfig(Config):
     REMOTE = 'https://sing-generator-node.herokuapp.com'
+    DATABASE_URL = ''

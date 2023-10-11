@@ -65,10 +65,14 @@ class Auth:
         if user:
             print(user.authenticationUid)
             if user.authenticationUid:
-                raise ValidationError({'message': 'Error when registering user in database: Email already in use\n' })
+                raise ValidationError({
+                    'message': 'Error when registering user in database: Email already in use\n'
+                })
 
             if user.disabled:
-                raise ValidationError({'message': 'Error when registering user in database: User disabled \n' })
+                raise ValidationError({
+                    'message': 'Error when registering user in database: User disabled \n'
+                })
 
             # update password
             user = UserDBApi.update_password(user.id, password_hash, current_user)
