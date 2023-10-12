@@ -1,10 +1,9 @@
 import flask
-from flask import render_template, Blueprint, request, Response, jsonify, redirect, abort
 from authlib.client import OAuth2Session
-from app import app
-from app.serializers import UsersSchema
+from flask import render_template, Blueprint, request, Response, jsonify, redirect, abort
+
 from app import CustomError, ValidationError, ForbiddenError, get_current_user, no_cache
-from app.auth.services import Auth, EmailSender
+from app import app
 from app.auth import (
     AUTHORIZATION_URL,
     ACCESS_TOKEN_URI,
@@ -16,7 +15,8 @@ from app.auth import (
     CLIENT_SECRET,
     AUTH_TOKEN_KEY
 )
-
+from app.auth.services import Auth, EmailSender
+from app.serializers import UsersSchema
 
 auth_blueprint = Blueprint('auth', __name__, template_folder='templates')
 user_schema = UsersSchema()
@@ -31,13 +31,13 @@ def handle_error(e):
 @auth_blueprint.errorhandler(ValidationError)
 def handle_validation_error(e):
     details = e.args[0]
-    return Response(details['message'], status=400, mimetype='text/plain') 
+    return Response(details['message'], status=400, mimetype='text/plain')
 
 
 @auth_blueprint.errorhandler(ForbiddenError)
 def handle_forbidden_error(e):
     details = e.args[0]
-    return Response(details['message'], status=403, mimetype='text/plain') 
+    return Response(details['message'], status=403, mimetype='text/plain')
 
 
 @app.errorhandler(401)
@@ -77,7 +77,7 @@ def send_email_address_verification_email(current_user):
 @auth_blueprint.route('/auth/send-password-reset-email', methods=['POST'])
 def send_password_reset_email():
     referrer = request.headers.get("Referer")
-    Auth.send_password_reset_email(request.json['email'], referrer, 'register') 
+    Auth.send_password_reset_email(request.json['email'], referrer, 'register')
     payload = True
     return Response(str(payload), status=200)
 
@@ -131,6 +131,7 @@ def email_configured():
     print(payload)
     return Response(str(payload), status=200)
 
+
 @auth_blueprint.route('/auth/signin/google', methods=['GET'])
 @no_cache
 def signin_google():
@@ -173,4 +174,3 @@ def signin_microsoft():
 @auth_blueprint.route('/auth/signin/microsoft/callback', methods=['GET'])
 def signin_microsoft_callback():
     return Response('signin_microsoft_callback', status=200)
-

@@ -1,15 +1,16 @@
 import os
 from flask import (
-    abort, 
-    Blueprint, 
-    request, 
-    Response, 
-    jsonify, 
+    abort,
+    Blueprint,
+    request,
+    Response,
+    jsonify,
     send_file
 )
+
 from app import app, FILE_FOLDER, APP_ROOT, get_current_user, ForbiddenError
-from app.serializers import UsersSchema, FilesSchema
 from app.files.services import FileService
+from app.serializers import UsersSchema, FilesSchema
 
 # CONFIG
 files_blueprint = Blueprint('files', __name__)
@@ -37,8 +38,8 @@ def forbidden(e):
 
 @app.errorhandler(500)
 def internal_server_error(e):
-    #print('error handler')
-    #print(e)
+    # print('error handler')
+    # print(e)
     return jsonify(error=str(e)), 500
 
 
@@ -46,7 +47,7 @@ def internal_server_error(e):
 @files_blueprint.route('/file/download', methods=['GET'])
 def download():
     privateUrl = request.args['privateUrl']
-    #print(privateUrl)
+    # print(privateUrl)
 
     if privateUrl is None:
         abort(404, description='Not found')

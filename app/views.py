@@ -1,11 +1,12 @@
-from flask import Flask, request, jsonify, Response
 import datetime
+from flask import Flask, request, jsonify, Response
+
 from app import app
 
 
 # Create custom exception class
 class CustomError(Exception):
-	"""Input parameter error."""
+    """Input parameter error."""
 
 
 @app.errorhandler(CustomError)

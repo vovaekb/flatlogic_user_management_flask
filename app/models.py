@@ -2,6 +2,9 @@ import datetime
 import uuid
 # from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Column, Table, Integer, ForeignKey, ARRAY
+from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.orm import relationship, backref
+from sqlalchemy.sql import func
 from sqlalchemy.types import (
     Float,
     String,
@@ -9,11 +12,8 @@ from sqlalchemy.types import (
     Enum,
     Boolean
 )
-from sqlalchemy.dialects.postgresql import UUID
-from sqlalchemy.orm import relationship, backref
-from sqlalchemy.sql import func
-from app import database
 
+from app import database
 
 Role = Enum(
     value='Role',
@@ -26,10 +26,10 @@ Role = Enum(
 class Users(database.Base):
     __tablename__ = 'users'
     id = Column(UUID(as_uuid=True),
-        primary_key=True,
-        default=uuid.uuid4,
-        index=True
-    )
+                primary_key=True,
+                default=uuid.uuid4,
+                index=True
+                )
     firstName = Column(String(80), nullable=True)
     lastName = Column(String(175), nullable=True)
     phoneNumber = Column(String(24), nullable=True)
@@ -56,11 +56,11 @@ class Users(database.Base):
         ForeignKey(
             'users.id',
             ondelete='SET NULL'
-        ), 
+        ),
         nullable=True
     )
     createdBy = relationship(
-        "Users", 
+        "Users",
         foreign_keys=[createdById],
         uselist=False,
         post_update=True
@@ -81,10 +81,10 @@ class Users(database.Base):
 class Files(database.Base):
     __tablename__ = 'files'
     id = Column(UUID(as_uuid=True),
-        primary_key=True,
-        default=uuid.uuid4,
-        index=True
-    )
+                primary_key=True,
+                default=uuid.uuid4,
+                index=True
+                )
     userId = Column(UUID(as_uuid=True), ForeignKey('users.id'))
     user = relationship(
         "Users",
@@ -95,7 +95,7 @@ class Files(database.Base):
     sizeInBytes = Column(Integer, nullable=True)
     privateUrl = Column(String(2083), nullable=True)
     publicUrl = Column(String(2083), nullable=False)
-    createdAt = Column(DateTime(timezone=True), nullable=False, 
+    createdAt = Column(DateTime(timezone=True), nullable=False,
                        server_default=func.now())
     updatedAt = Column(DateTime(timezone=True), nullable=False,
                        onupdate=func.now())

@@ -1,10 +1,11 @@
 import os
-from app import app, mail
-from app.models import Users, Files
+
 from app import CustomError, ValidationError, ForbiddenError
-from app.users.db import UserDBApi
+from app import app, mail
 from app.auth.services import Auth
+from app.models import Users, Files
 from app.serializers import UsersSchema, FilesSchema
+from app.users.db import UserDBApi
 
 users_schema = UsersSchema(many=True)
 file_schema = FilesSchema()

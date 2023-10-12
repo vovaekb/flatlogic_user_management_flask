@@ -1,12 +1,13 @@
+from contextlib import contextmanager
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.sql import func
 from werkzeug.security import generate_password_hash
-from contextlib import contextmanager
-from config import DATABASE_URI
+
 from app import app
 from app.database import Base
 from app.models import Users, Files, Products
+from config import DATABASE_URI
 from config import providers
 
 engine = create_engine(DATABASE_URI)
@@ -61,10 +62,10 @@ def seed_products():
             code=135234,
             hashtag='whitetrainers',
             technology=[
-                    'Ollie patch',
-                    'Cup soles',
-                    'Vulcanized rubber soles'
-                ],
+                'Ollie patch',
+                'Cup soles',
+                'Vulcanized rubber soles'
+            ],
             discount=None,
             description_1='Sneakers (also known as athletic shoes, tennis shoes,gym shoes, runners, takkies, or trainers) are shoes primarily designed for sports or other forms of physical exercise, but which are now also often used for everyday wear.',
             description_2='The term generally describes a type of footwear with a flexible sole made of rubber or synthetic material and an upper part made of leather or synthetic materials.',
@@ -181,10 +182,10 @@ def seed_products():
             code=135234,
             hashtag='whitetrainers',
             technology=[
-                    'Ollie patch',
-                    'Cup soles',
-                    'Vulcanized rubber soles'
-                ],
+                'Ollie patch',
+                'Cup soles',
+                'Vulcanized rubber soles'
+            ],
             discount=None,
             description_1='Sneakers (also known as athletic shoes, tennis shoes,gym shoes, runners, takkies, or trainers) are shoes primarily designed for sports or other forms of physical exercise, but which are now also often used for everyday wear.',
             description_2='The term generally describes a type of footwear with a flexible sole made of rubber or synthetic material and an upper part made of leather or synthetic materials.',
@@ -314,6 +315,6 @@ def seed_users():
 
 if __name__ == '__main__':
     reset_database()
-    #create_database()
+    # create_database()
     seed_products()
     seed_users()

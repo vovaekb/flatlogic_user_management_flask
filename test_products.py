@@ -1,5 +1,6 @@
 import os
 from flask import json, jsonify
+
 from app import app
 
 
@@ -10,12 +11,14 @@ def test_get_images():
         print(rv.data)
         print('status: ', rv.status_code)
 
+
 def test_get_all():
     print('testing /products GET')
     with app.test_client() as c:
         rv = c.get('/products', json={})
         print(rv.data)
         print('status: ', rv.status_code)
+
 
 def test_get_product():
     print('testing /products/<product_id> GET')
@@ -24,6 +27,7 @@ def test_get_product():
         rv = c.get('/products/%s' % id, json={})
         print(rv.data)
         print('status: ', rv.status_code)
+
 
 def test_update_product():
     print('testing /products/<product_id> PUT')
@@ -52,6 +56,7 @@ def test_update_product():
         print(rv.data)
         print('status: ', rv.status_code)
 
+
 def test_create_product():
     print('testing /products POST')
 
@@ -79,6 +84,7 @@ def test_create_product():
         print(rv.data)
         print('status: ', rv.status_code)
 
+
 def test_delete_product():
     print('testing /products/<product_id> DELETE')
 
@@ -88,11 +94,12 @@ def test_delete_product():
         print(rv.data)
         print('status: ', rv.status_code)
 
+
 if __name__ == '__main__':
-    #test_get_images()
-    #test_get_all()
+    # test_get_images()
+    # test_get_all()
     # test_update_product()
-    #test_get_product()
+    # test_get_product()
     test_create_product()
-    #test_delete_product()
-    #test_get_product()
+    # test_delete_product()
+    # test_get_product()

@@ -1,9 +1,10 @@
 import os
 from flask import Blueprint, request, jsonify, Response, send_file
 from sqlalchemy.exc import SQLAlchemyError
+
 from app import app, CustomError, APP_ROOT
-from app.serializers import ProductsSchema
 from app.products.services import ProductService
+from app.serializers import ProductsSchema
 
 products_blueprint = Blueprint('products', __name__)
 product_schema = ProductsSchema()

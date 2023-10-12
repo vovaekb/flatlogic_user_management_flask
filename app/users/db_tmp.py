@@ -1,11 +1,10 @@
-import datetime
 import os
-from sqlalchemy.exc import SQLAlchemyError
+import datetime
 from sqlalchemy.sql import func
-
-from app import CustomError, ValidationError, ForbiddenError
+from sqlalchemy.exc import SQLAlchemyError
 from app import app, mail, APP_ROOT
 from app.models import Users, Files
+from app import CustomError, ValidationError, ForbiddenError
 from app.services.encoding import generate_token
 
 
@@ -20,7 +19,7 @@ class UserDBApi:
             phoneNumber=data.get('phoneNumber', None),
             authenticationUid=data.get('authenticationUid', None),
             email=data['email'],
-            role=data.get('role', 'user'),
+            role=data.get('role', "user"),
             # importHash = data['importHash'] or None,
             createdById=current_user.id if current_user is not None else None,
             createdBy=current_user,
@@ -74,11 +73,15 @@ class UserDBApi:
         user.lastName = data['lastName'] or None
         user.phoneNumber = data['phoneNumber'] or None
         user.email = data['email']
-        user.role = data['role'] or 'user'
+        user.role = data['role'] or "user"
         user.disabled = data['disabled'] or False
         user.updatedById = current_user.id
         user.updatedBy = current_user
-
+        '''
+        user.emailVerified = data.get('emailVerified', None)
+        user.provider = data.get('provider', None)
+        user.password = data.get('password', None)
+        '''
         if data['avatar'] is not None:
             images = data['avatar']
             image_ids = [image.id for image in user.avatar]
@@ -101,6 +104,7 @@ class UserDBApi:
                     app.session.flush()
                     user.avatar.append(file)
             # remove images excluded from avatar
+            print('remove images excluded')
             for image_id in image_ids:
                 if image_id not in query_image_ids:
                     file = app.session.query(Files).filter_by(id=image_id).first()
@@ -170,6 +174,7 @@ class UserDBApi:
         user = app.session.query(Users) \
             .filter_by(id=id) \
             .first()
+        print(user)
         user.emailVerified = True
         user.updatedById = current_user.id if current_user is not None else None
         # user.updatedBy = current_user

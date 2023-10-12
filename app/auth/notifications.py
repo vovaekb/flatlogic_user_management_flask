@@ -14,7 +14,7 @@ EMAIL_CONFIG = {
     },
     'invitation': {
         'from': '',
-        'subject': 'You've been invited to %s' % app.config['APP_TITLE'],
-        'html_template': 'mail/invitation.html'
+        'subject': 'You\'ve been invited to % s' % app.config['APP_TITLE'],
+                                                                       'html_template': 'mail/invitation.html'
     }
 }

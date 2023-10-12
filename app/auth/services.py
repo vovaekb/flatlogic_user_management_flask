@@ -1,17 +1,13 @@
 import datetime
 import flask
-from werkzeug.security import generate_password_hash, check_password_hash
-from sqlalchemy.sql import func
 import google.oauth2.credentials
 import googleapiclient.discovery
 from authlib.client import OAuth2Session
-from app.models import Users
-from app import app
-from config import providers
+from sqlalchemy.sql import func
+from werkzeug.security import generate_password_hash, check_password_hash
+
 from app import CustomError, ValidationError, ForbiddenError
-from app.services.email import EmailSender
-from app.services.encoding import generate_token
-from app.users.db import UserDBApi
+from app import app
 from app.auth import (
     ACCESS_TOKEN_URI,
     AUTHORIZATION_SCOPE,
@@ -21,6 +17,11 @@ from app.auth import (
     CLIENT_SECRET,
     AUTH_TOKEN_KEY
 )
+from app.models import Users
+from app.services.email import EmailSender
+from app.services.encoding import generate_token
+from app.users.db import UserDBApi
+from config import providers
 
 
 def is_logged_in():
@@ -97,7 +98,7 @@ class Auth:
             token = generate_token(data)
             print(token)
             return token
-        
+
         print('Creating new user')
         # Create user
         data = {
@@ -121,14 +122,14 @@ class Auth:
         # return JWT sign with data
         token = generate_token(data)
         return token
-    
+
     def signin(email: str, password: str):
         print('\nAuth.signin')
         user = app.session.query(Users).filter_by(email=email).first()
         print(user)
 
         if not user:
-            raise ValidationError({'message': 'Error when signing in: User not found\n' })
+            raise ValidationError({'message': 'Error when signing in: User not found\n'})
 
         if user.disabled:
             raise ValidationError({'message': 'Error when signing in: User disabled\n'})
@@ -151,13 +152,13 @@ class Auth:
 
         token_expires_at = datetime.datetime.utcnow() + datetime.timedelta(days=0, hours=6)
         user_dict = {
-                    "id": str(user.id),
-                    "email": str(user.email)
-                }
+            "id": str(user.id),
+            "email": str(user.email)
+        }
         data = {
             "iat": datetime.datetime.utcnow(),
             "exp": token_expires_at,
-            "user": user_dict 
+            "user": user_dict
         }
         print(data)
         # return JWT sign with data
@@ -173,7 +174,7 @@ class Auth:
             token = UserDBApi.generate_email_verification_token(email)
             print('')
             link = f'{host}#/verify-email?token={token}'
-            #print(link)
+            # print(link)
         except Exception as e:
             print(str(e))
             raise ValidationError({'message': 'Email address verification email error: %s\n' % str(e)})
@@ -218,10 +219,10 @@ class Auth:
 
     def password_update(current_password: str, new_password: str, current_user: Users = None):
         print('Auth.password_update')
-        if not current_user: 
+        if not current_user:
             raise ForbiddenError({'message': 'Password update error: Forbidden\n'})
 
-        if not check_password_hash(current_user.password, current_password): 
+        if not check_password_hash(current_user.password, current_password):
             raise ValidationError({'message': 'Password update error: Wrong password\n'})
 
         if check_password_hash(current_user.password, new_password):
@@ -250,15 +251,14 @@ class Auth:
         print(user)
         return user
 
-
     def verify_email(token: str, current_user: Users = None):
-        user = app.session.query(Users)\
-            .filter(Users.emailVerificationToken == token)\
-            .filter(Users.emailVerificationTokenExpiresAt > datetime.datetime.utcnow())\
+        user = app.session.query(Users) \
+            .filter(Users.emailVerificationToken == token) \
+            .filter(Users.emailVerificationTokenExpiresAt > datetime.datetime.utcnow()) \
             .first()
         print(user)
         if not user:
-            raise ValidationError({'message': 'Verify email error: Invalid token\n' })
+            raise ValidationError({'message': 'Verify email error: Invalid token\n'})
 
         # mark email verified
         UserDBApi.mark_email_verified(user.id, current_user)

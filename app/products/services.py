@@ -1,5 +1,6 @@
 import os
 from sqlalchemy.sql import func
+
 from app import app, APP_ROOT, FILE_FOLDER
 from app.models import Products
 from app.serializers import ProductsSchema
@@ -11,6 +12,7 @@ products_schema = ProductsSchema(many=True)
 class ProductService:
     """Class for product related utils
     """
+
     def get_images():
         images_dir = '%spublic/assets/products/' % FILE_FOLDER
         image_files = [f for f in os.listdir(os.path.join(APP_ROOT, images_dir)) if not f.startswith('.')]

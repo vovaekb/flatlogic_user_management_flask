@@ -2,6 +2,7 @@ import os
 import os
 from dotenv import load_dotenv
 from flask import json, jsonify
+
 from app import app
 
 AUTH_TOKEN = ''
@@ -13,7 +14,7 @@ def test_signup():
     print('testing /auth/signup')
     with app.test_client() as c:
         rv = c.post(
-            '/auth/signup', 
+            '/auth/signup',
             json={
                 'email': 'ralf_stone@host.com',
                 'password': 'jkht6fd4le,*',
@@ -57,7 +58,7 @@ def test_verify_email():
     print(token)
     with app.test_client() as c:
         rv = c.put(
-            '/auth/verify-email', 
+            '/auth/verify-email',
             json={
                 'token': token
             }
@@ -65,7 +66,7 @@ def test_verify_email():
         # json_data = rv.get_json()
         print(rv.data)
         print('status: %s' % rv.status_code)
-        #print(json_data)
+        # print(json_data)
 
 
 def test_send_email_address_verification_email():
@@ -81,8 +82,8 @@ def test_send_email_address_verification_email():
             'Authorization': authorization
         }
         rv = c.post(
-            '/auth/send-email-address-verification-email', 
-            json={}, 
+            '/auth/send-email-address-verification-email',
+            json={},
             headers=headers
         )
         print(rv.data)
@@ -108,6 +109,7 @@ def test_signin_local():
         print(token)
         print('status: %s' % rv.status_code)
 
+
 def test_password_update():
     """Test updating password endpoint
     """
@@ -122,22 +124,23 @@ def test_password_update():
     }
     with app.test_client() as c:
         rv = c.put(
-            '/auth/password-update', 
+            '/auth/password-update',
             json={
                 'current_password': 'jkht6fd4le,*',
-                'new_password': 'dfgvd564rf', 
-            }, 
+                'new_password': 'dfgvd564rf',
+            },
             headers=headers
         )
         print(rv.data)
         print('status: %s' % rv.status_code)
+
 
 def test_send_pasword_reset_email():
     """Test sending password reset email endpoint
     """
     with app.test_client() as c:
         rv = c.post(
-            '/auth/send-password-reset-email', 
+            '/auth/send-password-reset-email',
             json={
                 'email': 'ralf_stone@host.com'
             }
@@ -158,7 +161,7 @@ def test_password_reset():
     headers = {
         # 'Access-Control-Allow-Origin': '*',
         # 'Content-Type': 'application/json',
-        #'Authorization': authorization
+        # 'Authorization': authorization
     }
     with app.test_client() as c:
         rv = c.put('/auth/password-reset', json={
@@ -167,6 +170,7 @@ def test_password_reset():
         }, headers=headers)
         print(rv.data)
         print('status: %s' % rv.status_code)
+
 
 def test_profile():
     """Test user profile endpoint
@@ -195,9 +199,9 @@ def test_profile():
                 'new': True,
                 'sizeInBytes': 321800,
                 'privateUrl': 'users/avatar/%s' % (image_paths[0]),
-                'publicUrl': 
-                '%s/files/download?privateUrl=users/avatar/avatar/%s' %
-                (app.config['REMOTE'], image_paths[0])
+                'publicUrl':
+                    '%s/files/download?privateUrl=users/avatar/avatar/%s' %
+                    (app.config['REMOTE'], image_paths[0])
             },
             {
                 'id': '27e264dd-aa46-4c98-8c04-aecace218d9e',
@@ -206,8 +210,8 @@ def test_profile():
                 'sizeInBytes': 213500,
                 'privateUrl': 'users/avatar/%s' % (image_paths[1]),
                 'publicUrl':
-                '%s/files/download?privateUrl=users/avatar/avatar/%s' %
-                (app.config['REMOTE'], image_paths[1])
+                    '%s/files/download?privateUrl=users/avatar/avatar/%s' %
+                    (app.config['REMOTE'], image_paths[1])
             },
         ]
     }
@@ -219,7 +223,7 @@ def test_profile():
     }
     with app.test_client() as c:
         rv = c.put(
-            '/auth/profile', 
+            '/auth/profile',
             json={
                 'profile': profile_data
             },
@@ -241,8 +245,8 @@ def test_me():
     }
     with app.test_client() as c:
         rv = c.get(
-            '/auth/me', 
-            json={}, 
+            '/auth/me',
+            json={},
             headers=headers
         )
         print(rv.data)
@@ -255,7 +259,7 @@ def test_email_configured():
     print('testing /auth/email-configured')
     with app.test_client() as c:
         rv = c.get(
-            '/auth/email-configured', 
+            '/auth/email-configured',
             json={}
         )
         print(rv.data)
@@ -264,27 +268,26 @@ def test_email_configured():
 
 if __name__ == '__main__':
     test_signup()
-    #test_signin_local()
-    #test_send_email_address_verification_email()
-    #test_verify_email()
-    #token = test_signin_local()
+    # test_signin_local()
+    # test_send_email_address_verification_email()
+    # test_verify_email()
+    # token = test_signin_local()
     # test_password_update(token)
 
     # Test password reset and update
-    #test_signup()
-    #test_verify_email()
-    #test_signin_local()
-    #test_send_pasword_reset_email()
+    # test_signup()
+    # test_verify_email()
+    # test_signin_local()
+    # test_send_pasword_reset_email()
     # test_password_reset()
-    #test_password_update()
+    # test_password_update()
 
     # Test sending email verification email
-    #test_send_email_address_verification_email()
-    #test_verify_email()
+    # test_send_email_address_verification_email()
+    # test_verify_email()
 
     # Test profile and me
     test_signin_local()
-    #test_me()
+    # test_me()
     test_profile()
-    #test_email_configured()
-
+    # test_email_configured()

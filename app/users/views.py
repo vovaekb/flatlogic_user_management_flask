@@ -1,7 +1,8 @@
 from flask import render_template, Blueprint, request, Response, jsonify
 from sqlalchemy.exc import SQLAlchemyError
-from app import app
+
 from app import CustomError, ValidationError, ForbiddenError, get_current_user
+from app import app
 from app.models import Users, Files
 from app.serializers import UsersSchema, FilesSchema
 from app.users.services import UserService
@@ -101,6 +102,7 @@ def user_get(user_id):
         details = e.args[0]
         return Response(details, status=555, mimetype='text/plain')
     return jsonify(data)
+
 
 @users_blueprint.route('/users/autocomplete', methods=['GET'])
 def autocomplete():

@@ -1,8 +1,8 @@
 from flask import Blueprint, jsonify
 from flask_cors import cross_origin
+
 from app import app
 from app.mocks import mock
-
 
 analytics_blueprint = Blueprint('analytics', __name__)
 

@@ -1,9 +1,11 @@
-import os
 import io
+import os
 from flask import json, jsonify
+
 from app import app
 
 AUTH_TOKEN = ""
+
 
 def get_token():
     print('get_token')
@@ -58,6 +60,7 @@ def upload_file():
         print(rv.data)
         print('status: ', rv.status_code)
 
+
 def test_create():
     print('testing /users POST')
     print(os.environ["AUTH_TOKEN"])
@@ -73,19 +76,20 @@ def test_create():
         }
         rv = c.post('/users', json={
             "id": None,
-            "email": "vovaprivalov@gmail.com", # "marcel_flann@host.com", # "ralf_stone@host.com",
-            "firstName": None, # "Vladimir", # "Ralf",
-            "lastName": None, # "Privalov", # "Stone",
-            "phoneNumber": "34645346", # "6733292", # "23241945",
+            "email": "vovaprivalov@gmail.com",  # "marcel_flann@host.com", # "ralf_stone@host.com",
+            "firstName": None,  # "Vladimir", # "Ralf",
+            "lastName": None,  # "Privalov", # "Stone",
+            "phoneNumber": "34645346",  # "6733292", # "23241945",
             "role": "user",
             "authenticationUid": None,
-            "disabled": False, # True,
+            "disabled": False,  # True,
             "avatar": []
         }, headers=headers)
         # json_data = rv.get_json()
         # print(json_data)
         print(rv.data)
         print('status: ', rv.status_code)
+
 
 def test_get_all():
     print('testing /users GET')
@@ -94,6 +98,7 @@ def test_get_all():
         print(rv.data)
         print('status: ', rv.status_code)
 
+
 def test_get_user():
     print('testing /users/<user_id> GET')
     id = "c99aa62f-a553-4d09-8fba-2a0a7d834ddd"
@@ -101,6 +106,7 @@ def test_get_user():
         rv = c.get('/users/%s' % id, json={})
         print(rv.data)
         print('status: ', rv.status_code)
+
 
 def test_put_user():
     print('testing /users/<user_id> PUT')
@@ -112,20 +118,22 @@ def test_put_user():
         'Authorization': authorization
     }
 
-    user_id = "4a652f44-0b07-49a2-a0d2-20dca2b93223" # "4a58a55d-866b-4dba-9ea5-0f00670b5882"
+    user_id = "4a652f44-0b07-49a2-a0d2-20dca2b93223"  # "4a58a55d-866b-4dba-9ea5-0f00670b5882"
     with app.test_client() as c:
         rv = c.put('/users/%s' % user_id, json={
             "id": user_id,
-            "email": "vovaprivalov90@gmail.com", # "marcel_flann18@host.com", # "billy_xavier@host.com",
-            "firstName": "Nick", # "Kenny", # "Simon",
-            "lastName": None, # "Xaviert",
-            "phoneNumber": "233235894", # "2211945",
-            "role": "admin", # "user", # 
+            "email": "vovaprivalov90@gmail.com",  # "marcel_flann18@host.com", # "billy_xavier@host.com",
+            "firstName": "Nick",  # "Kenny", # "Simon",
+            "lastName": None,  # "Xaviert",
+            "phoneNumber": "233235894",  # "2211945",
+            "role": "admin",  # "user", #
             "disabled": False,
-            "avatar": [] #{"id": 'eb4b4851-a5e4-483a-a1d0-3f3feedae3a6', "name": "test1.png", "new": True, "sizeInBytes": 342800,  "privateUrl": "users/avatar/eb4b4851-a5e4-483a-a1d0-3f3feedae3a6.png", "publicUrl": "http://127.0.0.1:5000/files/download?privateUrl=users/avatar/avatar/eb4b4851-a5e4-483a-a1d0-3f3feedae3a6.png" }]
+            "avatar": []
+            # {"id": 'eb4b4851-a5e4-483a-a1d0-3f3feedae3a6', "name": "test1.png", "new": True, "sizeInBytes": 342800,  "privateUrl": "users/avatar/eb4b4851-a5e4-483a-a1d0-3f3feedae3a6.png", "publicUrl": "http://127.0.0.1:5000/files/download?privateUrl=users/avatar/avatar/eb4b4851-a5e4-483a-a1d0-3f3feedae3a6.png" }]
         }, headers=headers)
         print(rv.data)
         print('status: ', rv.status_code)
+
 
 def test_delete_user():
     print('testing /users/<user_id> DELETE')
@@ -142,11 +150,12 @@ def test_delete_user():
         print(rv.data)
         print('status: ', rv.status_code)
 
+
 if __name__ == '__main__':
     get_token()
     upload_file()
-    #test_create()
-    #test_get_all()
+    # test_create()
+    # test_get_all()
     # test_get_user()
-    #test_put_user()
+    # test_put_user()
     # test_delete_user()

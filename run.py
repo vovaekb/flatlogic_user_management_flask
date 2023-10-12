@@ -1,7 +1,7 @@
 from flask_apscheduler import APScheduler
+
 from app import app
 from setup_db import reset_database, seed_users, seed_products
-
 
 scheduler = APScheduler()
 
