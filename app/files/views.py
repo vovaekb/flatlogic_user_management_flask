@@ -60,6 +60,19 @@ def download():
 @files_blueprint.route('/file/upload/users/avatar', methods=['POST'])
 @get_current_user
 def upload_users_avatar(current_user):
+    """
+    Uploads user avatar 
+
+    post:
+        summary: User avatar upload endpoint.
+        description: Upload image file for user avatar.
+
+    responses:
+      500:
+        description: Forbidden error for unauthorized user
+      200:
+        description: Success for logged in user
+    """
     if not current_user:
         raise ForbiddenError({'message': 'Upload user avatar error: Forbidden\n'})
     folder = '%susers/avatar' % FILE_FOLDER
